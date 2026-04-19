@@ -6,6 +6,13 @@ import { db } from "@/infrastructure/db/client";
 import { StudentPgRepository } from "@/infrastructure/db/repositories/student.pg.repository";
 import { StudentController } from "@/presentation/controllers/student.controller";
 
+import { BookPgRepository } from "@/infrastructure/db/repositories/book.pg.repository";
+import { BorrowRecordPgRepository } from "@/infrastructure/db/repositories/borrow-record.pg.repository";
+import { BorrowBookUseCase } from "@/application/use-cases/book/borrow-book.use-case";
+import { ReturnBookUseCase } from "@/application/use-cases/book/return-book.use-case";
+import { BookController } from "@/presentation/controllers/book.controller";
+
+// --- Student Wiring ---
 const studentRepo = new StudentPgRepository(db);
 
 const createStudentUseCase = new CreateStudentUseCase(studentRepo);
@@ -18,4 +25,16 @@ export const studentController = new StudentController(
   getStudentUseCase,
   updateStudentUseCase,
   deleteStudentUseCase,
+);
+
+// --- Book Wiring ---
+const bookRepo = new BookPgRepository(db);
+const borrowRecordRepo = new BorrowRecordPgRepository(db);
+
+const borrowBookUseCase = new BorrowBookUseCase(bookRepo, borrowRecordRepo);
+const returnBookUseCase = new ReturnBookUseCase(bookRepo, borrowRecordRepo);
+
+export const bookController = new BookController(
+  borrowBookUseCase,
+  returnBookUseCase
 );
