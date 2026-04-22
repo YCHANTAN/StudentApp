@@ -105,6 +105,7 @@ export const registrationController = new SubjectRegistrationController(getStude
 
 // --- Auth Wiring ---
 const authRepo = new AuthPgRepository(db);
-const initAccountUseCase = new InitializeStudentAccountUseCase(authRepo);
+const initAccountUseCase = new InitializeStudentAccountUseCase(authRepo, studentRepo);
 const loginUseCase = new LoginStudentUseCase(authRepo);
+
 export const authController = new AuthController(initAccountUseCase, loginUseCase);
