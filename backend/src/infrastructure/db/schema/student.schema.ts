@@ -5,6 +5,7 @@ export const students = pgTable("students", {
   studentId: text("student_id").notNull().unique(),
   fullName: text("full_name").notNull(),
   email: text("email").notNull().unique(),
+  passwordHash: text("password_hash"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
