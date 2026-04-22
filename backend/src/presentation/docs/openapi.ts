@@ -13,15 +13,60 @@ export const openApiSpec = {
   ],
   tags: [
     {
+      name: "Auth",
+      description: "Authentication endpoints",
+    },
+    {
       name: "Students",
       description: "Student management endpoints",
     },
   ],
   paths: {
+    "/api/v1/auth/login": {
+      post: {
+        tags: ["Auth"],
+        summary: "Authenticate student credentials",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: { $ref: "#/components/schemas/LoginRequest" },
+            },
+          },
+        },
+        responses: {
+          "200": {
+            description: "Authentication successful",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/LoginResponse" },
+              },
+            },
+          },
+          "400": {
+            description: "Validation error",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+          "401": {
+            description: "Invalid credentials",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/ErrorResponse" },
+              },
+            },
+          },
+        },
+      },
+    },
     "/api/v1/students": {
       post: {
         tags: ["Students"],
         summary: "Create a student",
+        security: [{ BearerAuth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -92,6 +137,7 @@ export const openApiSpec = {
       patch: {
         tags: ["Students"],
         summary: "Update a student",
+        security: [{ BearerAuth: [] }],
         parameters: [
           {
             name: "id",
@@ -138,6 +184,7 @@ export const openApiSpec = {
       delete: {
         tags: ["Students"],
         summary: "Delete a student",
+        security: [{ BearerAuth: [] }],
         parameters: [
           {
             name: "id",
@@ -147,8 +194,13 @@ export const openApiSpec = {
           },
         ],
         responses: {
-          "204": {
+          "200": {
             description: "Student deleted",
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/NoDataResponse" },
+              },
+            },
           },
           "404": {
             description: "Student not found",
@@ -163,6 +215,13 @@ export const openApiSpec = {
     },
   },
   components: {
+    securitySchemes: {
+      BearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+    },
     schemas: {
       Student: {
         type: "object",
@@ -183,6 +242,33 @@ export const openApiSpec = {
           data: { $ref: "#/components/schemas/Student" },
         },
         required: ["success", "data"],
+      },
+      LoginData: {
+        type: "object",
+        properties: {
+          accessToken: { type: "string" },
+          tokenType: { type: "string", enum: ["Bearer"] },
+          expiresIn: { type: "string" },
+          refreshToken: { type: "string" },
+        },
+        required: ["accessToken", "tokenType", "expiresIn"],
+      },
+      LoginResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean" },
+          data: { $ref: "#/components/schemas/LoginData" },
+        },
+        required: ["success", "data"],
+      },
+      LoginRequest: {
+        type: "object",
+        properties: {
+          studentId: { type: "string", minLength: 1 },
+          password: { type: "string", minLength: 1 },
+          keepLoggedIn: { type: "boolean", default: false },
+        },
+        required: ["studentId", "password", "keepLoggedIn"],
       },
       CreateStudentRequest: {
         type: "object",
@@ -214,6 +300,14 @@ export const openApiSpec = {
           },
         },
         required: ["success", "error"],
+      },
+      NoDataResponse: {
+        type: "object",
+        properties: {
+          success: { type: "boolean" },
+          data: { type: "null" },
+        },
+        required: ["success", "data"],
       },
     },
   },

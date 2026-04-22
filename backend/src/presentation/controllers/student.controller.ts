@@ -51,7 +51,7 @@ export class StudentController {
   remove = async (req: Request, res: Response, next: NextFunction) => {
     try {
       await this.deleteStudent.execute(this.getIdOrFail(req));
-      res.status(204).send();
+      res.status(200).json({ success: true, data: null });
     } catch (err) {
       next(err);
     }
