@@ -33,6 +33,10 @@ import { SubjectRegistrationPgRepository } from '@/infrastructure/db/repositorie
 import { GetStudentSubjectsUseCase } from '@/application/use-cases/registration/get-student-subjects.use-case';
 import { SubjectRegistrationController } from '@/presentation/controllers/subject-registration.controller';
 
+import { AuthPgRepository } from '@/infrastructure/db/repositories/auth.pg.repository';
+import { InitializeStudentAccountUseCase, LoginStudentUseCase } from '@/application/use-cases/auth/auth.use-cases';
+import { AuthController } from '@/presentation/controllers/auth.controller';
+
 // --- Student Wiring ---
 const studentRepo = new StudentPgRepository(db);
 
@@ -98,3 +102,9 @@ const registrationRepo = new SubjectRegistrationPgRepository(db);
 const getStudentSubjectsUseCase = new GetStudentSubjectsUseCase(registrationRepo);
 
 export const registrationController = new SubjectRegistrationController(getStudentSubjectsUseCase);
+
+// --- Auth Wiring ---
+const authRepo = new AuthPgRepository(db);
+const initAccountUseCase = new InitializeStudentAccountUseCase(authRepo);
+const loginUseCase = new LoginStudentUseCase(authRepo);
+export const authController = new AuthController(initAccountUseCase, loginUseCase);
