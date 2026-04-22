@@ -14,6 +14,18 @@ export class NotFoundError extends DomainError {
   }
 }
 
+export class OutOfStockError extends DomainError {
+  constructor(resource: string) {
+    super(`${resource} has no available copies`, 'OUT_OF_STOCK');
+  }
+}
+
+export class UserNotAuthorizedError extends DomainError {
+  constructor(message: string) {
+    super(message, 'UNAUTHORIZED_ACTION');
+  }
+}
+
 export class ConflictError extends DomainError {
   constructor(message: string) {
     super(message, "CONFLICT");
