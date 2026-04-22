@@ -1,9 +1,11 @@
+import { LoginUseCase } from "@/application/use-cases/auth/login.use-case";
 import { CreateStudentUseCase } from "@/application/use-cases/student/create-student.use-case";
 import { DeleteStudentUseCase } from "@/application/use-cases/student/delete-student.use-case";
 import { GetStudentUseCase } from "@/application/use-cases/student/get-student.use-case";
 import { UpdateStudentUseCase } from "@/application/use-cases/student/update-student.use-case";
 import { db } from "@/infrastructure/db/client";
 import { StudentPgRepository } from "@/infrastructure/db/repositories/student.pg.repository";
+import { AuthController } from "@/presentation/controllers/auth.controller";
 import { StudentController } from "@/presentation/controllers/student.controller";
 
 import { BookPgRepository } from "@/infrastructure/db/repositories/book.pg.repository";
@@ -40,6 +42,7 @@ const createStudentUseCase = new CreateStudentUseCase(studentRepo);
 const getStudentUseCase = new GetStudentUseCase(studentRepo);
 const updateStudentUseCase = new UpdateStudentUseCase(studentRepo);
 const deleteStudentUseCase = new DeleteStudentUseCase(studentRepo);
+const loginUseCase = new LoginUseCase(studentRepo);
 
 export const studentController = new StudentController(
   createStudentUseCase,
@@ -48,53 +51,4 @@ export const studentController = new StudentController(
   deleteStudentUseCase,
 );
 
-// --- Book Wiring ---
-const bookRepo = new BookPgRepository(db);
-const borrowRecordRepo = new BorrowRecordPgRepository(db);
-
-const borrowBookUseCase = new BorrowBookUseCase(bookRepo, borrowRecordRepo);
-const returnBookUseCase = new ReturnBookUseCase(bookRepo, borrowRecordRepo);
-
-export const bookController = new BookController(
-  borrowBookUseCase,
-  returnBookUseCase
-);
-
-// --- Document Request Wiring ---
-const documentRepo = new DocumentRequestPgRepository(db);
-
-const createDocumentRequestUseCase = new CreateDocumentRequestUseCase(documentRepo);
-
-export const documentController = new DocumentController(
-  createDocumentRequestUseCase
-);
-
-const transactionRepository = new TransactionPgRepository(db);
-
-const getBalanceUseCase = new GetStudentBalanceUseCase(transactionRepository);
-const processTransactionUseCase = new ProcessTransactionUseCase(transactionRepository);
-
-export const financeController = new FinanceController(
-  getBalanceUseCase,
-  processTransactionUseCase,
-  transactionRepository
-);
-
-// --- Program Wiring ---
-const programRepo = new ProgramPgRepository(db);
-
-const getProgramsUseCase = new GetProgramsUseCase(programRepo);
-const viewProgramUseCase = new ViewProgramDetailsUseCase(programRepo);
-const getProspectusUseCase = new GetProspectusLinkUseCase(programRepo);
-
-export const programController = new ProgramController(
-  getProgramsUseCase,
-  viewProgramUseCase,
-  getProspectusUseCase
-);
-
-// --- Subject Registration Wiring ---
-const registrationRepo = new SubjectRegistrationPgRepository(db);
-const getStudentSubjectsUseCase = new GetStudentSubjectsUseCase(registrationRepo);
-
-export const registrationController = new SubjectRegistrationController(getStudentSubjectsUseCase);
+export const authController = new AuthController(loginUseCase);

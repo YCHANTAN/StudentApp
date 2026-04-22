@@ -31,3 +31,15 @@ export class ConflictError extends DomainError {
     super(message, "CONFLICT");
   }
 }
+
+export class UnauthorizedError extends DomainError {
+  constructor(message = "Unauthorized") {
+    super(message, "UNAUTHORIZED");
+  }
+}
+
+export class ForbiddenError extends DomainError {
+  constructor(message = "Forbidden") {
+    super(message, "FORBIDDEN");
+  }
+}
