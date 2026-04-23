@@ -22,6 +22,13 @@
       "when": 1776865288997,
       "tag": "0002_regular_sinister_six",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1776959967483,
+      "tag": "0003_motionless_dorian_gray",
+      "breakpoints": true
     }
   ]
 }
