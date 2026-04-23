@@ -11,8 +11,7 @@ export class ReturnBookUseCase {
   ) {}
 
   async execute(bookId: string, input: ReturnBookInput): Promise<BorrowRecord> {
-    // Find the active borrowing session
-    const activeRecord = await this.borrowRecordRepo.findActiveRecord(bookId, input.userId);
+    const activeRecord = await this.borrowRecordRepo.findActiveRecord(bookId, input.studentId);
     
     if (!activeRecord) {
       throw new ConflictError('No active borrow record found for this user and book.');

@@ -1,8 +1,9 @@
 export type Student = {
-  id: string;
-  studentId: string;
+  id: string;           
+  studentNumber: string;  
   fullName: string;
   email: string;
+  course: string;
+  yearLevel: number;
   createdAt: Date;
-  updatedAt: Date;
 };

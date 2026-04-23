@@ -10,6 +10,7 @@ import { BookPgRepository } from "@/infrastructure/db/repositories/book.pg.repos
 import { BorrowRecordPgRepository } from "@/infrastructure/db/repositories/borrow-record.pg.repository";
 import { BorrowBookUseCase } from "@/application/use-cases/book/borrow-book.use-case";
 import { ReturnBookUseCase } from "@/application/use-cases/book/return-book.use-case";
+import { BorrowHistoryUseCase } from '@/application/use-cases/book/borrow-history.use-case';
 import { BookController } from "@/presentation/controllers/book.controller";
 
 import { DocumentRequestPgRepository } from "@/infrastructure/db/repositories/document-request.pg.repository";
@@ -58,10 +59,12 @@ const borrowRecordRepo = new BorrowRecordPgRepository(db);
 
 const borrowBookUseCase = new BorrowBookUseCase(bookRepo, borrowRecordRepo);
 const returnBookUseCase = new ReturnBookUseCase(bookRepo, borrowRecordRepo);
+const borrowHistoryUseCase = new BorrowHistoryUseCase(borrowRecordRepo);
 
 export const bookController = new BookController(
   borrowBookUseCase,
-  returnBookUseCase
+  returnBookUseCase,
+  borrowHistoryUseCase
 );
 
 // --- Document Request Wiring ---

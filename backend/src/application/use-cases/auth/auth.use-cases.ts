@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import type { AuthPgRepository } from '@/infrastructure/db/repositories/auth.pg.repository';
 import type { StudentPgRepository } from '@/infrastructure/db/repositories/student.pg.repository';
 
-const JWT_SECRET = 'evsu_super_secret_key_2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_do_not_use_in_production';
 
 export class InitializeStudentAccountUseCase {
   constructor(
@@ -48,9 +48,9 @@ export class LoginStudentUseCase {
     if (!isPasswordValid) throw new Error('Invalid School ID or Password');
 
     const token = jwt.sign(
-      { studentId: creds.studentId }, 
-      JWT_SECRET, 
-      { expiresIn: '8h' }
+      { studentId: studentId }, 
+      JWT_SECRET,                
+      { expiresIn: '1h' }
     );
 
     return { 

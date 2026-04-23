@@ -2,6 +2,7 @@ import type { Request, Response } from 'express';
 import { LoginRequestDto } from '@/application/dtos/auth.dto';
 import type { InitializeStudentAccountUseCase, LoginStudentUseCase } from '@/application/use-cases/auth/auth.use-cases';
 
+
 export class AuthController {
   constructor(
     private readonly initAccountUseCase: InitializeStudentAccountUseCase,

@@ -1,8 +1,8 @@
 export type BorrowRecord = {
-  id: string; // UUID
-  bookId: string; // Foreign key to Book
-  userId: string; // Foreign key to User
+  id: string; 
+  bookId: string; 
+  studentId: string; 
   borrowedAt: Date;
-  dueDate: Date; // Important for returning
-  returnedAt: Date | null; // Null until returned
+  dueDate: Date; 
+  returnedAt: Date | null; 
 };
