@@ -2,7 +2,7 @@
 import { z } from 'zod';
 
 export const CreateTransactionDto = z.object({
-  studentId: z.string().uuid("A valid Student ID is required"),
+  studentId: z.string().min(1, "A valid Student ID is required"),
   
   // FIX: Just pass the array. Let Zod handle the default error message!
   type: z.enum(['CHARGE', 'PAYMENT']),

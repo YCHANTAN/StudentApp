@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const CreateDocumentRequestDto = z.object({
-  studentId: z.string().uuid("Valid Student ID is required"),
+  studentId: z.string().min(1, "Valid Student ID is required"),
   documentType: z.enum(['TOR', 'GOOD_MORAL', 'COE'], {
     errorMap: () => ({ message: "Invalid document type requested" })
   }),

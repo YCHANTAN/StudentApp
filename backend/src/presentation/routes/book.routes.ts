@@ -19,3 +19,9 @@ bookRouter.post(
   validate(ReturnBookDto), 
   bookController.returnBook
 );
+
+// GET /api/v1/books/history/:userId
+bookRouter.get(
+  '/history/:userId',
+  bookController.getBorrowHistory
+);

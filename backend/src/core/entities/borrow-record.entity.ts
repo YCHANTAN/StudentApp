@@ -5,4 +5,8 @@ export type BorrowRecord = {
   borrowedAt: Date;
   dueDate: Date; // Important for returning
   returnedAt: Date | null; // Null until returned
+  
+  // Optional relations for history/display
+  bookTitle?: string;
+  bookAuthor?: string;
 };

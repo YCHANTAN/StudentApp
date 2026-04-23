@@ -3,6 +3,7 @@ import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { BorrowRecordRepository } from '@/application/repositories/borrow-record.repository';
 import type { BorrowRecord } from '@/core/entities/borrow-record.entity';
 import { borrowRecords } from '../schema/borrow-record.schema.js';
+import { books } from '../schema/book.schema.js';
 
 export class BorrowRecordPgRepository implements BorrowRecordRepository {
   constructor(private readonly db: NodePgDatabase<Record<string, never>>) {}
@@ -26,7 +27,22 @@ export class BorrowRecordPgRepository implements BorrowRecordRepository {
   }
 
   async findHistoryByUserId(userId: string): Promise<BorrowRecord[]> {
-    return this.db.select().from(borrowRecords).where(eq(borrowRecords.userId, userId));
+    const rows = await this.db
+      .select({
+        id: borrowRecords.id,
+        bookId: borrowRecords.bookId,
+        userId: borrowRecords.userId,
+        borrowedAt: borrowRecords.borrowedAt,
+        dueDate: borrowRecords.dueDate,
+        returnedAt: borrowRecords.returnedAt,
+        bookTitle: books.title,
+        bookAuthor: books.author,
+      })
+      .from(borrowRecords)
+      .innerJoin(books, eq(borrowRecords.bookId, books.id))
+      .where(eq(borrowRecords.userId, userId));
+
+    return rows;
   }
 
   async save(record: BorrowRecord): Promise<BorrowRecord> {
