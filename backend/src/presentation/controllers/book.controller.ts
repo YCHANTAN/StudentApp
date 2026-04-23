@@ -11,7 +11,7 @@ export class BookController {
     private readonly getBorrowHistoryUseCase: GetBorrowHistoryUseCase,
   ) {}
 
-  getBorrowHistory = async (req: Request, res: Response, next: NextFunction) => {
+  getBorrowHistory = async (req: Request<{ userId: string }>, res: Response, next: NextFunction) => {
     try {
       const { userId } = req.params;
       const history = await this.getBorrowHistoryUseCase.execute(userId);
