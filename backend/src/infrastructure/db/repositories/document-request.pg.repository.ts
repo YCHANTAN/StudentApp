@@ -1,28 +1,64 @@
-import { eq } from 'drizzle-orm';
+import { eq, count } from 'drizzle-orm';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { DocumentRequestRepository } from '@/application/repositories/document-request.repository';
-import type { DocumentRequest } from '@/core/entities/document-request.entity';
-import { documentRequests } from '../schema/document-request.schema.js';
+import type { DocumentRequest, DocumentType, DeliveryMethod, DocumentRequestStatus } from '@/core/entities/document-request.entity';
+import { documentRequests } from '../schema/document-request.schema';
 
 export class DocumentRequestPgRepository implements DocumentRequestRepository {
-  constructor(private readonly db: NodePgDatabase<Record<string, never>>) {}
+  constructor(private readonly db: NodePgDatabase) {}
 
-  async save(request: DocumentRequest): Promise<DocumentRequest> {
-    // Insert the record into the database and return the newly created row
-    const [row] = await this.db.insert(documentRequests).values(request).returning();
-    if (!row) throw new Error('Failed to persist document request');
-    
-    // Cast it back to the pure entity to satisfy TypeScript
-    return row as DocumentRequest;
+  async findAll(
+    pagination: { page: number; limit: number },
+    filter?: { studentId?: string }
+  ): Promise<{ data: DocumentRequest[]; total: number }> {
+    const { page, limit } = pagination;
+    const offset = (page - 1) * limit;
+
+    const whereClause = filter?.studentId ? eq(documentRequests.studentId, filter.studentId) : undefined;
+
+    const data = await this.db
+      .select()
+      .from(documentRequests)
+      .where(whereClause)
+      .limit(limit)
+      .offset(offset);
+
+    const [totalResult] = await this.db
+      .select({ value: count() })
+      .from(documentRequests)
+      .where(whereClause);
+
+    return {
+      data: data.map(this.mapToEntity),
+      total: Number(totalResult.value),
+    };
   }
 
   async findById(id: string): Promise<DocumentRequest | null> {
     const [row] = await this.db.select().from(documentRequests).where(eq(documentRequests.id, id));
-    return (row as DocumentRequest) ?? null;
+    return row ? this.mapToEntity(row) : null;
   }
 
-  async findByStudentId(studentId: string): Promise<DocumentRequest[]> {
-    const rows = await this.db.select().from(documentRequests).where(eq(documentRequests.studentId, studentId));
-    return rows as DocumentRequest[];
+  async save(request: DocumentRequest): Promise<DocumentRequest> {
+    const [row] = await this.db.insert(documentRequests).values(request).returning();
+    if (!row) throw new Error('Failed to save document request');
+    return this.mapToEntity(row);
+  }
+
+  private mapToEntity(row: any): DocumentRequest {
+    return {
+      id: row.id,
+      studentId: row.studentId,
+      type: row.type as DocumentType,
+      purpose: row.purpose,
+      program: row.program || undefined,
+      yearLevel: row.yearLevel || undefined,
+      copies: row.copies || undefined,
+      deliveryMethod: row.deliveryMethod as DeliveryMethod || undefined,
+      reference: row.reference,
+      status: row.status as DocumentRequestStatus,
+      submittedAt: row.submittedAt,
+      updatedAt: row.updatedAt,
+    };
   }
 }
