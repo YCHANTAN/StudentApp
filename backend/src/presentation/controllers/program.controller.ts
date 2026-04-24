@@ -1,45 +1,46 @@
-import type { Request, Response } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import { GetProgramsQueryDto } from '@/application/dtos/program.dto';
-import type { GetProgramsUseCase, ViewProgramDetailsUseCase, GetProspectusLinkUseCase } from '@/application/use-cases/program/program.use-cases';
+import { PaginationDto } from '@/application/dtos/pagination.dto';
+import type { GetProgramsUseCase } from '@/application/use-cases/program/get-programs.use-case';
+import type { GetProgramUseCase } from '@/application/use-cases/program/get-program.use-case';
+import { ok } from '@/presentation/lib/response.helper';
 
 export class ProgramController {
   constructor(
     private readonly getProgramsUseCase: GetProgramsUseCase,
-    private readonly viewProgramUseCase: ViewProgramDetailsUseCase,
-    private readonly getProspectusUseCase: GetProspectusLinkUseCase
+    private readonly getProgramUseCase: GetProgramUseCase
   ) {}
 
-  // GET /api/v1/programs?category=Undergraduate
-  getPrograms = async (req: Request, res: Response) => {
+  getPrograms = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { category } = GetProgramsQueryDto.parse(req.query);
-      const programs = await this.getProgramsUseCase.execute(category);
-      res.status(200).json({ success: true, data: programs });
-    } catch (error) {
-      res.status(400).json({ success: false, error: 'Invalid category filter' });
+      const pagination = PaginationDto.parse({
+        page: req.query.page,
+        limit: req.query.limit,
+      });
+      const filter = GetProgramsQueryDto.parse(req.query);
+
+      const { data, total } = await this.getProgramsUseCase.execute({
+        ...pagination,
+        category: filter.category,
+      });
+
+      ok(res, data, {
+        total,
+        page: pagination.page,
+        limit: pagination.limit,
+        totalPages: Math.ceil(total / pagination.limit),
+      });
+    } catch (err) {
+      next(err);
     }
   };
 
-  // GET /api/v1/programs/:id
-  viewProgram = async (req: Request<{ id: string }>, res: Response) => {
+  getProgram = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const program = await this.viewProgramUseCase.execute(req.params.id);
-      res.status(200).json({ success: true, data: program });
-    } catch (error: any) {
-      res.status(404).json({ success: false, error: error.message });
-    }
-  };
-
-  // GET /api/v1/programs/:id/prospectus
-  downloadProspectus = async (req: Request<{ id: string }>, res: Response) => {
-    try {
-      const linkData = await this.getProspectusUseCase.execute(req.params.id);
-      res.status(200).json({ success: true, data: linkData });
-      
-      // Note: If you were serving actual files locally instead of URLs, 
-      // you would use res.download(filepath) here instead of res.json()
-    } catch (error: any) {
-      res.status(404).json({ success: false, error: error.message });
+      const program = await this.getProgramUseCase.execute(req.params.id);
+      ok(res, program);
+    } catch (err) {
+      next(err);
     }
   };
 }
