@@ -22,6 +22,27 @@
       "when": 1776865288997,
       "tag": "0002_regular_sinister_six",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1776959967483,
+      "tag": "0003_motionless_dorian_gray",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1777025275758,
+      "tag": "0004_fancy_chamber",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1777025286475,
+      "tag": "0005_burly_frightful_four",
+      "breakpoints": true
     }
   ]
 }

@@ -1,13 +1,39 @@
 import { z } from 'zod';
 
+export const DocumentTypeDto = z.enum(['TOR', 'GoodMoral', 'COE']);
+export const DeliveryMethodDto = z.enum(['Pickup', 'Courier']);
+export const DocumentRequestStatusDto = z.enum(['PROCESSING', 'ACCEPTED', 'READY_FOR_PICKUP']);
+
 export const CreateDocumentRequestDto = z.object({
-  studentId: z.string().uuid("Valid Student ID is required"),
-  documentType: z.enum(['TOR', 'GOOD_MORAL', 'COE'], {
-    errorMap: () => ({ message: "Invalid document type requested" })
-  }),
-  purpose: z.string().min(5, "Please provide a valid purpose (e.g., Transfer, Board Exam)"),
-  copies: z.coerce.number().int().min(1).max(10, "You can only request up to 10 copies at a time"),
-  notes: z.string().optional(),
+  studentId: z.string(),
+  type: DocumentTypeDto,
+  purpose: z.string(),
+  program: z.string().optional(),
+  yearLevel: z.string().optional(),
+  copies: z.number().int().min(1).optional(),
+  deliveryMethod: DeliveryMethodDto.optional(),
+});
+
+export const UpdateDocumentRequestDto = CreateDocumentRequestDto.partial();
+
+export const DocumentRequestResponseDto = z.object({
+  id: z.string().uuid(),
+  studentId: z.string(),
+  type: DocumentTypeDto,
+  purpose: z.string(),
+  program: z.string().optional(),
+  yearLevel: z.string().optional(),
+  copies: z.number().int().optional(),
+  deliveryMethod: DeliveryMethodDto.optional(),
+  reference: z.string(),
+  status: DocumentRequestStatusDto,
+  submittedAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
 });
 
 export type CreateDocumentRequestInput = z.infer<typeof CreateDocumentRequestDto>;
+export type UpdateDocumentRequestInput = z.infer<typeof UpdateDocumentRequestDto>;
+
+export const GetDocumentRequestsQueryDto = z.object({
+  studentId: z.string().optional(),
+});

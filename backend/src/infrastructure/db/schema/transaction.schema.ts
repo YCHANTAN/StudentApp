@@ -1,21 +1,14 @@
-import { pgTable, text, integer, timestamp, pgEnum } from 'drizzle-orm/pg-core';
-import { students } from './student.schema.js';
-
-// Strict Enums for the database
-export const transactionTypeEnum = pgEnum('transaction_type', ['CHARGE', 'PAYMENT']);
-export const paymentMethodEnum = pgEnum('payment_method', ['CASH', 'GCASH', 'CREDIT_CARD', 'BANK_TRANSFER', 'NONE']);
-export const transactionStatusEnum = pgEnum('transaction_status', ['PENDING', 'COMPLETED', 'FAILED']);
+import { pgTable, text, varchar, timestamp, boolean, uuid } from 'drizzle-orm/pg-core';
+import { studentProfiles } from './student-profile.schema';
 
 export const transactions = pgTable('transactions', {
-  id: text('id').primaryKey(),
-  studentId: text('student_id').references(() => students.id).notNull(),
-  type: transactionTypeEnum('transaction_type').notNull(),
-  amount: integer('amount').notNull(), 
-  method: paymentMethodEnum('payment_method').default('NONE').notNull(),
-  status: transactionStatusEnum('transaction_status').default('PENDING').notNull(),
-  referenceId: text('reference_id').notNull(),
-  description: text('description').notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  id: uuid('id').primaryKey().defaultRandom(),
+  studentId: text('student_id').references(() => studentProfiles.id).notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  date: timestamp('date').notNull(),
+  amount: varchar('amount', { length: 50 }).notNull(),
+  isPaid: boolean('is_paid').default(false).notNull(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 export type TransactionRow = typeof transactions.$inferSelect;

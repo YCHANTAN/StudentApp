@@ -1,5 +1,5 @@
 import * as bcrypt from "bcryptjs";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 import type { LoginInput, LoginResponse } from "@/application/dtos/auth.dto";
 import type { StudentRepository } from "@/application/repositories/student.repository";

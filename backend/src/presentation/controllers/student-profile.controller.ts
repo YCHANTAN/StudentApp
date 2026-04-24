@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
-
 import type { GetStudentProfileUseCase } from "@/application/use-cases/student-profile/get-student-profile.use-case";
 import type { UpdateStudentProfileUseCase } from "@/application/use-cases/student-profile/update-student-profile.use-case";
+import { ok } from "@/presentation/lib/response.helper";
 
 export class StudentProfileController {
   constructor(
@@ -9,18 +9,10 @@ export class StudentProfileController {
     private readonly updateStudentProfileUseCase: UpdateStudentProfileUseCase,
   ) {}
 
-  private getIdOrFail(req: Request): string {
-    const { id } = req.params;
-    if (!id || Array.isArray(id)) {
-      throw new Error("Invalid student profile id parameter");
-    }
-    return id;
-  }
-
   getStudentProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const profile = await this.getStudentProfileUseCase.execute(this.getIdOrFail(req));
-      res.status(200).json({ success: true, data: profile });
+      const profile = await this.getStudentProfileUseCase.execute(req.params.id);
+      ok(res, profile);
     } catch (err) {
       next(err);
     }
@@ -28,8 +20,8 @@ export class StudentProfileController {
 
   updateStudentProfile = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const profile = await this.updateStudentProfileUseCase.execute(this.getIdOrFail(req), req.body);
-      res.status(200).json({ success: true, data: profile });
+      const profile = await this.updateStudentProfileUseCase.execute(req.params.id, req.body);
+      ok(res, profile);
     } catch (err) {
       next(err);
     }

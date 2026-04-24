@@ -1,14 +1,18 @@
-export type DocumentType = 'TOR' | 'GOOD_MORAL' | 'COE';
-export type RequestStatus = 'PENDING' | 'PROCESSING' | 'READY' | 'COMPLETED' | 'REJECTED';
+export type DocumentType = 'TOR' | 'GoodMoral' | 'COE';
+export type DeliveryMethod = 'Pickup' | 'Courier';
+export type DocumentRequestStatus = 'PROCESSING' | 'ACCEPTED' | 'READY_FOR_PICKUP';
 
 export type DocumentRequest = {
   id: string;
   studentId: string;
-  documentType: DocumentType;
+  type: DocumentType;
   purpose: string;
-  copies: number;
-  status: RequestStatus;
-  notes: string | null;
-  requestedAt: Date;
+  program?: string;
+  yearLevel?: string;
+  copies?: number;
+  deliveryMethod?: DeliveryMethod;
+  reference: string;
+  status: DocumentRequestStatus;
+  submittedAt: Date;
   updatedAt: Date;
 };

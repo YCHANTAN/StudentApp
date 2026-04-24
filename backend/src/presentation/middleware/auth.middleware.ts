@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import * as jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
 import { UnauthorizedError } from "@/core/errors/domain.error";
 import type { AuthUser } from "@/core/types/auth-user.type";
