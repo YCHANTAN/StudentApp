@@ -2,11 +2,11 @@ import { eq, and, isNull } from 'drizzle-orm';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { BorrowRecordRepository } from '@/application/repositories/borrow-record.repository';
 import type { BorrowRecord } from '@/core/entities/borrow-record.entity';
-import { borrowRecords } from '../schema/borrow-record.schema.js';
-import { books } from '../schema/book.schema.js';
+import { borrowRecords } from '../schema/borrow-record.schema';
+import { libraryBooks } from '../schema/library-book.schema';
 
 export class BorrowRecordPgRepository implements BorrowRecordRepository {
-  constructor(private readonly db: NodePgDatabase<Record<string, never>>) {}
+  constructor(private readonly db: NodePgDatabase) {}
 
   async findById(id: string): Promise<BorrowRecord | null> {
     const [row] = await this.db.select().from(borrowRecords).where(eq(borrowRecords.id, id));
@@ -20,34 +20,19 @@ export class BorrowRecordPgRepository implements BorrowRecordRepository {
         and(
           eq(borrowRecords.bookId, bookId),
           eq(borrowRecords.userId, userId),
-          isNull(borrowRecords.returnedAt) // This is the crucial check!
+          isNull(borrowRecords.returnedAt)
         )
       );
     return row ?? null;
   }
 
-  async findHistoryByUserId(userId: string): Promise<BorrowRecord[]> {
-    const rows = await this.db
-      .select({
-        id: borrowRecords.id,
-        bookId: borrowRecords.bookId,
-        userId: borrowRecords.userId,
-        borrowedAt: borrowRecords.borrowedAt,
-        dueDate: borrowRecords.dueDate,
-        returnedAt: borrowRecords.returnedAt,
-        bookTitle: books.title,
-        bookAuthor: books.author,
-      })
-      .from(borrowRecords)
-      .innerJoin(books, eq(borrowRecords.bookId, books.id))
-      .where(eq(borrowRecords.userId, userId));
-
-    return rows;
+  async findAllByUserId(userId: string): Promise<BorrowRecord[]> {
+    return this.db.select().from(borrowRecords).where(eq(borrowRecords.userId, userId));
   }
 
   async save(record: BorrowRecord): Promise<BorrowRecord> {
     const [row] = await this.db.insert(borrowRecords).values(record).returning();
-    if (!row) throw new Error('Failed to persist borrow record');
+    if (!row) throw new Error('Failed to save borrow record');
     return row;
   }
 
