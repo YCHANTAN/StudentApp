@@ -19,4 +19,13 @@ export class AuthController {
       next(err);
     }
   };
+
+  me = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // @ts-ignore - studentId added by authMiddleware
+      res.status(200).json({ success: true, data: { studentId: req.user?.studentId } });
+    } catch (err) {
+      next(err);
+    }
+  };
 }

@@ -12,254 +12,245 @@ export const openApiSpec = {
     },
   ],
   tags: [
-    {
-      name: "Auth",
-      description: "Authentication endpoints",
-    },
-    {
-      name: "Students",
-      description: "Student management endpoints",
-    },
+    { name: "Auth", description: "Authentication" },
+    { name: "Students", description: "Student Profiles" },
+    { name: "Programs", description: "Academic Programs" },
+    { name: "Courses", description: "Course Catalog" },
+    { name: "Library", description: "Library Books" },
+    { name: "Finance", description: "Financial Transactions" },
+    { name: "Grades", description: "Grade Records" },
+    { name: "Schedule", description: "Class Schedules" },
+    { name: "Complaints", description: "Student Complaints" },
+    { name: "Documents", description: "Document Requests" },
+    { name: "Enrollments", description: "Course Enrollments" },
   ],
   paths: {
     "/api/v1/auth/login": {
       post: {
         tags: ["Auth"],
-        summary: "Authenticate student credentials",
+        summary: "Login",
         requestBody: {
           required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/LoginRequest" },
-            },
-          },
+          content: { "application/json": { schema: { $ref: "#/components/schemas/LoginRequest" } } },
         },
         responses: {
-          "200": {
-            description: "Authentication successful",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/LoginResponse" },
-              },
-            },
-          },
-          "400": {
-            description: "Validation error",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" },
-              },
-            },
-          },
-          "401": {
-            description: "Invalid credentials",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" },
-              },
-            },
-          },
+          "200": { description: "Success", content: { "application/json": { schema: { $ref: "#/components/schemas/LoginResponse" } } } }
+        },
+      },
+    },
+    "/api/v1/auth/me": {
+      get: {
+        tags: ["Auth"],
+        summary: "Get current user info",
+        security: [{ BearerAuth: [] }],
+        responses: {
+          "200": { description: "Success" }
         },
       },
     },
     "/api/v1/students/{id}": {
       get: {
         tags: ["Students"],
-        summary: "Get a student profile by id",
-        parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
-        ],
-        responses: {
-          "200": {
-            description: "Student profile found",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/StudentProfileResponse" },
-              },
-            },
-          },
-          "404": {
-            description: "Student not found",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" },
-              },
-            },
-          },
-        },
+        summary: "Get profile",
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+        responses: { "200": { description: "Success" } },
       },
       put: {
         tags: ["Students"],
-        summary: "Update a student profile",
+        summary: "Update profile",
         security: [{ BearerAuth: [] }],
+        parameters: [{ name: "id", in: "path", required: true, schema: { type: "string" } }],
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/UpdateStudentProfileRequest" } } } },
+        responses: { "200": { description: "Success" } },
+      },
+    },
+    "/api/v1/programs": {
+      get: {
+        tags: ["Programs"],
+        summary: "List programs",
         parameters: [
-          {
-            name: "id",
-            in: "path",
-            required: true,
-            schema: { type: "string" },
-          },
+          { name: "page", in: "query", schema: { type: "integer" } },
+          { name: "limit", in: "query", schema: { type: "integer" } },
+          { name: "category", in: "query", schema: { type: "string", enum: ["Undergraduate", "Postgraduate"] } },
         ],
-        requestBody: {
-          required: true,
-          content: {
-            "application/json": {
-              schema: { $ref: "#/components/schemas/UpdateStudentProfileRequest" },
-            },
-          },
-        },
-        responses: {
-          "200": {
-            description: "Student profile updated",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/StudentProfileResponse" },
-              },
-            },
-          },
-          "400": {
-            description: "Validation error",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" },
-              },
-            },
-          },
-          "404": {
-            description: "Student not found",
-            content: {
-              "application/json": {
-                schema: { $ref: "#/components/schemas/ErrorResponse" },
-              },
-            },
-          },
-        },
+        responses: { "200": { description: "Success" } },
+      },
+    },
+    "/api/v1/courses": {
+      get: {
+        tags: ["Courses"],
+        summary: "List courses",
+        parameters: [
+          { name: "page", in: "query", schema: { type: "integer" } },
+          { name: "limit", in: "query", schema: { type: "integer" } },
+          { name: "programId", in: "query", schema: { type: "string" } },
+        ],
+        responses: { "200": { description: "Success" } },
+      },
+    },
+    "/api/v1/library-books": {
+      get: {
+        tags: ["Library"],
+        summary: "List books",
+        parameters: [
+          { name: "page", in: "query", schema: { type: "integer" } },
+          { name: "limit", in: "query", schema: { type: "integer" } },
+          { name: "tab", in: "query", schema: { type: "string", enum: ["Available", "Return", "History"] } },
+        ],
+        responses: { "200": { description: "Success" } },
+      },
+    },
+    "/api/v1/transactions": {
+      get: {
+        tags: ["Finance"],
+        summary: "List transactions",
+        parameters: [
+          { name: "page", in: "query", schema: { type: "integer" } },
+          { name: "limit", in: "query", schema: { type: "integer" } },
+          { name: "studentId", in: "query", schema: { type: "string" } },
+        ],
+        responses: { "200": { description: "Success" } },
+      },
+    },
+    "/api/v1/grades": {
+      get: {
+        tags: ["Grades"],
+        summary: "List grade records",
+        parameters: [
+          { name: "page", in: "query", schema: { type: "integer" } },
+          { name: "limit", in: "query", schema: { type: "integer" } },
+          { name: "studentId", in: "query", schema: { type: "string" } },
+        ],
+        responses: { "200": { description: "Success" } },
+      },
+    },
+    "/api/v1/schedule": {
+      get: {
+        tags: ["Schedule"],
+        summary: "List schedule entries",
+        parameters: [
+          { name: "page", in: "query", schema: { type: "integer" } },
+          { name: "limit", in: "query", schema: { type: "integer" } },
+          { name: "studentId", in: "query", schema: { type: "string" } },
+        ],
+        responses: { "200": { description: "Success" } },
+      },
+    },
+    "/api/v1/complaints": {
+      get: {
+        tags: ["Complaints"],
+        summary: "List complaints",
+        parameters: [
+          { name: "page", in: "query", schema: { type: "integer" } },
+          { name: "limit", in: "query", schema: { type: "integer" } },
+          { name: "studentId", in: "query", schema: { type: "string" } },
+        ],
+        responses: { "200": { description: "Success" } },
+      },
+      post: {
+        tags: ["Complaints"],
+        summary: "Create complaint",
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/CreateComplaintRequest" } } } },
+        responses: { "201": { description: "Created" } },
+      },
+    },
+    "/api/v1/document-requests": {
+      get: {
+        tags: ["Documents"],
+        summary: "List document requests",
+        parameters: [
+          { name: "page", in: "query", schema: { type: "integer" } },
+          { name: "limit", in: "query", schema: { type: "integer" } },
+          { name: "studentId", in: "query", schema: { type: "string" } },
+        ],
+        responses: { "200": { description: "Success" } },
+      },
+      post: {
+        tags: ["Documents"],
+        summary: "Create document request",
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/CreateDocumentRequest" } } } },
+        responses: { "201": { description: "Created" } },
+      },
+    },
+    "/api/v1/enrollments": {
+      get: {
+        tags: ["Enrollments"],
+        summary: "List enrollments",
+        parameters: [
+          { name: "page", in: "query", schema: { type: "integer" } },
+          { name: "limit", in: "query", schema: { type: "integer" } },
+          { name: "studentId", in: "query", schema: { type: "string" } },
+        ],
+        responses: { "200": { description: "Success" } },
+      },
+      post: {
+        tags: ["Enrollments"],
+        summary: "Create enrollment",
+        requestBody: { required: true, content: { "application/json": { schema: { $ref: "#/components/schemas/CreateEnrollmentRequest" } } } },
+        responses: { "201": { description: "Created" } },
       },
     },
   },
   components: {
     securitySchemes: {
-      BearerAuth: {
-        type: "http",
-        scheme: "bearer",
-        bearerFormat: "JWT",
-      },
+      BearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" },
     },
     schemas: {
-      StudentProfile: {
+      LoginRequest: {
         type: "object",
         properties: {
-          id: { type: "string" },
-          fullName: { type: "string" },
-          emailAddress: { type: "string", format: "email" },
-          phoneNumber: { type: "string" },
-          accountLabel: { type: "string" },
-          programSummary: { type: "string" },
-          twoFactorStatus: {
-            type: "string",
-            enum: ["Disabled", "PendingVerification", "Enabled"],
-          },
-          emergencyContactName: { type: "string" },
-          emergencyContactRelationship: { type: "string" },
-          emergencyContactPhoneNumber: { type: "string" },
-          emailNotifications: { type: "boolean" },
-          smsNotifications: { type: "boolean" },
-          systemAlerts: { type: "boolean" },
-          createdAt: { type: "string", format: "date-time" },
-          updatedAt: { type: "string", format: "date-time" },
+          studentId: { type: "string" },
+          password: { type: "string" },
+          keepLoggedIn: { type: "boolean" },
         },
-        required: [
-          "id",
-          "fullName",
-          "emailAddress",
-          "phoneNumber",
-          "accountLabel",
-          "programSummary",
-          "twoFactorStatus",
-          "emergencyContactName",
-          "emergencyContactRelationship",
-          "emergencyContactPhoneNumber",
-          "emailNotifications",
-          "smsNotifications",
-          "systemAlerts",
-          "createdAt",
-          "updatedAt",
-        ],
-      },
-      StudentProfileResponse: {
-        type: "object",
-        properties: {
-          success: { type: "boolean" },
-          data: { $ref: "#/components/schemas/StudentProfile" },
-        },
-        required: ["success", "data"],
-      },
-      LoginData: {
-        type: "object",
-        properties: {
-          accessToken: { type: "string" },
-          tokenType: { type: "string", enum: ["Bearer"] },
-          expiresIn: { type: "string" },
-          refreshToken: { type: "string" },
-        },
-        required: ["accessToken", "tokenType", "expiresIn"],
+        required: ["studentId", "password"],
       },
       LoginResponse: {
         type: "object",
         properties: {
           success: { type: "boolean" },
-          data: { $ref: "#/components/schemas/LoginData" },
+          data: {
+            type: "object",
+            properties: {
+              accessToken: { type: "string" },
+              tokenType: { type: "string" },
+              expiresIn: { type: "string" },
+            },
+          },
         },
-        required: ["success", "data"],
-      },
-      LoginRequest: {
-        type: "object",
-        properties: {
-          studentId: { type: "string", minLength: 1 },
-          password: { type: "string", minLength: 1 },
-          keepLoggedIn: { type: "boolean", default: false },
-        },
-        required: ["studentId", "password", "keepLoggedIn"],
       },
       UpdateStudentProfileRequest: {
         type: "object",
         properties: {
-          fullName: { type: "string", minLength: 1 },
-          emailAddress: { type: "string", format: "email" },
-          phoneNumber: { type: "string", minLength: 1 },
-          accountLabel: { type: "string", minLength: 1 },
-          programSummary: { type: "string", minLength: 1 },
-          twoFactorStatus: {
-            type: "string",
-            enum: ["Disabled", "PendingVerification", "Enabled"],
-          },
-          emergencyContactName: { type: "string", minLength: 1 },
-          emergencyContactRelationship: { type: "string", minLength: 1 },
-          emergencyContactPhoneNumber: { type: "string", minLength: 1 },
-          emailNotifications: { type: "boolean" },
-          smsNotifications: { type: "boolean" },
-          systemAlerts: { type: "boolean" },
+          fullName: { type: "string" },
+          emailAddress: { type: "string" },
+          phoneNumber: { type: "string" },
         },
       },
-      ErrorResponse: {
+      CreateComplaintRequest: {
         type: "object",
         properties: {
-          success: { type: "boolean" },
-          error: {
-            type: "object",
-            properties: {
-              code: { type: "string" },
-              message: { type: "string" },
-            },
-            required: ["code", "message"],
-          },
+          studentId: { type: "string" },
+          title: { type: "string" },
         },
-        required: ["success", "error"],
+        required: ["studentId", "title"],
+      },
+      CreateDocumentRequest: {
+        type: "object",
+        properties: {
+          studentId: { type: "string" },
+          type: { type: "string", enum: ["TOR", "GoodMoral", "COE"] },
+          purpose: { type: "string" },
+        },
+        required: ["studentId", "type", "purpose"],
+      },
+      CreateEnrollmentRequest: {
+        type: "object",
+        properties: {
+          studentId: { type: "string" },
+          courseIds: { type: "array", items: { type: "string" } },
+        },
+        required: ["studentId", "courseIds"],
       },
     },
   },
