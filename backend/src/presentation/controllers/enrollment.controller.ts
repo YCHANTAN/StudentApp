@@ -1,39 +1,66 @@
-// src/presentation/controllers/enrollment.controller.ts
 import type { Request, Response, NextFunction } from 'express';
+import { GetEnrollmentsQueryDto, CreateEnrollmentDto, UpdateEnrollmentDto } from '@/application/dtos/enrollment.dto';
+import { PaginationDto } from '@/application/dtos/pagination.dto';
+import type { GetEnrollmentsUseCase } from '@/application/use-cases/enrollment/get-enrollments.use-case';
 import type { CreateEnrollmentUseCase } from '@/application/use-cases/enrollment/create-enrollment.use-case';
-import { created, ok } from '@/presentation/lib/response.helper';
+import type { UpdateEnrollmentUseCase } from '@/application/use-cases/enrollment/update-enrollment.use-case';
+import type { DeleteEnrollmentUseCase } from '@/application/use-cases/enrollment/delete-enrollment.use-case';
+import { ok, created } from '@/presentation/lib/response.helper';
 
 export class EnrollmentController {
   constructor(
-    private readonly createEnrollmentUseCase: CreateEnrollmentUseCase
+    private readonly getEnrollmentsUseCase: GetEnrollmentsUseCase,
+    private readonly createEnrollmentUseCase: CreateEnrollmentUseCase,
+    private readonly updateEnrollmentUseCase: UpdateEnrollmentUseCase,
+    private readonly deleteEnrollmentUseCase: DeleteEnrollmentUseCase
   ) {}
+
+  getEnrollments = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const pagination = PaginationDto.parse({
+        page: req.query.page,
+        limit: req.query.limit,
+      });
+      const filter = GetEnrollmentsQueryDto.parse(req.query);
+
+      const { data, total } = await this.getEnrollmentsUseCase.execute({
+        ...pagination,
+        studentId: filter.studentId,
+      });
+
+      ok(res, data, {
+        total,
+        page: pagination.page,
+        limit: pagination.limit,
+        totalPages: Math.ceil(total / pagination.limit),
+      });
+    } catch (err) {
+      next(err);
+    }
+  };
 
   create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const enrollment = await this.createEnrollmentUseCase.execute(req.body);
-      
-      // Breakdown calculation for UI feedback as requested in requirement 3
-      // Although computed in Use Case, we can provide extra detail in the response if needed
-      // Rules from ENROLLMENT_RULES.md
-      const costPerUnit = 1500;
-      const registrationFee = 1000;
-      const libraryFee = 500;
-      const technologyFee = 800;
-      const tuitionOnly = enrollment.selectedCredits * costPerUnit;
+      created(res, enrollment);
+    } catch (err) {
+      next(err);
+    }
+  };
 
-      const breakdown = {
-        tuitionFee: tuitionOnly,
-        registrationFee,
-        libraryFee,
-        technologyFee,
-        totalAmount: enrollment.estimatedTuition
-      };
+  update = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const enrollment = await this.updateEnrollmentUseCase.execute(req.params.id, req.body);
+      ok(res, enrollment);
+    } catch (err) {
+      next(err);
+    }
+  };
 
-      created(res, { 
-        enrollment,
-        breakdown,
-        message: "Enrollment Successful" // Requirement 5
-      });
+  delete = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      await this.deleteEnrollmentUseCase.execute(req.params.id);
+      ok(res, null);
     } catch (err) {
       next(err);
     }
