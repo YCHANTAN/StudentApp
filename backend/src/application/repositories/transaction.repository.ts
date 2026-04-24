@@ -1,8 +1,7 @@
-import type { Transaction, TransactionStatus } from '@/core/entities/transaction.entity';
+import type { Transaction } from '@/core/entities/transaction.entity';
 
 export interface TransactionRepository {
-  save(transaction: Transaction): Promise<Transaction>;
+  findAll(pagination: { page: number; limit: number }, filter?: { studentId?: string }): Promise<{ data: Transaction[]; total: number }>;
   findById(id: string): Promise<Transaction | null>;
-  findByStudentId(studentId: string): Promise<Transaction[]>;
-  updateStatus(id: string, status: TransactionStatus): Promise<Transaction | null>;
+  save(transaction: Transaction): Promise<Transaction>;
 }
