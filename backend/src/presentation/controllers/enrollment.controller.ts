@@ -25,7 +25,7 @@ export class EnrollmentController {
 
       const { data, total } = await this.getEnrollmentsUseCase.execute({
         ...pagination,
-        studentId: filter.studentId,
+        ...(filter.studentId !== undefined && { studentId: filter.studentId }),
       });
 
       ok(res, data, {
@@ -50,7 +50,8 @@ export class EnrollmentController {
 
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const enrollment = await this.updateEnrollmentUseCase.execute(req.params.id, req.body);
+      const id = req.params.id as string;
+      const enrollment = await this.updateEnrollmentUseCase.execute(id, req.body);
       ok(res, enrollment);
     } catch (err) {
       next(err);
@@ -59,7 +60,8 @@ export class EnrollmentController {
 
   delete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      await this.deleteEnrollmentUseCase.execute(req.params.id);
+      const id = req.params.id as string;
+      await this.deleteEnrollmentUseCase.execute(id);
       ok(res, null);
     } catch (err) {
       next(err);

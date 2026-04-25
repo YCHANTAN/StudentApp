@@ -24,7 +24,10 @@ export class GetTransactionsUseCase {
       }
     }
 
-    return this.transactionRepo.findAll({ page, limit }, { studentId: targetId });
+    const repoFilter: { studentId?: string } = {};
+    if (targetId !== undefined) repoFilter.studentId = targetId;
+
+    return this.transactionRepo.findAll({ page, limit }, repoFilter);
   }
 
   private isUuid(id: string): boolean {

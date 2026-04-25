@@ -17,7 +17,7 @@ export class GradeRecordController {
 
       const { data, total } = await this.getGradeRecordsUseCase.execute({
         ...pagination,
-        studentId: filter.studentId,
+        ...(filter.studentId !== undefined && { studentId: filter.studentId }),
       });
 
       ok(res, data, {

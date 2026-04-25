@@ -11,15 +11,16 @@ export class CreateDocumentRequestUseCase {
       studentId: input.studentId,
       type: input.type,
       purpose: input.purpose,
-      program: input.program,
-      yearLevel: input.yearLevel,
-      copies: input.copies,
-      deliveryMethod: input.deliveryMethod,
       reference: `REF-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
       status: 'PROCESSING',
       submittedAt: new Date(),
       updatedAt: new Date(),
     };
+
+    if (input.program !== undefined) request.program = input.program;
+    if (input.yearLevel !== undefined) request.yearLevel = input.yearLevel;
+    if (input.copies !== undefined) request.copies = input.copies;
+    if (input.deliveryMethod !== undefined) request.deliveryMethod = input.deliveryMethod;
 
     return this.documentRequestRepo.save(request);
   }

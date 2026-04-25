@@ -21,7 +21,7 @@ export class ProgramController {
 
       const { data, total } = await this.getProgramsUseCase.execute({
         ...pagination,
-        category: filter.category,
+        ...(filter.category !== undefined && { category: filter.category }),
       });
 
       ok(res, data, {
@@ -37,7 +37,8 @@ export class ProgramController {
 
   getProgram = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const program = await this.getProgramUseCase.execute(req.params.id);
+      const id = req.params.id as string;
+      const program = await this.getProgramUseCase.execute(id);
       ok(res, program);
     } catch (err) {
       next(err);

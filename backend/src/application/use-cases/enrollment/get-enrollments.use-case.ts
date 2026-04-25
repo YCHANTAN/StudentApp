@@ -24,7 +24,10 @@ export class GetEnrollmentsUseCase {
       }
     }
 
-    return this.enrollmentRepo.findAll({ page, limit }, { studentId: targetId });
+    const filter: { studentId?: string } = {};
+    if (targetId !== undefined) filter.studentId = targetId;
+
+    return this.enrollmentRepo.findAll({ page, limit }, filter);
   }
 
   private isUuid(id: string): boolean {

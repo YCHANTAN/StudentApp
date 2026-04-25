@@ -17,7 +17,7 @@ export class ScheduleEntryController {
 
       const { data, total } = await this.getScheduleEntriesUseCase.execute({
         ...pagination,
-        studentId: filter.studentId,
+        ...(filter.studentId !== undefined && { studentId: filter.studentId }),
       });
 
       ok(res, data, {

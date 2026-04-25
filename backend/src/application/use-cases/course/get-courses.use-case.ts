@@ -11,6 +11,9 @@ export class GetCoursesUseCase {
 
   async execute(input: GetCoursesInput) {
     const { page, limit, programId } = input;
-    return this.courseRepo.findAll({ page, limit }, { programId });
+    const filter: { programId?: string } = {};
+    if (programId !== undefined) filter.programId = programId;
+
+    return this.courseRepo.findAll({ page, limit }, filter);
   }
 }

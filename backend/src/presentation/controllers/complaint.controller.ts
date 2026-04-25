@@ -21,7 +21,7 @@ export class ComplaintController {
 
       const { data, total } = await this.getComplaintsUseCase.execute({
         ...pagination,
-        studentId: filter.studentId,
+        ...(filter.studentId !== undefined && { studentId: filter.studentId }),
       });
 
       ok(res, data, {

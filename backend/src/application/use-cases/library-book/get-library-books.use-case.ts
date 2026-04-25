@@ -12,6 +12,9 @@ export class GetLibraryBooksUseCase {
 
   async execute(input: GetLibraryBooksInput) {
     const { page, limit, tab } = input;
-    return this.libraryBookRepo.findAll({ page, limit }, { tab });
+    const filter: { tab?: LibraryBookTab } = {};
+    if (tab !== undefined) filter.tab = tab;
+
+    return this.libraryBookRepo.findAll({ page, limit }, filter);
   }
 }
