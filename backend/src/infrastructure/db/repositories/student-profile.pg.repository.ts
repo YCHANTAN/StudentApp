@@ -36,6 +36,11 @@ export class StudentProfilePgRepository implements StudentProfileRepository {
     return row ? this.toEntity(row) : null;
   }
 
+  async findAll(): Promise<StudentProfile[]> {
+    const rows = await this.db.select().from(studentProfiles);
+    return rows.map((row) => this.toEntity(row));
+  }
+
   async update(id: string, patch: Partial<StudentProfile>): Promise<StudentProfile> {
     const [row] = await this.db
       .update(studentProfiles)
