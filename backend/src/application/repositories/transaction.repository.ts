@@ -3,5 +3,6 @@ import type { Transaction } from '@/core/entities/transaction.entity';
 export interface TransactionRepository {
   findAll(pagination: { page: number; limit: number }, filter?: { studentId?: string }): Promise<{ data: Transaction[]; total: number }>;
   findById(id: string): Promise<Transaction | null>;
+  findByStudentId(studentId: string): Promise<Transaction[]>;
   save(transaction: Transaction): Promise<Transaction>;
 }

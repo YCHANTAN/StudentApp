@@ -11,10 +11,13 @@ export class GetStudentBalanceUseCase {
 
     // Loop through history to calculate the current balance
     for (const txn of transactions) {
-      if (txn.type === 'CHARGE') {
-        balance += txn.amount; // Charges increase what the student owes
+      const amount = parseFloat(txn.amount.replace(/[^0-9.-]+/g, ""));
+      if (isNaN(amount)) continue;
+
+      if (txn.type === 'FEE') {
+        balance += amount; // Charges increase what the student owes
       } else if (txn.type === 'PAYMENT' && txn.status === 'COMPLETED') {
-        balance -= txn.amount; // Completed payments reduce the debt
+        balance -= amount; // Completed payments reduce the debt
       }
 
       // Track the date of the most recent activity

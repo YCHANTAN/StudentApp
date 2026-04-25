@@ -29,9 +29,11 @@ export class TransactionPgRepository implements TransactionRepository {
       .from(transactions)
       .where(whereClause);
 
+    const total = totalResult?.value ? Number(totalResult.value) : 0;
+
     return {
       data: data.map(this.mapToEntity),
-      total: Number(totalResult.value),
+      total,
     };
   }
 
@@ -40,8 +42,30 @@ export class TransactionPgRepository implements TransactionRepository {
     return row ? this.mapToEntity(row) : null;
   }
 
+  async findByStudentId(studentId: string): Promise<Transaction[]> {
+    const rows = await this.db
+      .select()
+      .from(transactions)
+      .where(eq(transactions.studentId, studentId))
+      .orderBy(desc(transactions.date));
+    return rows.map(this.mapToEntity);
+  }
+
   async save(transaction: Transaction): Promise<Transaction> {
-    const [row] = await this.db.insert(transactions).values(transaction).returning();
+    const [row] = await this.db.insert(transactions).values({
+        id: transaction.id,
+        studentId: transaction.studentId,
+        title: transaction.title,
+        type: transaction.type,
+        amount: transaction.amount,
+        method: transaction.method,
+        status: transaction.status,
+        referenceId: transaction.referenceId,
+        description: transaction.description,
+        date: transaction.date,
+        isPaid: transaction.isPaid,
+        createdAt: transaction.createdAt,
+    }).returning();
     if (!row) throw new Error('Failed to save transaction');
     return this.mapToEntity(row);
   }
@@ -51,8 +75,13 @@ export class TransactionPgRepository implements TransactionRepository {
       id: row.id,
       studentId: row.studentId,
       title: row.title,
-      date: row.date,
+      type: row.type,
       amount: row.amount,
+      method: row.method,
+      status: row.status,
+      referenceId: row.referenceId,
+      description: row.description,
+      date: row.date,
       isPaid: row.isPaid,
       createdAt: row.createdAt,
     };
