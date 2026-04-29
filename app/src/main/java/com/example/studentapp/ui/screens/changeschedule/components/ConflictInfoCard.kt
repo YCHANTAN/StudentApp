@@ -7,31 +7,37 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.studentapp.ui.screens.changeschedule.ChangeScheduleColors
+import com.example.studentapp.ui.theme.Radius
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 fun ConflictInfoCard(
     text: String
 ) {
-
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                ChangeScheduleColors.InfoBackground,
-                RoundedCornerShape(12.dp)
+                MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f),
+                RoundedCornerShape(Radius.Medium)
             )
-            .padding(12.dp)
+            .padding(Spacing.Medium),
+        verticalAlignment = Alignment.CenterVertically
     ) {
+        Icon(
+            imageVector = Icons.Outlined.Info,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.error
+        )
 
-        Icon(Icons.Outlined.Info, null)
+        Spacer(Modifier.width(Spacing.Small))
 
-        Spacer(Modifier.width(8.dp))
-
-        Text(text)
-
+        Text(
+            text = text,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onErrorContainer
+        )
     }
-
 }
