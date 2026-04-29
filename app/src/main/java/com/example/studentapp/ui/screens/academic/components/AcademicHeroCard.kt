@@ -17,8 +17,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.theme.DarkGreen
+import com.example.studentapp.ui.theme.Radius
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 fun AcademicHeroCard(
@@ -30,8 +30,8 @@ fun AcademicHeroCard(
         modifier = modifier
             .fillMaxWidth()
             .height(160.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(DarkGreen)
+            .clip(RoundedCornerShape(Radius.Medium))
+            .background(MaterialTheme.colorScheme.primary)
     ) {
         Box(
             modifier = Modifier
@@ -39,8 +39,8 @@ fun AcademicHeroCard(
                 .background(
                     Brush.linearGradient(
                         colors = listOf(
-                            DarkGreen,
-                            DarkGreen.copy(alpha = 0.40f)
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.40f)
                         )
                     )
                 )
@@ -49,29 +49,26 @@ fun AcademicHeroCard(
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(20.dp)
+                .padding(Spacing.Large)
         ) {
             Text(
                 text = "Welcome back",
+                style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.secondary,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 1.8.sp
+                fontWeight = FontWeight.Bold
             )
             Text(
                 text = studentName,
-                modifier = Modifier.padding(top = 4.dp),
+                modifier = Modifier.padding(top = Spacing.ExtraSmall),
+                style = MaterialTheme.typography.headlineMedium,
                 color = Color.White,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold,
-                lineHeight = 28.sp
+                fontWeight = FontWeight.Bold
             )
             Text(
                 text = programSummary,
-                modifier = Modifier.padding(top = 4.dp),
-                color = Color.White.copy(alpha = 0.8f),
-                fontSize = 14.sp,
-                lineHeight = 20.sp
+                modifier = Modifier.padding(top = Spacing.ExtraSmall),
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.White.copy(alpha = 0.8f)
             )
         }
     }

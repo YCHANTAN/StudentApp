@@ -30,8 +30,9 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.studentapp.ui.screens.academic.models.AcademicDashboardMenuItem
+import com.example.studentapp.ui.theme.Radius
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 fun AcademicDashboardMenuCard(
@@ -52,7 +53,7 @@ fun AcademicDashboardMenuCard(
             }
             .shadow(
                 elevation = if (isPressed) 8.dp else 0.dp,
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(Radius.Large),
                 clip = false
             )
             .clickable(
@@ -60,7 +61,7 @@ fun AcademicDashboardMenuCard(
                 indication = null,
                 onClick = onClick
             ),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(Radius.Large),
         color = MaterialTheme.colorScheme.surfaceVariant,
         border = BorderStroke(
             width = 1.dp,
@@ -74,7 +75,7 @@ fun AcademicDashboardMenuCard(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(Spacing.Medium),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -101,9 +102,9 @@ fun AcademicDashboardMenuCard(
 
             Text(
                 text = item.label,
-                modifier = Modifier.padding(top = 16.dp),
+                modifier = Modifier.padding(top = Spacing.Medium),
                 color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center
             )
