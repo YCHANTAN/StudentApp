@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentSearchBar
 import com.example.studentapp.ui.screens.programs.models.ProgramsTab
 
 @Composable
@@ -29,38 +31,15 @@ fun ProgramsHeaderSection(
     onTabSelected: (ProgramsTab) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
-    ) {
-        Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                ProgramsIconButton(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = "Back",
-                    onClick = onBackClick
-                )
-
-                Text(
-                    text = "Programs & Prospectus",
-                    color = MaterialTheme.colorScheme.onBackground,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = (-0.2).sp
-                )
-            }
-
-            ProgramsSearchBar(
+    StudentHeader(
+        title = "Programs & Prospectus",
+        onBackClick = onBackClick,
+        modifier = modifier,
+        bottomContent = {
+            StudentSearchBar(
                 value = searchQuery,
-                onValueChange = onSearchQueryChange
+                onValueChange = onSearchQueryChange,
+                placeholder = "Search programs..."
             )
 
             ProgramsTabs(
@@ -68,8 +47,6 @@ fun ProgramsHeaderSection(
                 onTabSelected = onTabSelected,
                 modifier = Modifier.fillMaxWidth()
             )
-
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
-    }
+    )
 }

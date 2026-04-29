@@ -25,6 +25,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studentapp.ui.screens.programs.models.ProgramBadgeVariant
 import com.example.studentapp.ui.screens.programs.models.ProgramEntry
+import com.example.studentapp.ui.theme.SuccessGreen
+import com.example.studentapp.ui.theme.SuccessGreenSoft
+import com.example.studentapp.ui.theme.WarningYellow
+import com.example.studentapp.ui.theme.WarningYellowSoft
 
 @Composable
 fun ProgramCard(
@@ -117,41 +121,26 @@ fun ProgramStatusBadge(
     variant: ProgramBadgeVariant,
     modifier: Modifier = Modifier
 ) {
-    val backgroundColor = if (variant == ProgramBadgeVariant.Accent) {
-        MaterialTheme.colorScheme.secondaryContainer
-    } else {
-        MaterialTheme.colorScheme.primaryContainer
-    }
-    val borderColor = if (variant == ProgramBadgeVariant.Accent) {
-        MaterialTheme.colorScheme.secondary
-    } else {
-        MaterialTheme.colorScheme.primary
-    }
-    val textColor = if (variant == ProgramBadgeVariant.Accent) {
-        MaterialTheme.colorScheme.onSecondaryContainer
-    } else {
-        MaterialTheme.colorScheme.onPrimaryContainer
+    val (textColor, backgroundColor) = when (variant) {
+        ProgramBadgeVariant.Success -> SuccessGreen to SuccessGreenSoft
+        ProgramBadgeVariant.Info -> WarningYellow to WarningYellowSoft
+        ProgramBadgeVariant.Neutral -> {
+            MaterialTheme.colorScheme.onSurfaceVariant to MaterialTheme.colorScheme.surfaceVariant
+        }
     }
 
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(4.dp),
-        color = backgroundColor,
-        border = BorderStroke(1.dp, borderColor)
+        shape = RoundedCornerShape(8.dp),
+        color = backgroundColor
     ) {
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(4.dp))
-                .background(backgroundColor)
-                .padding(horizontal = 8.dp, vertical = 4.dp)
-        ) {
-            Text(
-                text = text.uppercase(),
-                color = textColor,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 1.sp
-            )
-        }
+        Text(
+            text = text.uppercase(),
+            color = textColor,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 0.5.sp,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+        )
     }
 }

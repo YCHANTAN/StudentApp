@@ -13,8 +13,9 @@ data class ProgramEntry(
 )
 
 enum class ProgramBadgeVariant {
-    Accent,
-    Primary
+    Success,
+    Info,
+    Neutral
 }
 
 enum class ProgramCategory {
@@ -33,7 +34,7 @@ fun buildProgramEntries(): List<ProgramEntry> {
         ProgramEntry(
             title = "BS Computer Science",
             badgeText = "Enrollment Open",
-            badgeVariant = ProgramBadgeVariant.Accent,
+            badgeVariant = ProgramBadgeVariant.Success,
             scheduleLine = "4 Years \u2022 Full Time",
             description = "Master software engineering, AI, and cybersecurity with our industry-leading curriculum and hands-on laboratory modules.",
             category = ProgramCategory.Undergraduate
@@ -41,7 +42,7 @@ fun buildProgramEntries(): List<ProgramEntry> {
         ProgramEntry(
             title = "BBA Business Admin",
             badgeText = "Next Intake: Sept 2024",
-            badgeVariant = ProgramBadgeVariant.Primary,
+            badgeVariant = ProgramBadgeVariant.Info,
             scheduleLine = "4 Years \u2022 Global Track",
             description = "Equip yourself with strategic leadership skills, financial acumen, and entrepreneurial mindset for the modern corporate world.",
             category = ProgramCategory.Undergraduate
@@ -49,7 +50,7 @@ fun buildProgramEntries(): List<ProgramEntry> {
         ProgramEntry(
             title = "MS Data Analytics",
             badgeText = "Enrollment Open",
-            badgeVariant = ProgramBadgeVariant.Accent,
+            badgeVariant = ProgramBadgeVariant.Success,
             scheduleLine = "2 Years \u2022 Postgraduate",
             description = "Advanced statistical modeling and machine learning applications for driving data-informed business decisions.",
             category = ProgramCategory.Postgraduate
@@ -57,7 +58,7 @@ fun buildProgramEntries(): List<ProgramEntry> {
         ProgramEntry(
             title = "BS Architecture",
             badgeText = "Limited Seats",
-            badgeVariant = ProgramBadgeVariant.Primary,
+            badgeVariant = ProgramBadgeVariant.Neutral,
             scheduleLine = "5 Years \u2022 Studio Based",
             description = "Explore sustainable design, urban planning, and historic conservation through creative architectural practice.",
             category = ProgramCategory.Undergraduate
