@@ -5,16 +5,15 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.theme.Gold
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 fun ViewScheduleAction(
@@ -28,17 +27,17 @@ fun ViewScheduleAction(
     ) {
         Text(
             text = label,
-            color = Gold,
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.labelLarge,
+            fontWeight = FontWeight.Medium
         )
 
-        Spacer(modifier = Modifier.width(6.dp))
+        Spacer(modifier = Modifier.width(Spacing.ExtraSmall))
 
         Icon(
-            imageVector = Icons.Default.ArrowForward,
+            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
             contentDescription = label,
-            tint = Gold
+            tint = MaterialTheme.colorScheme.secondary
         )
     }
 }

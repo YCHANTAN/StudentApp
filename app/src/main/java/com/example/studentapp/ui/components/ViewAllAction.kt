@@ -5,14 +5,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.theme.DarkGreen
-import com.example.studentapp.ui.theme.PrimaryTint
+import com.example.studentapp.ui.theme.Radius
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 fun ViewAllAction(
@@ -22,17 +22,17 @@ fun ViewAllAction(
 ) {
     Box(
         modifier = modifier
+            .clip(RoundedCornerShape(Radius.ExtraLarge))
             .background(
-                color = PrimaryTint,
-                shape = RoundedCornerShape(999.dp)
+                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
             )
             .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 6.dp)
+            .padding(horizontal = Spacing.Small, vertical = Spacing.ExtraSmall)
     ) {
         Text(
             text = label,
-            color = DarkGreen,
-            fontSize = 12.sp,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.labelSmall,
             fontWeight = FontWeight.SemiBold
         )
     }
