@@ -14,38 +14,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-@OptIn(ExperimentalMaterial3Api::class)
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentHeaderIconButton
+
 @Composable
 fun COEHeader(
     onBackClick: () -> Unit,
     onInfoClick: () -> Unit
 ) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = "Request COE",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
-        },
+    StudentHeader(
+        title = "Request COE",
+        onBackClick = onBackClick,
         actions = {
-            IconButton(onClick = onInfoClick) {
-                Icon(
-                    imageVector = Icons.Default.Info,
-                    contentDescription = "Info"
-                )
-            }
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
+            StudentHeaderIconButton(
+                imageVector = Icons.Default.Info,
+                contentDescription = "Info",
+                onClick = onInfoClick
+            )
+        }
     )
 }
