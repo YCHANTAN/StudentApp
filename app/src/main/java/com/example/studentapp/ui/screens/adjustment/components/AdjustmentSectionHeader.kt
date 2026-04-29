@@ -7,13 +7,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.AddCircle
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.screens.adjustment.AdjustmentScreenColors
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 fun AdjustmentSectionHeader(
@@ -24,14 +24,14 @@ fun AdjustmentSectionHeader(
         Icon(
             imageVector = if (addMode) Icons.Outlined.AddCircle else Icons.Outlined.CheckCircle,
             contentDescription = null,
-            tint = AdjustmentScreenColors.PrimaryGreen
+            tint = MaterialTheme.colorScheme.primary
         )
-        Spacer(modifier = androidx.compose.ui.Modifier.width(8.dp))
+        Spacer(modifier = Modifier.width(Spacing.Small))
         Text(
             text = title,
-            fontSize = 18.sp,
+            style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = AdjustmentScreenColors.TextPrimary
+            color = MaterialTheme.colorScheme.onBackground
         )
     }
 }

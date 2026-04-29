@@ -11,6 +11,7 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -18,9 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.screens.adjustment.AdjustmentScreenColors
+import com.example.studentapp.ui.theme.Radius
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 fun AdjustmentTopBar(
@@ -32,8 +32,9 @@ fun AdjustmentTopBar(
         title = {
             Text(
                 text = title,
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
-                color = AdjustmentScreenColors.TextPrimary
+                color = MaterialTheme.colorScheme.onBackground
             )
         },
         navigationIcon = {
@@ -41,29 +42,28 @@ fun AdjustmentTopBar(
                 Icon(
                     imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
                     contentDescription = "Back",
-                    tint = AdjustmentScreenColors.TextPrimary
+                    tint = MaterialTheme.colorScheme.onBackground
                 )
             }
         },
         actions = {
             Row(
                 modifier = Modifier
-                    .padding(end = 12.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(AdjustmentScreenColors.GreenSoft)
-                    .padding(horizontal = 14.dp, vertical = 7.dp)
+                    .padding(end = Spacing.Medium)
+                    .clip(RoundedCornerShape(Radius.ExtraLarge))
+                    .background(MaterialTheme.colorScheme.tertiary.copy(alpha = 0.1f))
+                    .padding(horizontal = Spacing.Small, vertical = Spacing.ExtraSmall)
             ) {
                 Text(
                     text = semesterLabel,
-                    color = AdjustmentScreenColors.PrimaryGreen,
-                    fontSize = 11.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = 0.8.sp
+                    color = MaterialTheme.colorScheme.tertiary,
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold
                 )
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = AdjustmentScreenColors.Background
+            containerColor = MaterialTheme.colorScheme.background
         )
     )
 }

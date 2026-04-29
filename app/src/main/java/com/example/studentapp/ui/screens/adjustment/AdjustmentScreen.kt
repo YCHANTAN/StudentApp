@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -14,14 +15,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.studentapp.ui.components.StudentBottomNavBar
 import com.example.studentapp.ui.components.StudentBottomNavItem
-import com.example.studentapp.ui.screens.adjustment.components.AdjustmentCourseCard
-import com.example.studentapp.ui.screens.adjustment.components.AdjustmentLoadCard
-import com.example.studentapp.ui.screens.adjustment.components.AdjustmentSaveButton
-import com.example.studentapp.ui.screens.adjustment.components.AdjustmentSearchBar
-import com.example.studentapp.ui.screens.adjustment.components.AdjustmentSectionHeader
-import com.example.studentapp.ui.screens.adjustment.components.AdjustmentTopBar
+import com.example.studentapp.ui.screens.adjustment.components.*
 import com.example.studentapp.ui.screens.adjustment.models.AdjustmentCourseIconType
 import com.example.studentapp.ui.screens.adjustment.models.AdjustmentCourseItem
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 @Preview
@@ -53,7 +50,7 @@ fun AdjustmentScreen(
     }
 
     Scaffold(
-        containerColor = AdjustmentScreenColors.Background,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             AdjustmentTopBar(
                 title = "Course Adjustment",
@@ -72,10 +69,9 @@ fun AdjustmentScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(AdjustmentScreenColors.Background)
                 .padding(innerPadding),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(18.dp)
+            contentPadding = PaddingValues(Spacing.Medium),
+            verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             item {
                 AdjustmentLoadCard(
