@@ -47,7 +47,7 @@ fun EnrollmentSectionHeader(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.secondary
+            tint = MaterialTheme.colorScheme.primary
         )
         Text(
             text = title.uppercase(),
@@ -101,7 +101,7 @@ fun EnrollmentTextField(
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 14.sp
                 ),
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.secondary),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 decorationBox = { innerTextField ->
                     Box(
                         modifier = Modifier.fillMaxWidth(),
@@ -202,7 +202,7 @@ fun EnrollmentPrimaryButton(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.primary,
                 shape = RoundedCornerShape(12.dp)
             )
             .clickable(onClick = onClick)
@@ -215,14 +215,14 @@ fun EnrollmentPrimaryButton(
         ) {
             Text(
                 text = text,
-                color = MaterialTheme.colorScheme.onSecondary,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSecondary
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

@@ -43,7 +43,7 @@ fun EnrollmentCourseCard(
     val isInteractive = !course.isLocked
     val borderColor = when {
         course.isLocked -> MaterialTheme.colorScheme.surfaceVariant
-        isSelected -> MaterialTheme.colorScheme.secondary
+        isSelected -> MaterialTheme.colorScheme.primary
         else -> MaterialTheme.colorScheme.surfaceVariant
     }
     val backgroundColor = when {
@@ -107,7 +107,7 @@ fun EnrollmentCourseCard(
                             if (course.isLocked) {
                                 MaterialTheme.colorScheme.surfaceVariant
                             } else {
-                                MaterialTheme.colorScheme.primaryContainer
+                                MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
                             }
                         )
                         .padding(horizontal = 8.dp, vertical = 2.dp)
@@ -149,11 +149,7 @@ fun EnrollmentCourseCard(
             ) {
                 Text(
                     text = "${course.units} Units",
-                    color = if (course.isLocked) {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    },
+                    color = MaterialTheme.colorScheme.secondary,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -181,7 +177,7 @@ fun EnrollmentCourseStatusIcon(
     }
     val tint = when {
         isLocked -> MaterialTheme.colorScheme.onSurfaceVariant
-        isSelected -> MaterialTheme.colorScheme.secondary
+        isSelected -> MaterialTheme.colorScheme.primary
         else -> MaterialTheme.colorScheme.outline
     }
 

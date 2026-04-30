@@ -171,7 +171,7 @@ fun EnrollmentPaymentSummaryCard(
             )
             Text(
                 text = formatPhilippinePeso(estimatedTuition),
-                color = MaterialTheme.colorScheme.primary,
+                color = MaterialTheme.colorScheme.secondary,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -216,7 +216,7 @@ fun EnrollmentPaymentCourseItem(
 
         Text(
             text = "${course.units} Units",
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.secondary,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold
         )

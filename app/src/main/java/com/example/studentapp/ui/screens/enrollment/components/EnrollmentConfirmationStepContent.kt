@@ -116,14 +116,9 @@ fun EnrollmentConfirmationHeader(
             }
 
             Text(
-                text = buildAnnotatedString {
-                    append("STEP 04: ")
-                    withStyle(SpanStyle(color = MaterialTheme.colorScheme.secondary)) {
-                        append("CONF")
-                    }
-                },
+                text = "ENROLLED",
                 modifier = Modifier.weight(1f),
-                color = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
@@ -164,7 +159,7 @@ fun EnrollmentConfirmationHeader(
                     .fillMaxWidth()
                     .height(8.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = CircleShape
                     )
             )
@@ -185,7 +180,7 @@ fun EnrollmentConfirmationSuccessSection(
             modifier = Modifier
                 .size(96.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.primaryContainer,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center
@@ -241,7 +236,7 @@ fun EnrollmentConfirmationCourseItem(
             modifier = Modifier
                 .size(40.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.primaryContainer,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
                     shape = RoundedCornerShape(10.dp)
                 ),
             contentAlignment = Alignment.Center
@@ -318,7 +313,7 @@ fun EnrollmentSecondaryButton(
             )
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.20f),
+                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.20f),
                 shape = RoundedCornerShape(12.dp)
             )
             .clickable(onClick = onClick)
@@ -327,7 +322,7 @@ fun EnrollmentSecondaryButton(
     ) {
         Text(
             text = text,
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.secondary,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold
         )

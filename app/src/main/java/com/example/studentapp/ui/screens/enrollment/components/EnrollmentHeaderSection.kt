@@ -63,9 +63,14 @@ fun EnrollmentProgressSection(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val labelColor = if (step.progressFraction >= 1f) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.secondary
+            }
             Text(
                 text = step.progressLabel.uppercase(),
-                color = MaterialTheme.colorScheme.secondary,
+                color = labelColor,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.2.sp
@@ -104,12 +109,17 @@ fun EnrollmentProgressBar(
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
+        val barColor = if (progressFraction >= 1f) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.secondary
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth(animatedProgress.value)
                 .height(6.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondary)
+                .background(barColor)
         )
     }
 }
