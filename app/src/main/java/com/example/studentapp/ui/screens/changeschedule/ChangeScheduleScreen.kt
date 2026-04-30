@@ -81,7 +81,15 @@ fun ChangeScheduleScreen(
             items(sections) { section ->
                 SectionItemCard(
                     item = section,
-                    onSelect = {}
+                    onSelect = {
+                        sections = sections.map {
+                            if (it.title == section.title) {
+                                it.copy(isSelected = !it.isSelected)
+                            } else {
+                                it.copy(isSelected = false)
+                            }
+                        }
+                    }
                 )
             }
 

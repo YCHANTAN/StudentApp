@@ -22,7 +22,7 @@ fun SectionItemCard(
     onSelect: () -> Unit
 ) {
     val borderColor = if (item.isSelected) {
-        MaterialTheme.colorScheme.secondary
+        MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.outlineVariant
     }
@@ -104,7 +104,7 @@ fun SectionItemCard(
                 selected = item.isSelected,
                 onClick = onSelect,
                 colors = RadioButtonDefaults.colors(
-                    selectedColor = MaterialTheme.colorScheme.secondary
+                    selectedColor = MaterialTheme.colorScheme.primary
                 )
             )
         }
