@@ -14,7 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,14 +30,7 @@ fun GradesHeaderSummaryCard(
             .fillMaxWidth()
             .height(170.dp)
             .clip(RoundedCornerShape(18.dp))
-            .background(
-                Brush.horizontalGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.primary,
-                        MaterialTheme.colorScheme.secondary
-                    )
-                )
-            )
+            .background(MaterialTheme.colorScheme.primary)
             .padding(20.dp)
     ) {
         Column(
@@ -45,7 +38,7 @@ fun GradesHeaderSummaryCard(
         ) {
             Text(
                 text = "ACADEMIC SUMMARY",
-                color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.75f),
+                color = Color.White.copy(alpha = 0.75f),
                 fontSize = 11.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp
@@ -54,13 +47,13 @@ fun GradesHeaderSummaryCard(
             androidx.compose.foundation.layout.Row {
                 Text(
                     text = gpa,
-                    color = androidx.compose.ui.graphics.Color.White,
+                    color = Color.White,
                     fontSize = 34.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = " Cumulative GPA",
-                    color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.9f),
+                    color = Color.White.copy(alpha = 0.9f),
                     fontSize = 16.sp,
                     modifier = Modifier.padding(top = 12.dp)
                 )
@@ -68,20 +61,20 @@ fun GradesHeaderSummaryCard(
 
             HorizontalDivider(
                 thickness = 1.dp,
-                color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.2f)
+                color = Color.White.copy(alpha = 0.2f)
             )
 
             Column {
                 Text(
                     text = "ACADEMIC LEVEL",
-                    color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.75f),
+                    color = Color.White.copy(alpha = 0.75f),
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 )
                 Text(
                     text = academicLevel,
-                    color = androidx.compose.ui.graphics.Color.White,
+                    color = Color.White,
                     fontSize = 28.sp,
                     fontWeight = FontWeight.SemiBold
                 )

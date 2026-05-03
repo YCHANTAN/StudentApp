@@ -99,7 +99,7 @@ fun SubjectGradeCard(
             ) {
                 Text(
                     text = item.gradePoint,
-                    color = MaterialTheme.colorScheme.secondary,
+                    color = MaterialTheme.colorScheme.primary,
                     fontSize = 34.sp,
                     fontWeight = FontWeight.Bold
                 )
