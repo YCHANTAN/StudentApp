@@ -39,6 +39,10 @@ import com.example.studentapp.ui.screens.grades.models.GradesSubjectItem
 import com.example.studentapp.ui.screens.grades.models.SubjectIconType
 import com.example.studentapp.ui.screens.grades.models.SubjectStatus
 
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.Alignment
+
 @Composable
 @Preview
 fun GradesScreen(
@@ -47,49 +51,18 @@ fun GradesScreen(
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
     onBackClick: () -> Unit = {},
     onMoreClick: () -> Unit = {},
-    onDownloadClick: () -> Unit = {}
+    onDownloadClick: () -> Unit = {},
+    viewModel: GradesViewModel = viewModel()
 ) {
-    var filters by remember {
-        mutableStateOf(
-            listOf(
-                GradeSemesterFilter("1st Sem 3rd Year", true),
-                GradeSemesterFilter("3rd Sem 2nd Year", false),
-                GradeSemesterFilter("2nd Sem 2nd Year", false)
-            )
-        )
-    }
+    val subjects = viewModel.filteredSubjects
+    val isLoading = viewModel.isLoading
+    val gpa = viewModel.cumulativeGpa
+    val academicLevel = viewModel.academicLevel
+    val semesters = viewModel.semesters
+    val selectedSemester = viewModel.selectedSemester
 
-    val subjects = remember {
-        listOf(
-            GradesSubjectItem(
-                title = "Advanced Algorithms",
-                codeCredits = "CS501 • 4 Credits",
-                gradePoint = "4.0",
-                status = SubjectStatus.COMPLETED,
-                iconType = SubjectIconType.CODE
-            ),
-            GradesSubjectItem(
-                title = "Database Management",
-                codeCredits = "CS505 • 3 Credits",
-                gradePoint = "3.7",
-                status = SubjectStatus.COMPLETED,
-                iconType = SubjectIconType.DATABASE
-            ),
-            GradesSubjectItem(
-                title = "Artificial Intelligence",
-                codeCredits = "CS502 • 4 Credits",
-                gradePoint = "3.5",
-                status = SubjectStatus.COMPLETED,
-                iconType = SubjectIconType.AI
-            ),
-            GradesSubjectItem(
-                title = "UI/UX Principles",
-                codeCredits = "DS506 • 3 Credits",
-                gradePoint = "--",
-                status = SubjectStatus.IN_PROGRESS,
-                iconType = SubjectIconType.DESIGN
-            )
-        )
+    val filters = semesters.map { 
+        GradeSemesterFilter(it, it == selectedSemester)
     }
 
     Scaffold(
@@ -145,42 +118,46 @@ fun GradesScreen(
             }
         }
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(innerPadding),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
-            item {
-                GradesHeaderSummaryCard(
-                    gpa = "3.85",
-                    academicLevel = "Junior"
-                )
+        if (isLoading && subjects.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(innerPadding),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                item {
+                    GradesHeaderSummaryCard(
+                        gpa = gpa,
+                        academicLevel = academicLevel
+                    )
+                }
 
-            item {
-                GradesFilterChipRow(
-                    filters = filters,
-                    onFilterClick = { clicked ->
-                        filters = filters.map {
-                            it.copy(isSelected = it.label == clicked)
+                item {
+                    GradesFilterChipRow(
+                        filters = filters,
+                        onFilterClick = { clicked ->
+                            viewModel.selectSemester(clicked)
                         }
-                    }
-                )
-            }
+                    )
+                }
 
-            item {
-                Text(
-                    text = "CURRENT ENROLLED SUBJECTS",
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+                item {
+                    Text(
+                        text = if (subjects.isNotEmpty()) "ENROLLED SUBJECTS" else "NO SUBJECTS FOUND",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-            items(subjects) { subject ->
-                SubjectGradeCard(item = subject)
+                items(subjects) { subject ->
+                    SubjectGradeCard(item = subject)
+                }
             }
         }
     }

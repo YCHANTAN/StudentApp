@@ -17,5 +17,6 @@ data class GradesSubjectItem(
     val codeCredits: String,
     val gradePoint: String,
     val status: SubjectStatus,
-    val iconType: SubjectIconType
+    val iconType: SubjectIconType,
+    val semester: String
 )
