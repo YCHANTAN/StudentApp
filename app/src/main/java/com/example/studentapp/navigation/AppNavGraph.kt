@@ -42,15 +42,46 @@ fun AppNavGraph() {
         mutableStateOf(AppDestination.Login.route)
     }
 
-    val authenticateStudent = remember { AuthenticateStudentUseCase() }
-    val academicOverview = remember { GetAcademicOverviewUseCase().invoke().toUiState() }
-    val profileOverview = remember { GetProfileOverviewUseCase().invoke().toProfileUiState() }
     val primaryBottomNavItems = remember { buildPrimaryBottomNavItems() }
+
+    // Academic overview placeholder
+    val academicOverview = remember { com.example.studentapp.ui.screens.academic.models.AcademicUiState(
+        studentName = "Student",
+        programSummary = "N/A • Year Level",
+        services = emptyList(),
+        supportCard = com.example.studentapp.ui.screens.academic.models.AcademicSupportUiModel(
+            title = "Academic Support",
+            description = "Get help with your studies",
+            actionLabel = "Contact Support"
+        )
+    ) }
+
+    // Profile overview placeholder
+    val profileOverview = remember { com.example.studentapp.ui.screens.profile.models.ProfileUiState(
+        accountId = "N/A",
+        fullName = "Loading...",
+        emailAddress = "N/A",
+        phoneNumber = "N/A",
+        accountLabel = "Student Portal Account",
+        programSummary = "N/A",
+        avatarInitials = "??",
+        emergencyContact = com.example.studentapp.ui.screens.profile.models.EmergencyContactUiState(
+            name = "N/A",
+            relationship = "N/A",
+            phoneNumber = "N/A"
+        ),
+        twoFactorStatus = com.example.studentapp.domain.model.TwoFactorStatus.Disabled,
+        notificationSettings = com.example.studentapp.ui.screens.profile.models.NotificationSettingsUiState(
+            emailNotifications = false,
+            smsNotifications = false,
+            systemAlerts = false
+        ),
+        qrPayload = "N/A"
+    ) }
 
     when {
         currentRoute == AppDestination.Login.route -> {
             LoginScreen(
-                authenticate = authenticateStudent::invoke,
                 onLoginSuccess = {
                     currentRoute = AppDestination.Dashboard.route
                 }
@@ -405,7 +436,6 @@ fun AppNavGraph() {
                 currentRoute = AppDestination.Dashboard.route
             }
             ProfileScreen(
-                state = profileOverview,
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "profile",
                 onBottomNavSelected = { item ->

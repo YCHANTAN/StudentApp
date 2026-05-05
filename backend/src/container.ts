@@ -1,4 +1,5 @@
 import { LoginUseCase } from "@/application/use-cases/auth/login.use-case";
+import { GetStudentUseCase } from "@/application/use-cases/student/get-student.use-case";
 import { GetStudentProfileUseCase } from "@/application/use-cases/student-profile/get-student-profile.use-case";
 import { GetStudentProfilesUseCase } from "@/application/use-cases/student-profile/get-student-profiles.use-case";
 import { UpdateStudentProfileUseCase } from "@/application/use-cases/student-profile/update-student-profile.use-case";
@@ -75,6 +76,7 @@ const registrationRepo = new SubjectRegistrationPgRepository(db);
 const subjectRepo = new SubjectPgRepository(db);
 
 // --- Use Cases ---
+const getStudentUseCase = new GetStudentUseCase(studentRepo);
 const loginUseCase = new LoginUseCase(studentRepo);
 const getStudentProfileUseCase = new GetStudentProfileUseCase(studentProfileRepo);
 const getStudentProfilesUseCase = new GetStudentProfilesUseCase(studentProfileRepo);
@@ -116,7 +118,7 @@ const getStudentSubjectsUseCase = new GetStudentSubjectsUseCase(registrationRepo
 const createSubjectUseCase = new CreateSubjectUseCase(subjectRepo);
 
 // --- Controllers ---
-export const authController = new AuthController(loginUseCase);
+export const authController = new AuthController(loginUseCase, getStudentUseCase);
 
 export const studentProfileController = new StudentProfileController(
   getStudentProfileUseCase,
