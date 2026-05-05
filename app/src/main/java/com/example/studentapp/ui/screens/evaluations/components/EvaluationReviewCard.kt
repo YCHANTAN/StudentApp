@@ -24,8 +24,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.screens.evaluation.components.EvaluationRatingRow
-import com.example.studentapp.ui.screens.evaluation.components.EvaluationSubmitButton
+import com.example.studentapp.ui.screens.evaluations.components.EvaluationRatingRow
+import com.example.studentapp.ui.screens.evaluations.components.EvaluationSubmitButton
 
 @Composable
 fun EvaluationReviewCard(
