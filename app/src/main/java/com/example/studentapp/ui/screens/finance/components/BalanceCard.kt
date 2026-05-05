@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun BalanceCard(
+    balance: Double,
+    dueDate: String = "Oct 15, 2023",
     onPayNowClick: () -> Unit = {}
 ) {
     Card(
@@ -55,7 +57,7 @@ fun BalanceCard(
                     fontWeight = FontWeight.Medium
                 )
                 Text(
-                    "₱2,450.00",
+                    "₱${String.format("%,.2f", balance)}",
                     color = Color.White,
                     fontSize = 36.sp,
                     fontWeight = FontWeight.Bold
@@ -76,7 +78,7 @@ fun BalanceCard(
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            "Oct 15, 2023",
+                            dueDate,
                             color = Color.White,
                             fontWeight = FontWeight.Bold
                         )

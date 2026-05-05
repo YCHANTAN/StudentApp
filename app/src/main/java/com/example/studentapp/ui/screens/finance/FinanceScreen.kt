@@ -30,14 +30,24 @@ import com.example.studentapp.ui.screens.finance.components.TransactionItem
 import com.example.studentapp.ui.screens.finance.models.sampleTransactions
 import com.example.studentapp.ui.theme.Spacing
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.Alignment
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FinanceScreen(
     navigationItems: List<StudentBottomNavItem> = buildPrimaryBottomNavItems(),
     selectedNavItemId: String = "finance",
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
-    onPayNowClick: () -> Unit = {}
+    onPayNowClick: () -> Unit = {},
+    viewModel: FinanceViewModel = viewModel()
 ) {
+    val balance = viewModel.balance
+    val transactions = viewModel.transactions
+    val isLoading = viewModel.isLoading
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -70,34 +80,43 @@ fun FinanceScreen(
             )
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = Spacing.Medium)
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(Spacing.Small))
-                BalanceCard(onPayNowClick = onPayNowClick)
+        if (isLoading && transactions.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(horizontal = Spacing.Medium)
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.Small))
+                    BalanceCard(
+                        balance = balance,
+                        onPayNowClick = onPayNowClick
+                    )
+                }
 
-            item {
-                Spacer(modifier = Modifier.height(Spacing.Large))
-                QuickActionsSection()
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.Large))
+                    QuickActionsSection()
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.Large))
+                    TransactionHistoryHeader()
+                }
+
+                items(transactions) { transaction ->
+                    TransactionItem(transaction)
+                    Spacer(modifier = Modifier.height(Spacing.Medium))
+                }
+
+                item { Spacer(modifier = Modifier.height(Spacing.Medium)) }
             }
-
-            item {
-                Spacer(modifier = Modifier.height(Spacing.Large))
-                TransactionHistoryHeader()
-            }
-
-            items(sampleTransactions) { transaction ->
-                TransactionItem(transaction)
-                Spacer(modifier = Modifier.height(Spacing.Medium))
-            }
-
-            item { Spacer(modifier = Modifier.height(Spacing.Medium)) }
         }
     }
 }
