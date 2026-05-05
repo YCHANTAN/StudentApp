@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,9 +22,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.theme.DarkGreen
-import com.example.studentapp.ui.theme.Gold
-import com.example.studentapp.ui.theme.White
 
 @Composable
 fun ProfileSummaryCard(
@@ -37,15 +35,15 @@ fun ProfileSummaryCard(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
-        color = DarkGreen
+        color = MaterialTheme.colorScheme.primary
     ) {
         Box(
             modifier = Modifier
                 .background(
                     brush = Brush.linearGradient(
                         colors = listOf(
-                            DarkGreen,
-                            Color(0xFF2A7430)
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                         )
                     )
                 )
@@ -62,12 +60,12 @@ fun ProfileSummaryCard(
                         modifier = Modifier
                             .size(72.dp)
                             .clip(CircleShape)
-                            .background(Color.White.copy(alpha = 0.14f)),
+                            .background(MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.14f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             text = avatarInitials,
-                            color = White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold
                         )
@@ -78,11 +76,11 @@ fun ProfileSummaryCard(
                     ) {
                         Surface(
                             shape = RoundedCornerShape(999.dp),
-                            color = Gold.copy(alpha = 0.18f)
+                            color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.18f)
                         ) {
                             Text(
                                 text = accountLabel.uppercase(),
-                                color = Gold,
+                                color = MaterialTheme.colorScheme.secondary,
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
@@ -91,14 +89,14 @@ fun ProfileSummaryCard(
 
                         Text(
                             text = fullName,
-                            color = White,
+                            color = MaterialTheme.colorScheme.onPrimary,
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold
                         )
 
                         Text(
                             text = programSummary,
-                            color = White.copy(alpha = 0.82f),
+                            color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.82f),
                             fontSize = 14.sp
                         )
                     }
@@ -109,14 +107,14 @@ fun ProfileSummaryCard(
                 ) {
                     Text(
                         text = "Account reference",
-                        color = White.copy(alpha = 0.68f),
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.68f),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Medium
                     )
 
                     Text(
                         text = accountId,
-                        color = White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold
                     )

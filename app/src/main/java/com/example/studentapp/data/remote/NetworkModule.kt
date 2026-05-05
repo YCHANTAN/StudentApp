@@ -45,4 +45,6 @@ object NetworkModule {
     val authApi: AuthApi = retrofit.create(AuthApi::class.java)
     val financeApi: FinanceApi = retrofit.create(FinanceApi::class.java)
     val academicApi: AcademicApi = retrofit.create(AcademicApi::class.java)
+    val documentRequestApi: DocumentRequestApi = retrofit.create(DocumentRequestApi::class.java)
+    val complaintApi: ComplaintApi = retrofit.create(ComplaintApi::class.java)
 }

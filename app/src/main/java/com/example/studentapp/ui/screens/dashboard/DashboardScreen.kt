@@ -23,15 +23,19 @@ import com.example.studentapp.ui.screens.dashboard.models.buildDashboardUiState
 import com.example.studentapp.ui.theme.Spacing
 import com.example.studentapp.ui.theme.StudentAppTheme
 
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 @Composable
 fun DashboardScreen(
     modifier: Modifier = Modifier,
-    state: DashboardUiState = buildDashboardUiState(),
+    viewModel: DashboardViewModel = viewModel(),
     navigationItems: List<StudentBottomNavItem> = buildPrimaryBottomNavItems(),
     selectedNavItemId: String = "home",
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
     onViewScheduleClick: () -> Unit = {}
 ) {
+    val state = viewModel.state
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,

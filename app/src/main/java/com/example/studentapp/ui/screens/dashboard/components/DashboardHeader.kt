@@ -29,8 +29,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.theme.DarkGreen
-import com.example.studentapp.ui.theme.Gold
 
 @Composable
 fun DashboardHeader(
@@ -93,13 +91,13 @@ private fun AvatarPlaceholder(initials: String) {
         modifier = Modifier
             .size(48.dp)
             .clip(CircleShape)
-            .border(width = 2.dp, color = Gold, shape = CircleShape)
+            .border(width = 2.dp, color = MaterialTheme.colorScheme.secondary, shape = CircleShape)
             .background(MaterialTheme.colorScheme.surfaceVariant),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = initials,
-            color = DarkGreen,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold
         )
     }
@@ -119,7 +117,7 @@ private fun NotificationButton(hasUnreadNotifications: Boolean) {
             badge = {
                 if (hasUnreadNotifications) {
                     NotificationBadge(
-                        containerColor = Gold,
+                        containerColor = MaterialTheme.colorScheme.secondary,
                         modifier = Modifier.size(10.dp)
                     )
                 }

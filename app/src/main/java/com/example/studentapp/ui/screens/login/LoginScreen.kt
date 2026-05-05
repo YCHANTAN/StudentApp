@@ -45,23 +45,19 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.studentapp.domain.usecase.AuthenticationResult
 import com.example.studentapp.ui.components.StudentPrimaryButton
 import com.example.studentapp.ui.theme.Radius
 import com.example.studentapp.ui.theme.Spacing
 
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.CircularProgressIndicator
+
 @Composable
 fun LoginScreen(
-    authenticate: (String, String) -> AuthenticationResult,
     onLoginSuccess: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: LoginViewModel = viewModel()
 ) {
-    var studentId by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var passwordVisible by rememberSaveable { mutableStateOf(false) }
-    var keepLoggedIn by rememberSaveable { mutableStateOf(false) }
-    var errorMessage by rememberSaveable { mutableStateOf<String?>(null) }
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -121,10 +117,9 @@ fun LoginScreen(
                     )
 
                     OutlinedTextField(
-                        value = studentId,
+                        value = viewModel.studentId,
                         onValueChange = {
-                            studentId = it
-                            errorMessage = null
+                            viewModel.studentId = it
                         },
                         modifier = Modifier.fillMaxWidth(),
                         placeholder = {
@@ -146,7 +141,8 @@ fun LoginScreen(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
                             unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
-                        )
+                        ),
+                        enabled = !viewModel.isLoading
                     )
                 }
 
@@ -161,10 +157,9 @@ fun LoginScreen(
                     )
 
                     OutlinedTextField(
-                        value = password,
+                        value = viewModel.password,
                         onValueChange = {
-                            password = it
-                            errorMessage = null
+                            viewModel.password = it
                         },
                         modifier = Modifier.fillMaxWidth(),
                         placeholder = {
@@ -184,11 +179,11 @@ fun LoginScreen(
                         trailingIcon = {
                             IconButton(
                                 onClick = {
-                                    passwordVisible = !passwordVisible
+                                    viewModel.passwordVisible = !viewModel.passwordVisible
                                 }
                             ) {
                                 Icon(
-                                    imageVector = if (passwordVisible) {
+                                    imageVector = if (viewModel.passwordVisible) {
                                         Icons.Default.Visibility
                                     } else {
                                         Icons.Default.VisibilityOff
@@ -199,7 +194,7 @@ fun LoginScreen(
                             }
                         },
                         singleLine = true,
-                        visualTransformation = if (passwordVisible) {
+                        visualTransformation = if (viewModel.passwordVisible) {
                             VisualTransformation.None
                         } else {
                             PasswordVisualTransformation()
@@ -211,7 +206,8 @@ fun LoginScreen(
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
                             unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
-                        )
+                        ),
+                        enabled = !viewModel.isLoading
                     )
                 }
 
@@ -222,9 +218,10 @@ fun LoginScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Checkbox(
-                        checked = keepLoggedIn,
-                        onCheckedChange = { keepLoggedIn = it },
-                        colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
+                        checked = viewModel.keepLoggedIn,
+                        onCheckedChange = { viewModel.keepLoggedIn = it },
+                        colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary),
+                        enabled = !viewModel.isLoading
                     )
 
                     Text(
@@ -234,7 +231,7 @@ fun LoginScreen(
                     )
                 }
 
-                errorMessage?.let { message ->
+                viewModel.errorMessage?.let { message ->
                     Spacer(modifier = Modifier.height(Spacing.Small))
 
                     Text(
@@ -247,20 +244,20 @@ fun LoginScreen(
 
                 Spacer(modifier = Modifier.height(Spacing.Large))
 
-                StudentPrimaryButton(
-                    text = "Sign In",
-                    onClick = {
-                        val result = authenticate(studentId, password)
-
-                        if (result.isSuccess) {
-                            errorMessage = null
-                            onLoginSuccess()
-                        } else {
-                            errorMessage = result.errorMessage
-                        }
-                    },
-                    icon = Icons.AutoMirrored.Filled.ArrowForward
-                )
+                if (viewModel.isLoading) {
+                    CircularProgressIndicator(
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                } else {
+                    StudentPrimaryButton(
+                        text = "Sign In",
+                        onClick = {
+                            viewModel.login(onLoginSuccess)
+                        },
+                        icon = Icons.AutoMirrored.Filled.ArrowForward
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(Spacing.Medium))
 

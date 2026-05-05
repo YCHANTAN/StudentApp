@@ -43,45 +43,24 @@ data class ServiceRequestStatus(
 
 fun buildDashboardUiState(): DashboardUiState {
     return DashboardUiState(
-        studentName = "Alex Harrison",
-        studentId = "2024-08912-CS",
-        idStatus = "Active",
+        studentName = "Loading...",
+        studentId = "---",
+        idStatus = "Unknown",
         stats = listOf(
             DashboardStat(
-                value = "₱2,450.00",
+                value = "₱0.00",
                 label = "Current Balance",
                 icon = Icons.Filled.AccountBalanceWallet,
                 isHighlighted = true
             ),
-//            DashboardStat(
-//                value = "3.85",
-//                label = "Cumulative GPA",
-//                icon = Icons.Filled.Star
-//            ),
-//            DashboardStat(
-//                value = "4 New",
-//                label = "Notifications",
-//                icon = Icons.Filled.Notifications
-//            )
         ),
-        courses = listOf(
-            CourseSnapshot(
-                code = "CS",
-                title = "Advanced Algorithms",
-                schedule = "Mon, Wed | 09:00 AM"
-            ),
-            CourseSnapshot(
-                code = "UI",
-                title = "Human Computer Interaction",
-                schedule = "Tue, Thu | 02:30 PM"
-            )
-        ),
+        courses = emptyList(),
         requestStatus = ServiceRequestStatus(
-            title = "Official Transcript Request",
-            reference = "#REQ-99021",
-            statusLabel = "PROCESSING",
-            progress = 0.65f,
-            estimatedCompletion = "2 Days"
+            title = "No active requests",
+            reference = "#---",
+            statusLabel = "NONE",
+            progress = 0f,
+            estimatedCompletion = "N/A"
         )
     )
 }

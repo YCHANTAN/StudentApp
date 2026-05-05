@@ -39,15 +39,27 @@ import com.example.studentapp.ui.screens.profile.models.toUiState
 import com.example.studentapp.ui.screens.profile.state.rememberProfileScreenState
 import com.example.studentapp.ui.theme.StudentAppTheme
 
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.CircularProgressIndicator
+
 @Composable
 fun ProfileScreen(
-    state: ProfileUiState,
     navigationItems: List<StudentBottomNavItem>,
     selectedNavItemId: String,
     onBottomNavSelected: (StudentBottomNavItem) -> Unit,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = viewModel()
 ) {
+    val state = viewModel.state
+
+    if (state == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
     val screenState = rememberProfileScreenState(initialState = state)
     val context = LocalContext.current
     val shortcutDestinations = remember {
@@ -147,7 +159,6 @@ fun ProfileScreen(
 private fun ProfileScreenPreview() {
     StudentAppTheme(dynamicColor = false) {
         ProfileScreen(
-            state = GetProfileOverviewUseCase().invoke().toUiState(),
             navigationItems = buildPrimaryBottomNavItems(),
             selectedNavItemId = "profile",
             onBottomNavSelected = {},

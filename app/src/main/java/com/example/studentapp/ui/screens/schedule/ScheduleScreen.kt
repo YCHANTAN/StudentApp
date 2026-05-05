@@ -43,12 +43,19 @@ import com.example.studentapp.ui.theme.Radius
 import com.example.studentapp.ui.theme.Spacing
 import com.example.studentapp.ui.theme.StudentAppTheme
 
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.CircularProgressIndicator
+
 @Composable
 fun ScheduleScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    state: ScheduleUiState = buildScheduleUiState()
+    viewModel: ScheduleViewModel = viewModel()
 ) {
+    val state = viewModel.state
+    val isLoading = viewModel.isLoading
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
@@ -59,18 +66,24 @@ fun ScheduleScreen(
             )
         }
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                start = Spacing.Large,
-                top = innerPadding.calculateTopPadding() + Spacing.Medium,
-                end = Spacing.Large,
-                bottom = innerPadding.calculateBottomPadding() + Spacing.Large
-            ),
-            verticalArrangement = Arrangement.spacedBy(Spacing.Large)
-        ) {
-            items(state.sections) { section ->
-                ScheduleDaySectionCard(section = section)
+        if (isLoading && state.sections.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(
+                    start = Spacing.Large,
+                    top = innerPadding.calculateTopPadding() + Spacing.Medium,
+                    end = Spacing.Large,
+                    bottom = innerPadding.calculateBottomPadding() + Spacing.Large
+                ),
+                verticalArrangement = Arrangement.spacedBy(Spacing.Large)
+            ) {
+                items(state.sections) { section ->
+                    ScheduleDaySectionCard(section = section)
+                }
             }
         }
     }
