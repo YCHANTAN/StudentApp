@@ -3,6 +3,14 @@ package com.example.studentapp.ui.screens.services.models
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 
+data class DocumentRequestItem(
+    val id: String,
+    val type: String,
+    val status: String,
+    val date: String,
+    val reference: String
+)
+
 data class DocumentRequest(
     val title: String,
     val subtitle: String,

@@ -36,6 +36,11 @@ import com.example.studentapp.ui.screens.services.models.sampleDocumentTypes
 import com.example.studentapp.ui.screens.services.models.sampleLibraryLinks
 import com.example.studentapp.ui.theme.DarkGreen
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.Alignment
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServicesScreen(
@@ -46,8 +51,13 @@ fun ServicesScreen(
     onLibraryClick: (LibraryTab) -> Unit = {},
     onTORClick: () -> Unit = {},
     onCOEClick: () -> Unit = {},
-    onGoodMoralClick: () -> Unit = {}
+    onGoodMoralClick: () -> Unit = {},
+    viewModel: ServicesViewModel = viewModel()
 ) {
+    val documentRequests = viewModel.documentRequests
+    val complaints = viewModel.complaints
+    val isLoading = viewModel.isLoading
+
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
@@ -73,56 +83,62 @@ fun ServicesScreen(
             )
         }
     ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(MaterialTheme.colorScheme.background)
-                .padding(horizontal = 16.dp)
-        ) {
-            // Document Requests
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                DocumentRequestsSection()
+        if (isLoading && documentRequests.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(horizontal = 16.dp)
+            ) {
+                // Document Requests
+                item {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    DocumentRequestsSection(requests = documentRequests)
+                }
 
-            // Document Type Quick Actions
-            item {
-                DocumentTypeGrid(
-                    documentTypes = sampleDocumentTypes,
-                    onDocumentTypeClick = { docType ->
-                        when (docType.label) {
-                            "TOR" -> onTORClick()
-                            "Good Moral" -> onGoodMoralClick()
-                            "COE" -> onCOEClick()
+                // Document Type Quick Actions
+                item {
+                    DocumentTypeGrid(
+                        documentTypes = sampleDocumentTypes,
+                        onDocumentTypeClick = { docType ->
+                            when (docType.label) {
+                                "TOR" -> onTORClick()
+                                "Good Moral" -> onGoodMoralClick()
+                                "COE" -> onCOEClick()
+                            }
                         }
-                    }
-                )
-            }
+                    )
+                }
 
-            // Library Services
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-                LibraryServicesSection(
-                    libraryLinks = sampleLibraryLinks,
-                    onBorrowBookClick = { onLibraryClick(LibraryTab.Available) },
-                    onReturnClick = { onLibraryClick(LibraryTab.Return) },
-                    onLinkClick = { link ->
-                        when (link.title) {
-                            "Availability Tracker" -> onLibraryClick(LibraryTab.Available)
-                            "Borrowing History" -> onLibraryClick(LibraryTab.History)
+                // Library Services
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    LibraryServicesSection(
+                        libraryLinks = sampleLibraryLinks,
+                        onBorrowBookClick = { onLibraryClick(LibraryTab.Available) },
+                        onReturnClick = { onLibraryClick(LibraryTab.Return) },
+                        onLinkClick = { link ->
+                            when (link.title) {
+                                "Availability Tracker" -> onLibraryClick(LibraryTab.Available)
+                                "Borrowing History" -> onLibraryClick(LibraryTab.History)
+                            }
                         }
-                    }
-                )
-            }
+                    )
+                }
 
-            // Student Affairs
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-                StudentAffairsSection(complaints = sampleComplaints)
-            }
+                // Student Affairs
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    StudentAffairsSection(complaints = complaints)
+                }
 
-            item { Spacer(modifier = Modifier.height(24.dp)) }
+                item { Spacer(modifier = Modifier.height(24.dp)) }
+            }
         }
     }
 }
