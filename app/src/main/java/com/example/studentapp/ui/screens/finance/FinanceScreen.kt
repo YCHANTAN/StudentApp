@@ -35,41 +35,33 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.Alignment
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentNotificationButton
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FinanceScreen(
     navigationItems: List<StudentBottomNavItem> = buildPrimaryBottomNavItems(),
     selectedNavItemId: String = "finance",
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
+    onBackClick: () -> Unit = {},
+    onNotificationClick: () -> Unit = {},
     onPayNowClick: () -> Unit = {},
     viewModel: FinanceViewModel = viewModel()
 ) {
     val balance = viewModel.balance
     val transactions = viewModel.transactions
     val isLoading = viewModel.isLoading
-
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Finance",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
+            StudentHeader(
+                title = "Finance",
+                onBackClick = onBackClick,
                 actions = {
-                    IconButton(onClick = { /* Handle notifications */ }) {
-                        Icon(
-                            imageVector = Icons.Default.Notifications,
-                            contentDescription = "Notifications",
-                            tint = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                )
+                    StudentNotificationButton(
+                        onClick = onNotificationClick
+                    )
+                }
             )
         },
         bottomBar = {

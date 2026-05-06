@@ -41,6 +41,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.Alignment
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentNotificationButton
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServicesScreen(
@@ -48,6 +51,7 @@ fun ServicesScreen(
     selectedNavItemId: String = "services",
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
     onBackClick: () -> Unit = {},
+    onNotificationClick: () -> Unit = {},
     onLibraryClick: (LibraryTab) -> Unit = {},
     onTORClick: () -> Unit = {},
     onCOEClick: () -> Unit = {},
@@ -60,19 +64,14 @@ fun ServicesScreen(
 
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Services", fontSize = 18.sp, fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = DarkGreen)
-                    }
-                },
+            StudentHeader(
+                title = "Services",
+                onBackClick = onBackClick,
                 actions = {
-                    IconButton(onClick = { /* Handle notifications */ }) {
-                        Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = DarkGreen)
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
+                    StudentNotificationButton(
+                        onClick = onNotificationClick
+                    )
+                }
             )
         },
         bottomBar = {
