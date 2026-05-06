@@ -25,13 +25,14 @@ fun TORScreen(
     navigationItems: List<StudentBottomNavItem> = buildPrimaryBottomNavItems(),
     selectedNavItemId: String = "services",
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onNotificationClick: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             TORHeader(
                 onBackClick = onBackClick,
-                onHelpClick = { /* Handle help */ }
+                onNotificationClick = onNotificationClick
             )
         },
         bottomBar = {
@@ -48,6 +49,7 @@ fun TORScreen(
                 .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState())
+                .padding(16.dp)
         ) {
             StudentProfileHeader(
                 name = "Johnathan Doe",

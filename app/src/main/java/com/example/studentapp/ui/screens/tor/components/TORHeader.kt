@@ -1,51 +1,28 @@
 package com.example.studentapp.ui.screens.tor.components
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.HelpOutline
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.sp
+import androidx.compose.material.icons.filled.Notifications
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentHeaderIconButton
+import com.example.studentapp.ui.components.StudentNotificationButton
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TORHeader(
     onBackClick: () -> Unit,
-    onHelpClick: () -> Unit
+    onNotificationClick: () -> Unit = {}
 ) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = "Request TOR",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
-        },
+    StudentHeader(
+        title = "Request TOR",
+        onBackClick = onBackClick,
         actions = {
-            IconButton(onClick = onHelpClick) {
-                Icon(
-                    imageVector = Icons.Default.HelpOutline,
-                    contentDescription = "Help"
-                )
-            }
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
+            StudentNotificationButton(
+                onClick = onNotificationClick
+            )
+        }
     )
 }
