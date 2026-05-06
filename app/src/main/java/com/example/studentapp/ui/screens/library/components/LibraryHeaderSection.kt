@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studentapp.ui.components.StudentHeader
-import com.example.studentapp.ui.components.StudentHeaderIconButton
+import com.example.studentapp.ui.components.StudentNotificationButton
 import com.example.studentapp.ui.screens.library.models.LibraryTab
 
 @Composable
@@ -40,9 +40,7 @@ fun LibraryHeaderSection(
         onBackClick = onBackClick,
         modifier = modifier,
         actions = {
-            StudentHeaderIconButton(
-                imageVector = Icons.Default.Notifications,
-                contentDescription = "Notifications",
+            StudentNotificationButton(
                 onClick = onNotificationClick
             )
         },
@@ -51,7 +49,7 @@ fun LibraryHeaderSection(
                 tabs = LibraryTab.entries,
                 selectedTab = selectedTab,
                 onTabSelected = onTabSelected,
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 12.dp)
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
             )
         }
     )
