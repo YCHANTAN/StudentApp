@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -19,12 +19,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.studentapp.ui.components.StudentHeader
-import com.example.studentapp.ui.components.StudentHeaderIconButton
+import com.example.studentapp.ui.components.StudentNotificationButton
 import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 fun AcademicHeaderSection(
     onBackClick: () -> Unit,
+    onNotificationClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     StudentHeader(
@@ -32,10 +33,8 @@ fun AcademicHeaderSection(
         onBackClick = onBackClick,
         modifier = modifier,
         actions = {
-            StudentHeaderIconButton(
-                imageVector = Icons.Outlined.Notifications,
-                contentDescription = "Notifications",
-                onClick = {}
+            StudentNotificationButton(
+                onClick = onNotificationClick
             )
         }
     )

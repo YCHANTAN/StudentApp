@@ -17,16 +17,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.material.icons.filled.Notifications
 import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentNotificationButton
 
 @Composable
 fun GoodMoralHeader(
     onBackClick: () -> Unit,
+    onNotificationClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     StudentHeader(
         title = "Good Moral Certificate",
         onBackClick = onBackClick,
-        modifier = modifier
+        modifier = modifier,
+        actions = {
+            StudentNotificationButton(
+                onClick = onNotificationClick
+            )
+        }
     )
 }
