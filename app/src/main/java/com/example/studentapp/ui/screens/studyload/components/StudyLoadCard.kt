@@ -186,22 +186,6 @@ fun StudyLoadSummaryCard(
             .background(MaterialTheme.colorScheme.primary)
             .padding(20.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .size(42.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color.White.copy(alpha = 0.12f)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "↓",
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
-
         Column(
             modifier = Modifier.align(Alignment.TopStart)
         ) {
