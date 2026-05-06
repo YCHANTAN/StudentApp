@@ -4,12 +4,14 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class ProgramEntry(
+    val id: String,
     val title: String,
     val badgeText: String,
     val badgeVariant: ProgramBadgeVariant,
     val scheduleLine: String,
     val description: String,
-    val category: ProgramCategory
+    val category: ProgramCategory,
+    val prospectusUrl: String? = null
 )
 
 enum class ProgramBadgeVariant {
@@ -32,6 +34,7 @@ enum class ProgramsTab(val label: String) {
 fun buildProgramEntries(): List<ProgramEntry> {
     return listOf(
         ProgramEntry(
+            id = "1",
             title = "BS Computer Science",
             badgeText = "Enrollment Open",
             badgeVariant = ProgramBadgeVariant.Success,
@@ -40,6 +43,7 @@ fun buildProgramEntries(): List<ProgramEntry> {
             category = ProgramCategory.Undergraduate
         ),
         ProgramEntry(
+            id = "2",
             title = "BBA Business Admin",
             badgeText = "Next Intake: Sept 2024",
             badgeVariant = ProgramBadgeVariant.Info,
@@ -48,6 +52,7 @@ fun buildProgramEntries(): List<ProgramEntry> {
             category = ProgramCategory.Undergraduate
         ),
         ProgramEntry(
+            id = "3",
             title = "MS Data Analytics",
             badgeText = "Enrollment Open",
             badgeVariant = ProgramBadgeVariant.Success,
@@ -56,6 +61,7 @@ fun buildProgramEntries(): List<ProgramEntry> {
             category = ProgramCategory.Postgraduate
         ),
         ProgramEntry(
+            id = "4",
             title = "BS Architecture",
             badgeText = "Limited Seats",
             badgeVariant = ProgramBadgeVariant.Neutral,

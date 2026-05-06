@@ -54,7 +54,23 @@ data class PaginationMeta(
     @SerializedName("totalPages") val totalPages: Int
 )
 
+data class ProgramResponse(
+    @SerializedName("id") val id: String,
+    @SerializedName("title") val title: String,
+    @SerializedName("category") val category: String,
+    @SerializedName("description") val description: String,
+    @SerializedName("scheduleLine") val scheduleLine: String,
+    @SerializedName("prospectusUrl") val prospectusUrl: String?
+)
+
 interface AcademicApi {
+    @GET("programs")
+    suspend fun getPrograms(
+        @Query("category") category: String? = null,
+        @Query("page") page: Int = 1,
+        @Query("limit") limit: Int = 100
+    ): Response<PaginatedResponse<ProgramResponse>>
+
     @GET("courses")
     suspend fun getCourses(
         @Query("page") page: Int = 1,
