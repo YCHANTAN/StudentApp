@@ -23,6 +23,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import com.example.studentapp.ui.components.StudentHeaderIconButton
 
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentHeaderIconButton
+
 @Composable
 fun ProfileHeader(
     onBackClick: () -> Unit,
@@ -31,41 +34,17 @@ fun ProfileHeader(
     actionLabel: String = "Support",
     onActionClick: () -> Unit = {}
 ) {
-    Surface(
+    StudentHeader(
+        title = title,
+        onBackClick = onBackClick,
         modifier = modifier,
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
-    ) {
-        Column(modifier = Modifier.statusBarsPadding()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                StudentHeaderIconButton(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = "Back",
-                    onClick = onBackClick
-                )
-
-                Text(
-                    text = title,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                HeaderAction(
-                    label = actionLabel,
-                    onClick = onActionClick
-                )
-            }
-
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        actions = {
+            HeaderAction(
+                label = actionLabel,
+                onClick = onActionClick
+            )
         }
-    }
+    )
 }
 
 @Composable
