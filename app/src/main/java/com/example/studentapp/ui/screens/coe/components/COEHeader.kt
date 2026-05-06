@@ -1,5 +1,6 @@
 package com.example.studentapp.ui.screens.coe.components
 
+import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
@@ -11,25 +12,26 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.material.icons.filled.Notifications
 import com.example.studentapp.ui.components.StudentHeader
 import com.example.studentapp.ui.components.StudentHeaderIconButton
+import com.example.studentapp.ui.components.StudentNotificationButton
 
 @Composable
 fun COEHeader(
     onBackClick: () -> Unit,
-    onInfoClick: () -> Unit
+    onNotificationClick: () -> Unit = {}
 ) {
     StudentHeader(
         title = "Request COE",
         onBackClick = onBackClick,
         actions = {
-            StudentHeaderIconButton(
-                imageVector = Icons.Default.Info,
-                contentDescription = "Info",
-                onClick = onInfoClick
+            StudentNotificationButton(
+                onClick = onNotificationClick
             )
         }
     )

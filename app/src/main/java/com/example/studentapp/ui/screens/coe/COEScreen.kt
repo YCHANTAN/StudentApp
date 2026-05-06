@@ -27,13 +27,14 @@ fun COEScreen(
     navigationItems: List<StudentBottomNavItem> = buildPrimaryBottomNavItems(),
     selectedNavItemId: String = "services",
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
+    onNotificationClick: () -> Unit = {}
 ) {
     Scaffold(
         topBar = {
             COEHeader(
                 onBackClick = onBackClick,
-                onInfoClick = { /* Handle info */ }
+                onNotificationClick = onNotificationClick
             )
         },
         bottomBar = {
@@ -50,7 +51,7 @@ fun COEScreen(
                 .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.background)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp, vertical = 24.dp)
+                .padding(16.dp)
         ) {
             COEIntroduction()
 
