@@ -37,13 +37,6 @@ fun CoursesHeaderSection(
         title = "My Courses",
         onBackClick = onBackClick,
         modifier = modifier,
-        actions = {
-            StudentHeaderIconButton(
-                imageVector = Icons.Outlined.Notifications,
-                contentDescription = "Notifications",
-                onClick = {}
-            )
-        },
         bottomContent = {
             StudentSearchBar(
                 value = searchQuery,
