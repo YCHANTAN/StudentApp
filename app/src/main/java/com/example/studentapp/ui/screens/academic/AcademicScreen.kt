@@ -42,6 +42,7 @@ fun AcademicScreen(
     onGradesClick: () -> Unit = {},
     onEvaluationClick: () -> Unit = {},
     onStudyLoadClick: () -> Unit = {},
+    onNotificationClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     AcademicServicesScreen(
@@ -58,6 +59,7 @@ fun AcademicScreen(
         onGradesClick = onGradesClick,
         onEvaluationClick = onEvaluationClick,
         onStudyLoadClick = onStudyLoadClick,
+        onNotificationClick = onNotificationClick,
         modifier = modifier
     )
 }
@@ -77,6 +79,7 @@ fun AcademicServicesScreen(
     onGradesClick: () -> Unit,
     onEvaluationClick: () -> Unit,
     onStudyLoadClick: () -> Unit,
+    onNotificationClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val dashboardItems = remember { buildAcademicDashboardMenuItems() }
@@ -86,7 +89,10 @@ fun AcademicServicesScreen(
         containerColor = MaterialTheme.colorScheme.background,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            AcademicHeaderSection(onBackClick = onBackClick)
+            AcademicHeaderSection(
+                onBackClick = onBackClick,
+                onNotificationClick = onNotificationClick
+            )
         },
         bottomBar = {
             StudentBottomNavBar(
@@ -141,7 +147,7 @@ fun AcademicServicesContent(
         item(span = { GridItemSpan(maxLineSpan) }) {
             AcademicHeroCard(
                 studentName = state.studentName,
-                programSummary = state.programSummary.replace("\u00E2\u20AC\u00A2", "\u2022")
+                programSummary = state.programSummary
             )
         }
 

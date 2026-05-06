@@ -7,13 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import com.example.studentapp.domain.usecase.AuthenticateStudentUseCase
-import com.example.studentapp.domain.usecase.GetAcademicOverviewUseCase
-import com.example.studentapp.domain.usecase.GetProfileOverviewUseCase
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
 import com.example.studentapp.ui.screens.academic.AcademicScreen
-import com.example.studentapp.ui.screens.academic.models.toUiState
 import com.example.studentapp.ui.screens.adjustment.AdjustmentScreen
 import com.example.studentapp.ui.screens.changeschedule.ChangeScheduleScreen
 import com.example.studentapp.ui.screens.coe.COEScreen
@@ -27,10 +23,10 @@ import com.example.studentapp.ui.screens.grades.GradesScreen
 import com.example.studentapp.ui.screens.library.LibraryScreen
 import com.example.studentapp.ui.screens.library.models.LibraryTab
 import com.example.studentapp.ui.screens.login.LoginScreen
+import com.example.studentapp.ui.screens.notifications.NotificationScreen
 import com.example.studentapp.ui.screens.payment.PaymentQueueScreen
 import com.example.studentapp.ui.screens.profile.ProfileScreen
 import com.example.studentapp.ui.screens.programs.ProgramsScreen
-import com.example.studentapp.ui.screens.profile.models.toUiState as toProfileUiState
 import com.example.studentapp.ui.screens.schedule.ScheduleScreen
 import com.example.studentapp.ui.screens.services.ServicesScreen
 import com.example.studentapp.ui.screens.studyload.StudyLoadScreen
@@ -56,28 +52,9 @@ fun AppNavGraph() {
         )
     ) }
 
-    // Profile overview placeholder
-    val profileOverview = remember { com.example.studentapp.ui.screens.profile.models.ProfileUiState(
-        accountId = "N/A",
-        fullName = "Loading...",
-        emailAddress = "N/A",
-        phoneNumber = "N/A",
-        accountLabel = "Student Portal Account",
-        programSummary = "N/A",
-        avatarInitials = "??",
-        emergencyContact = com.example.studentapp.ui.screens.profile.models.EmergencyContactUiState(
-            name = "N/A",
-            relationship = "N/A",
-            phoneNumber = "N/A"
-        ),
-        twoFactorStatus = com.example.studentapp.domain.model.TwoFactorStatus.Disabled,
-        notificationSettings = com.example.studentapp.ui.screens.profile.models.NotificationSettingsUiState(
-            emailNotifications = false,
-            smsNotifications = false,
-            systemAlerts = false
-        ),
-        qrPayload = "N/A"
-    ) }
+    val navigateToNotifications = {
+        currentRoute = AppDestination.Notifications.route
+    }
 
     when {
         currentRoute == AppDestination.Login.route -> {
@@ -100,16 +77,13 @@ fun AppNavGraph() {
                 },
                 onViewScheduleClick = {
                     currentRoute = AppDestination.Schedule.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
         currentRoute == AppDestination.Academic.route -> {
             BackHandler {
-                currentRoute = AppDestination.Dashboard.route
-            }
-
-            val goToDashboard = {
                 currentRoute = AppDestination.Dashboard.route
             }
 
@@ -120,27 +94,16 @@ fun AppNavGraph() {
                 onBottomNavSelected = { item ->
                     currentRoute = resolvePrimaryRoute(item, currentRoute)
                 },
-                onBackClick = goToDashboard,
-                onViewAllClick = goToDashboard,
-                onContactSupportClick = goToDashboard,
-                onCoursesClick = {
-                    currentRoute = AppDestination.Courses.route
-                },
-                onEnrollmentClick = {
-                    currentRoute = AppDestination.Enrollment.route
-                },
-                onProgramsClick = {
-                    currentRoute = AppDestination.Programs.route
-                },
-                onGradesClick = {
-                    currentRoute = AppDestination.Grades.route
-                },
-                onEvaluationClick = {
-                    currentRoute = AppDestination.Evaluation.route
-                },
-                onStudyLoadClick = {
-                    currentRoute = AppDestination.StudyLoad.route
-                }
+                onBackClick = { currentRoute = AppDestination.Dashboard.route },
+                onViewAllClick = { currentRoute = AppDestination.Dashboard.route },
+                onContactSupportClick = { currentRoute = AppDestination.Dashboard.route },
+                onCoursesClick = { currentRoute = AppDestination.Courses.route },
+                onEnrollmentClick = { currentRoute = AppDestination.Enrollment.route },
+                onProgramsClick = { currentRoute = AppDestination.Programs.route },
+                onGradesClick = { currentRoute = AppDestination.Grades.route },
+                onEvaluationClick = { currentRoute = AppDestination.Evaluation.route },
+                onStudyLoadClick = { currentRoute = AppDestination.StudyLoad.route },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -299,9 +262,13 @@ fun AppNavGraph() {
                 onBottomNavSelected = { item ->
                     currentRoute = resolvePrimaryRoute(item, currentRoute)
                 },
+                onBackClick = {
+                    currentRoute = AppDestination.Dashboard.route
+                },
                 onPayNowClick = {
                     currentRoute = AppDestination.PaymentQueue.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -329,7 +296,8 @@ fun AppNavGraph() {
                 },
                 onGoodMoralClick = {
                     currentRoute = AppDestination.GoodMoral.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -349,7 +317,8 @@ fun AppNavGraph() {
                 },
                 onBackClick = {
                     currentRoute = AppDestination.Services.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -366,7 +335,8 @@ fun AppNavGraph() {
                 },
                 onBackClick = {
                     currentRoute = AppDestination.Services.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -383,7 +353,8 @@ fun AppNavGraph() {
                 },
                 onBackClick = {
                     currentRoute = AppDestination.Services.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -399,7 +370,8 @@ fun AppNavGraph() {
                 },
                 onBackClick = {
                     currentRoute = AppDestination.Services.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -441,6 +413,17 @@ fun AppNavGraph() {
                 onBottomNavSelected = { item ->
                     currentRoute = resolvePrimaryRoute(item, currentRoute)
                 },
+                onBackClick = {
+                    currentRoute = AppDestination.Dashboard.route
+                }
+            )
+        }
+
+        currentRoute == AppDestination.Notifications.route -> {
+            BackHandler {
+                currentRoute = AppDestination.Dashboard.route 
+            }
+            NotificationScreen(
                 onBackClick = {
                     currentRoute = AppDestination.Dashboard.route
                 }
