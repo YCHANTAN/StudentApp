@@ -95,7 +95,7 @@ const createDocumentRequestUseCase = new CreateDocumentRequestUseCase(documentRe
 const getComplaintsUseCase = new GetComplaintsUseCase(complaintRepo, studentRepo);
 const createComplaintUseCase = new CreateComplaintUseCase(complaintRepo);
 
-const getStudentBalanceUseCase = new GetStudentBalanceUseCase(transactionRepo);
+const getStudentBalanceUseCase = new GetStudentBalanceUseCase(transactionRepo, studentRepo);
 const processTransactionUseCase = new ProcessTransactionUseCase(transactionRepo);
 
 const getProgramsUseCase = new GetProgramsUseCase(programRepo);
