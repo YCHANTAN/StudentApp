@@ -6,9 +6,10 @@ import { studentProfiles } from "./src/infrastructure/db/schema/student-profile.
 import { courses } from "./src/infrastructure/db/schema/course.schema.js";
 import { gradeRecords } from "./src/infrastructure/db/schema/grade-record.schema.js";
 import { transactions } from "./src/infrastructure/db/schema/transaction.schema.js";
-import { documentRequests } from "./src/infrastructure/db/schema/document-request.schema.ts";
+import { documentRequests } from "./src/infrastructure/db/schema/document-request.schema.js";
 import { complaints } from "./src/infrastructure/db/schema/complaint.schema.js";
 import { programs as programsTable } from "./src/infrastructure/db/schema/program.schema.js";
+import { scheduleEntries } from "./src/infrastructure/db/schema/schedule-entry.schema.js";
 
 async function seed() {
   const passwordHash = await bcrypt.hash("password123", 10);
@@ -55,6 +56,42 @@ async function seed() {
         accountLabel: "Computer Science Student"
     }
   });
+
+  console.log("Seeding schedule entries...");
+  // Seed Schedule Entries
+  const scheduleEntryList = [
+    {
+        studentId,
+        dayLabel: "Monday",
+        courseCode: "CS301",
+        courseTitle: "Advanced Algorithms",
+        timeRange: "10:00 AM — 11:30 AM",
+        room: "Engineering Hall, Rm 402",
+        instructor: "Dr. Helena Vance"
+    },
+    {
+        studentId,
+        dayLabel: "Tuesday",
+        courseCode: "MATH402",
+        courseTitle: "Stochastic Processes",
+        timeRange: "01:00 PM — 02:30 PM",
+        room: "Science Building, Rm 105",
+        instructor: "Prof. Julian Thorne"
+    },
+    {
+        studentId,
+        dayLabel: "Wednesday",
+        courseCode: "CS301",
+        courseTitle: "Advanced Algorithms",
+        timeRange: "10:00 AM — 11:30 AM",
+        room: "Engineering Hall, Rm 402",
+        instructor: "Dr. Helena Vance"
+    }
+  ];
+
+  for (const entry of scheduleEntryList) {
+    await db.insert(scheduleEntries).values(entry).onConflictDoNothing();
+  }
 
   console.log("Seeding courses...");
   // 3. Seed Courses
