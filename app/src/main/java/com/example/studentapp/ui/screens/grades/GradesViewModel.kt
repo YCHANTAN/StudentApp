@@ -60,7 +60,8 @@ class GradesViewModel(
                             else -> SubjectStatus.COMPLETED
                         },
                         iconType = SubjectIconType.CODE,
-                        semester = record.semesterLabel ?: "Unknown"
+                        semester = record.semesterLabel ?: "Unknown",
+                        remarks = record.remarks
                     )
                 }
 

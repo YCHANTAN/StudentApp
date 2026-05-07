@@ -7,6 +7,8 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Streaming
+import okhttp3.ResponseBody
 
 data class CreateEnrollmentRequest(
     @SerializedName("studentId") val studentId: String,
@@ -47,4 +49,10 @@ interface EnrollmentApi {
         @Path("id") id: String,
         @Body request: UpdateEnrollmentRequest
     ): Response<EnrollmentResponse>
+
+    @Streaming
+    @GET("enrollments/student/{studentId}/pdf")
+    suspend fun getStudyLoadPdf(
+        @Path("studentId") studentId: String
+    ): Response<ResponseBody>
 }

@@ -107,7 +107,10 @@ fun EvaluationScreen(
                         onCourseMaterialsChanged = { viewModel.updateCourseMaterials(course.id, it) },
                         onPunctualityChanged = { viewModel.updatePunctuality(course.id, it) },
                         onCommentsChanged = { viewModel.updateComments(course.id, it) },
-                        onSubmitClick = onSubmitClick
+                        onSubmitClick = { 
+                            viewModel.submitEvaluation(course.id)
+                            onSubmitClick() // Call original callback if needed (e.g. for toast)
+                        }
                     )
                 }
             }

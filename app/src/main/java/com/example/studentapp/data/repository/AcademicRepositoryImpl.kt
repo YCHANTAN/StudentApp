@@ -1,6 +1,8 @@
 package com.example.studentapp.data.repository
 
 import com.example.studentapp.data.remote.CourseResponse
+import com.example.studentapp.data.remote.CreateEvaluationRequest
+import com.example.studentapp.data.remote.EvaluationResponse
 import com.example.studentapp.data.remote.GradeRecordResponse
 import com.example.studentapp.data.remote.NetworkModule
 import com.example.studentapp.data.remote.ProgramResponse
@@ -79,6 +81,43 @@ class AcademicRepositoryImpl : AcademicRepository {
             }
         } catch (e: Exception) {
             emptyList()
+        }
+    }
+
+    override suspend fun getEvaluations(studentId: String): List<EvaluationResponse> = withContext(Dispatchers.IO) {
+        try {
+            val response = NetworkModule.academicApi.getEvaluations(studentId)
+            if (response.isSuccessful) {
+                response.body() ?: emptyList()
+            } else {
+                emptyList()
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    override suspend fun submitEvaluation(
+        studentId: String,
+        courseId: String,
+        teachingQuality: Int,
+        courseMaterials: Int,
+        punctuality: Int,
+        comments: String?
+    ): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val request = CreateEvaluationRequest(
+                studentId,
+                courseId,
+                teachingQuality,
+                courseMaterials,
+                punctuality,
+                comments
+            )
+            val response = NetworkModule.academicApi.submitEvaluation(request)
+            response.isSuccessful
+        } catch (e: Exception) {
+            false
         }
     }
 }

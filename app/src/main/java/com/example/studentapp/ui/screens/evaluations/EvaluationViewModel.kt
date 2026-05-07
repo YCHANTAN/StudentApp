@@ -6,12 +6,16 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.studentapp.domain.repository.AcademicRepository
+import com.example.studentapp.domain.repository.AuthRepository
+import com.example.studentapp.domain.repository.EnrollmentRepository
 import com.example.studentapp.ui.screens.evaluations.models.EvaluationCourseIconType
 import com.example.studentapp.ui.screens.evaluations.models.EvaluationCourseItem
 import kotlinx.coroutines.launch
 
 class EvaluationViewModel(
-    private val academicRepository: AcademicRepository = com.example.studentapp.data.repository.AcademicRepositoryImpl()
+    private val authRepository: AuthRepository = com.example.studentapp.data.repository.AuthRepositoryImpl(),
+    private val academicRepository: AcademicRepository = com.example.studentapp.data.repository.AcademicRepositoryImpl(),
+    private val enrollmentRepository: EnrollmentRepository = com.example.studentapp.data.repository.EnrollmentRepositoryImpl()
 ) : ViewModel() {
     var pendingCourses by mutableStateOf<List<EvaluationCourseItem>>(emptyList())
         private set
@@ -26,17 +30,55 @@ class EvaluationViewModel(
     fun loadPendingEvaluations() {
         viewModelScope.launch {
             isLoading = true
-            val courses = academicRepository.getCourses()
-            // Assume Enrolled courses need evaluation
-            pendingCourses = courses.filter { it.status == "Enrolled" }.map { response ->
-                EvaluationCourseItem(
-                    id = response.id,
-                    codeTitle = "${response.code} - ${response.title}",
-                    instructor = response.instructor ?: "TBA",
-                    iconType = if (response.code.contains("CS")) EvaluationCourseIconType.DOCUMENT else EvaluationCourseIconType.CHART
-                )
+            val profile = authRepository.getProfile()
+            if (profile != null) {
+                val studentId = profile.accountId
+                val enrollments = enrollmentRepository.getEnrollments(studentId)
+                val activeEnrollment = enrollments
+                    .filter { it.status != "REJECTED" }
+                    .maxByOrNull { it.createdAt }
+
+                if (activeEnrollment != null) {
+                    val allCourses = academicRepository.getCourses()
+                    val evaluations = academicRepository.getEvaluations(studentId)
+                    val evaluatedCourseIds = evaluations.map { it.courseId }
+
+                    // Only include courses from the active enrollment that haven't been evaluated
+                    pendingCourses = allCourses
+                        .filter { activeEnrollment.courseIds.contains(it.id) && !evaluatedCourseIds.contains(it.id) }
+                        .map { response ->
+                            EvaluationCourseItem(
+                                id = response.id,
+                                codeTitle = "${response.code} - ${response.title}",
+                                instructor = response.instructor ?: "TBA",
+                                iconType = if (response.code.contains("CS")) EvaluationCourseIconType.DOCUMENT else EvaluationCourseIconType.CHART
+                            )
+                        }
+                } else {
+                    pendingCourses = emptyList()
+                }
             }
             isLoading = false
+        }
+    }
+
+    fun submitEvaluation(courseId: String) {
+        viewModelScope.launch {
+            val profile = authRepository.getProfile()
+            val item = pendingCourses.find { it.id == courseId }
+            if (profile != null && item != null) {
+                val success = academicRepository.submitEvaluation(
+                    profile.accountId,
+                    courseId,
+                    item.teachingQuality,
+                    item.courseMaterials,
+                    item.punctuality,
+                    item.comments
+                )
+                if (success) {
+                    pendingCourses = pendingCourses.filter { it.id != courseId }
+                }
+            }
         }
     }
 

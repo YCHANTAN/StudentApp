@@ -18,5 +18,6 @@ data class GradesSubjectItem(
     val gradePoint: String,
     val status: SubjectStatus,
     val iconType: SubjectIconType,
-    val semester: String
+    val semester: String,
+    val remarks: String? = null
 )

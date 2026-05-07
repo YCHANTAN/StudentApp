@@ -90,7 +90,18 @@ fun SubjectGradeCard(
 
                     Spacer(modifier = Modifier.padding(vertical = 3.dp))
 
-                    SubjectStatusBadge(status = item.status)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        SubjectStatusBadge(status = item.status)
+                        item.remarks?.let {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "• $it",
+                                color = MaterialTheme.colorScheme.primary,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                    }
                 }
             }
 

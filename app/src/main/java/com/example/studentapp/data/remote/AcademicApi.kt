@@ -3,6 +3,7 @@ package com.example.studentapp.data.remote
 import com.google.gson.annotations.SerializedName
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 data class GradeRecordResponse(
@@ -12,7 +13,8 @@ data class GradeRecordResponse(
     @SerializedName("codeCredits") val codeCredits: String,
     @SerializedName("gradePoint") val gradePoint: String,
     @SerializedName("status") val status: String,
-    @SerializedName("semesterLabel") val semesterLabel: String?
+    @SerializedName("semesterLabel") val semesterLabel: String?,
+    @SerializedName("remarks") val remarks: String?
 )
 
 data class CourseResponse(
@@ -65,6 +67,26 @@ data class ProgramResponse(
     @SerializedName("prospectusUrl") val prospectusUrl: String?
 )
 
+data class EvaluationResponse(
+    @SerializedName("id") val id: String,
+    @SerializedName("studentId") val studentId: String,
+    @SerializedName("courseId") val courseId: String,
+    @SerializedName("teachingQuality") val teachingQuality: Int,
+    @SerializedName("courseMaterials") val courseMaterials: Int,
+    @SerializedName("punctuality") val punctuality: Int,
+    @SerializedName("comments") val comments: String?,
+    @SerializedName("createdAt") val createdAt: String
+)
+
+data class CreateEvaluationRequest(
+    @SerializedName("studentId") val studentId: String,
+    @SerializedName("courseId") val courseId: String,
+    @SerializedName("teachingQuality") val teachingQuality: Int,
+    @SerializedName("courseMaterials") val courseMaterials: Int,
+    @SerializedName("punctuality") val punctuality: Int,
+    @SerializedName("comments") val comments: String?
+)
+
 interface AcademicApi {
     @GET("programs")
     suspend fun getPrograms(
@@ -92,4 +114,14 @@ interface AcademicApi {
         @Query("page") page: Int = 1,
         @Query("limit") limit: Int = 50
     ): Response<PaginatedResponse<ScheduleEntryResponse>>
+
+    @GET("evaluations/student/{studentId}")
+    suspend fun getEvaluations(
+        @Path("studentId") studentId: String
+    ): Response<List<EvaluationResponse>>
+
+    @retrofit2.http.POST("evaluations")
+    suspend fun submitEvaluation(
+        @retrofit2.http.Body request: CreateEvaluationRequest
+    ): Response<EvaluationResponse>
 }
