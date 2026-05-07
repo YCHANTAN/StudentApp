@@ -122,5 +122,5 @@ fun EnrollmentBottomSheet(
 }
 
 private fun formatPhilippinePeso(amount: Double): String {
-    return "\u20b1${"%,.2f".format(Locale.US, amount)}"
+    return "\u20b1${String.format(Locale.US, "%,.2f", amount)}"
 }

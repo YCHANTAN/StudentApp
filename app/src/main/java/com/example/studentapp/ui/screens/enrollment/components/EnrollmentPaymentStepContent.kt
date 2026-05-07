@@ -3,6 +3,7 @@ package com.example.studentapp.ui.screens.enrollment.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -79,7 +81,7 @@ fun EnrollmentPaymentStepContent(
 
         items(
             items = selectedCourses,
-            key = { it.code }
+            key = { it.id }
         ) { course ->
             EnrollmentPaymentCourseItem(course = course)
         }
@@ -184,7 +186,7 @@ fun EnrollmentPaymentCourseItem(
     course: EnrollableCourse,
     modifier: Modifier = Modifier
 ) {
-    Row(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .background(
@@ -196,11 +198,25 @@ fun EnrollmentPaymentCourseItem(
                 color = MaterialTheme.colorScheme.outlineVariant,
                 shape = RoundedCornerShape(12.dp)
             )
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(16.dp)
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Column(
+            modifier = Modifier.fillMaxWidth().padding(end = 80.dp), // Space for units badge
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f))
+                    .padding(horizontal = 6.dp, vertical = 2.dp)
+            ) {
+                Text(
+                    text = course.code,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Bold
+                )
+            }
             Text(
                 text = course.title,
                 color = MaterialTheme.colorScheme.onSurface,
@@ -208,18 +224,26 @@ fun EnrollmentPaymentCourseItem(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "${course.code} \u2022 ${course.instructorSchedule}",
+                text = "${course.instructor} \u2022 ${course.schedule}",
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 12.sp
             )
         }
 
-        Text(
-            text = "${course.units} Units",
-            color = MaterialTheme.colorScheme.secondary,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Bold
-        )
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .clip(RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f))
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+        ) {
+            Text(
+                text = "${course.units} Units",
+                color = MaterialTheme.colorScheme.secondary,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
@@ -262,5 +286,5 @@ fun EnrollmentReviewDetailsCard(
 }
 
 private fun formatPhilippinePeso(amount: Double): String {
-    return "\u20B1${"%,.2f".format(Locale.US, amount)}"
+    return "\u20B1${String.format(Locale.US, "%,.2f", amount)}"
 }
