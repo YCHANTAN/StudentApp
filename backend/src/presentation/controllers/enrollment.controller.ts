@@ -5,6 +5,7 @@ import type { GetEnrollmentsUseCase } from '@/application/use-cases/enrollment/g
 import type { CreateEnrollmentUseCase } from '@/application/use-cases/enrollment/create-enrollment.use-case';
 import type { UpdateEnrollmentUseCase } from '@/application/use-cases/enrollment/update-enrollment.use-case';
 import type { DeleteEnrollmentUseCase } from '@/application/use-cases/enrollment/delete-enrollment.use-case';
+import type { GetStudyLoadPdfUseCase } from '@/application/use-cases/enrollment/get-study-load-pdf.use-case';
 import { ok, created } from '@/presentation/lib/response.helper';
 
 export class EnrollmentController {
@@ -12,7 +13,8 @@ export class EnrollmentController {
     private readonly getEnrollmentsUseCase: GetEnrollmentsUseCase,
     private readonly createEnrollmentUseCase: CreateEnrollmentUseCase,
     private readonly updateEnrollmentUseCase: UpdateEnrollmentUseCase,
-    private readonly deleteEnrollmentUseCase: DeleteEnrollmentUseCase
+    private readonly deleteEnrollmentUseCase: DeleteEnrollmentUseCase,
+    private readonly getStudyLoadPdfUseCase: GetStudyLoadPdfUseCase
   ) {}
 
   getEnrollments = async (req: Request, res: Response, next: NextFunction) => {
@@ -34,6 +36,19 @@ export class EnrollmentController {
         limit: pagination.limit,
         totalPages: Math.ceil(total / pagination.limit),
       });
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  getStudyLoadPdf = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const studentId = req.params.studentId as string;
+      const pdfBuffer = await this.getStudyLoadPdfUseCase.execute(studentId);
+      
+      res.setHeader('Content-Type', 'application/pdf');
+      res.setHeader('Content-Disposition', `attachment; filename=study_load_${studentId}.pdf`);
+      res.send(pdfBuffer);
     } catch (err) {
       next(err);
     }
