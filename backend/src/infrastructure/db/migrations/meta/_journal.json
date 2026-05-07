@@ -64,6 +64,13 @@
       "when": 1778137242140,
       "tag": "0008_lazy_the_renegades",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1778146175632,
+      "tag": "0009_sparkling_bloodstorm",
+      "breakpoints": true
     }
   ]
 }

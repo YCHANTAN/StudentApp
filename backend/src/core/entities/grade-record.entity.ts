@@ -8,5 +8,6 @@ export type GradeRecord = {
   gradePoint: string;
   status: GradeRecordStatus;
   semesterLabel?: string;
+  remarks?: string;
   createdAt: Date;
 };
