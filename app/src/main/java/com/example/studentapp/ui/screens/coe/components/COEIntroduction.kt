@@ -20,7 +20,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun COEIntroduction(modifier: Modifier = Modifier) {
+fun COEIntroduction(
+    studentName: String,
+    studentId: String,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -44,7 +48,7 @@ fun COEIntroduction(modifier: Modifier = Modifier) {
         }
 
         Text(
-            text = "Certificate of Enrollment",
+            text = "Welcome, $studentName",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onSurface,
@@ -52,7 +56,7 @@ fun COEIntroduction(modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = "Generate your official document to verify your status as a registered student for the current or previous academic periods.",
+            text = "Request your official Certificate of Enrollment for $studentId. This document verifies your status as a registered student.",
             fontSize = 14.sp,
             lineHeight = 20.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,

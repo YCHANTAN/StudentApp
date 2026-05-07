@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.ui.components.StudentBottomNavBar
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
@@ -36,8 +37,11 @@ fun GoodMoralScreen(
     selectedNavItemId: String = "services",
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
     onBackClick: () -> Unit = {},
-    onNotificationClick: () -> Unit = {}
+    onNotificationClick: () -> Unit = {},
+    viewModel: GoodMoralViewModel = viewModel()
 ) {
+    val profile = viewModel.profile
+
     Scaffold(
         modifier = Modifier.statusBarsPadding(), 
         topBar = {
@@ -64,7 +68,10 @@ fun GoodMoralScreen(
             verticalArrangement = Arrangement.spacedBy(32.dp)
         ) {
             // New Request Section
-            NewRequestSection()
+            NewRequestSection(
+                studentId = profile?.accountId ?: "---",
+                fullName = profile?.fullName ?: "Loading..."
+            )
 
             // Request History Section
             RequestHistorySection()

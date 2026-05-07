@@ -1,5 +1,6 @@
 package com.example.studentapp.ui.screens.goodmoral.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -36,6 +37,8 @@ import com.example.studentapp.ui.theme.DarkGreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewRequestSection(
+    studentId: String,
+    fullName: String,
     modifier: Modifier = Modifier
 ) {
     var selectedProgram by remember { mutableStateOf("") }
@@ -60,6 +63,21 @@ fun NewRequestSection(
                 text = "New Request",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
+            )
+        }
+
+        // Student Info
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                text = "Requesting for: $fullName",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Text(
+                text = "ID: $studentId",
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
@@ -177,6 +195,28 @@ fun NewRequestSection(
                     unfocusedContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
                     unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
                 )
+            )
+        }
+
+        // Simple Payment Note for Good Moral
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(12.dp))
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("Request Fee", fontSize = 14.sp)
+                Text("₱100.00", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = MaterialTheme.colorScheme.primary)
+            }
+            Text(
+                text = "This fee will be added to your account balance.",
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.padding(top = 4.dp)
             )
         }
 

@@ -55,7 +55,7 @@ fun COEQuickActions(
         // Printed Option (Secondary)
         QuickActionCard(
             title = "Request Printed Copy",
-            subtitle = "Pick up at the Registrar's Office within 24-48 hours.",
+            subtitle = "Pick up at the Registrar's Office for only ₱100.00.",
             actionText = "Submit Request",
             actionIcon = Icons.Default.Schedule,
             icon = Icons.Default.Print,
