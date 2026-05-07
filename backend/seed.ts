@@ -10,6 +10,8 @@ import { documentRequests } from "./src/infrastructure/db/schema/document-reques
 import { complaints } from "./src/infrastructure/db/schema/complaint.schema.js";
 import { programs as programsTable } from "./src/infrastructure/db/schema/program.schema.js";
 import { scheduleEntries } from "./src/infrastructure/db/schema/schedule-entry.schema.js";
+import { evaluations } from "./src/infrastructure/db/schema/evaluation.schema.js";
+import { enrollments, enrollmentCourses } from "./src/infrastructure/db/schema/enrollment.schema.js";
 
 async function seed() {
   const passwordHash = await bcrypt.hash("password123", 10);
@@ -233,13 +235,15 @@ async function seed() {
   console.log("Seeding grade records...");
   // 4. Seed Grade Records
   const gradeRecordList = [
+    // 2nd Semester 3rd Year
     {
         studentId,
         title: "Data Structures",
         codeCredits: "CS201 • 3 Credits",
         gradePoint: "1.25",
         status: "COMPLETED",
-        semesterLabel: "2nd Semester 3rd Year"
+        semesterLabel: "2nd Semester 3rd Year",
+        remarks: "Excellent"
     },
     {
         studentId,
@@ -247,7 +251,8 @@ async function seed() {
         codeCredits: "MATH302 • 3 Credits",
         gradePoint: "1.50",
         status: "COMPLETED",
-        semesterLabel: "2nd Semester 3rd Year"
+        semesterLabel: "2nd Semester 3rd Year",
+        remarks: "Passed"
     },
     {
         studentId,
@@ -255,23 +260,92 @@ async function seed() {
         codeCredits: "CS205 • 3 Credits",
         gradePoint: "1.00",
         status: "COMPLETED",
-        semesterLabel: "2nd Semester 3rd Year"
+        semesterLabel: "2nd Semester 3rd Year",
+        remarks: "Outstanding"
     },
+    {
+        studentId,
+        title: "Computer Networks",
+        codeCredits: "CS306 • 3 Credits",
+        gradePoint: "1.75",
+        status: "COMPLETED",
+        semesterLabel: "2nd Semester 3rd Year",
+        remarks: "Good"
+    },
+    // 1st Semester 3rd Year
     {
         studentId,
         title: "Discrete Mathematics",
         codeCredits: "MATH101 • 3 Credits",
         gradePoint: "1.75",
         status: "COMPLETED",
-        semesterLabel: "1st Semester 3rd Year"
+        semesterLabel: "1st Semester 3rd Year",
+        remarks: "Good"
     },
+    {
+        studentId,
+        title: "Object-Oriented Programming",
+        codeCredits: "CS202 • 3 Credits",
+        gradePoint: "1.25",
+        status: "COMPLETED",
+        semesterLabel: "1st Semester 3rd Year",
+        remarks: "Very Good"
+    },
+    {
+        studentId,
+        title: "Software Engineering 1",
+        codeCredits: "CS303 • 3 Credits",
+        gradePoint: "1.50",
+        status: "COMPLETED",
+        semesterLabel: "1st Semester 3rd Year",
+        remarks: "Passed"
+    },
+    // 2nd Semester 2nd Year
     {
         studentId,
         title: "Intro to Programming",
         codeCredits: "CS101 • 3 Credits",
         gradePoint: "1.25",
         status: "COMPLETED",
-        semesterLabel: "2nd Semester 2nd Year"
+        semesterLabel: "2nd Semester 2nd Year",
+        remarks: "Very Good"
+    },
+    {
+        studentId,
+        title: "Digital Logic Design",
+        codeCredits: "CS105 • 3 Credits",
+        gradePoint: "1.50",
+        status: "COMPLETED",
+        semesterLabel: "2nd Semester 2nd Year",
+        remarks: "Passed"
+    },
+    {
+        studentId,
+        title: "Ethics in Computing",
+        codeCredits: "GE104 • 3 Credits",
+        gradePoint: "1.25",
+        status: "COMPLETED",
+        semesterLabel: "2nd Semester 2nd Year",
+        remarks: "Very Good"
+    },
+    // 1st Semester 2nd Year
+    {
+        studentId,
+        title: "College Algebra",
+        codeCredits: "MATH100 • 3 Credits",
+        gradePoint: "2.00",
+        status: "COMPLETED",
+        semesterLabel: "1st Semester 2nd Year",
+        remarks: "Satisfactory"
+    },
+    {
+        studentId,
+        title: "Art Appreciation",
+        codeCredits: "GE101 • 3 Credits",
+        gradePoint: "1.00",
+        status: "COMPLETED",
+        semesterLabel: "1st Semester 2nd Year",
+        remarks: "Outstanding"
     }
   ] as any[];
 
@@ -433,13 +507,53 @@ async function seed() {
   ] as any[];
 
   for (const prog of programList) {
-    await db.insert(programsTable).values(prog).onConflictDoUpdate({
-      target: programsTable.id,
-      set: prog
-    });
+  await db.insert(programsTable).values(prog).onConflictDoUpdate({
+    target: programsTable.id,
+    set: prog
+  });
   }
-    
+
+  console.log("Seeding evaluations...");
+  const evaluationList = [
+  {
+    studentId,
+    courseId: "550e8400-e29b-41d4-a716-446655440003", // CS301
+    teachingQuality: 5,
+    courseMaterials: 4,
+    punctuality: 5,
+    comments: "Great course! Very challenging but rewarding."
+  }
+  ];
+
+  for (const evaluation of evaluationList) {
+    await db.insert(evaluations).values(evaluation).onConflictDoNothing();
+  }
+
+  console.log("Seeding enrollments...");
+  const enrollmentId = "550e8400-e29b-41d4-a716-446655440100";
+  await db.insert(enrollments).values({
+    id: enrollmentId,
+    studentId,
+    status: "APPROVED",
+    totalUnits: 11,
+    totalTuition: "1960.00",
+  }).onConflictDoUpdate({
+    target: enrollments.id,
+    set: { status: "APPROVED", totalUnits: 11, totalTuition: "1960.00" }
+  });
+
+  const enrollmentCourseList = [
+    { enrollmentId, courseId: "550e8400-e29b-41d4-a716-446655440003" }, // CS301
+    { enrollmentId, courseId: "550e8400-e29b-41d4-a716-446655440004" }, // MATH402
+    { enrollmentId, courseId: "550e8400-e29b-41d4-a716-446655440005" }, // CS320
+  ];
+
+  for (const ec of enrollmentCourseList) {
+    await db.insert(enrollmentCourses).values(ec).onConflictDoNothing();
+  }
+
   console.log("Seeded successfully.");
+
   process.exit(0);
 }
 
