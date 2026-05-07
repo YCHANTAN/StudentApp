@@ -29,8 +29,8 @@ import com.example.studentapp.ui.theme.DarkGreen
 
 @Composable
 fun PaymentSummarySection(copies: Int) {
-    val processingFee = 15.0 * copies
-    val documentStamp = 2.0
+    val processingFee = 150.0 * copies
+    val documentStamp = 30.0
     val total = processingFee + documentStamp
 
     Column(verticalArrangement = Arrangement.spacedBy(24.dp)) {
@@ -67,8 +67,8 @@ fun PaymentSummarySection(copies: Int) {
             }
 
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                SummaryRow(label = "Processing Fee ($copies Copy)", value = "$${"%.2f".format(processingFee)}")
-                SummaryRow(label = "Document Stamp", value = "$${"%.2f".format(documentStamp)}")
+                SummaryRow(label = "Processing Fee ($copies Copy)", value = "₱${"%.2f".format(processingFee)}")
+                SummaryRow(label = "Document Stamp", value = "₱${"%.2f".format(documentStamp)}")
 
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = 8.dp),
@@ -87,7 +87,7 @@ fun PaymentSummarySection(copies: Int) {
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = "$${"%.2f".format(total)}",
+                        text = "₱${"%.2f".format(total)}",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary

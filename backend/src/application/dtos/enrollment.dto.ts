@@ -8,7 +8,8 @@ export const CreateEnrollmentDto = z.object({
 });
 
 export const UpdateEnrollmentDto = z.object({
-  status: EnrollmentStatusDto,
+  status: EnrollmentStatusDto.optional(),
+  courseIds: z.array(z.string().uuid()).optional(),
 });
 
 export const EnrollmentResponseDto = z.object({

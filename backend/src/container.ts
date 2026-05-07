@@ -15,6 +15,9 @@ import { GetComplaintsUseCase } from "@/application/use-cases/complaint/get-comp
 import { CreateComplaintUseCase } from "@/application/use-cases/complaint/create-complaint.use-case";
 import { GetStudentBalanceUseCase } from "@/application/use-cases/finance/get-balance.use-case";
 import { ProcessTransactionUseCase } from "@/application/use-cases/finance/process-transaction.use-case";
+import { GetAssessmentUseCase } from "@/application/use-cases/finance/get-assessment.use-case";
+import { GetPaymentSlipUseCase } from "@/application/use-cases/finance/get-payment-slip.use-case";
+import { GetTransactionHistoryUseCase } from "@/application/use-cases/finance/get-transaction-history.use-case";
 import { GetProgramsUseCase } from "@/application/use-cases/program/get-programs.use-case";
 import { GetProgramUseCase } from "@/application/use-cases/program/get-program.use-case";
 import { GetCoursesUseCase } from "@/application/use-cases/course/get-courses.use-case";
@@ -25,8 +28,11 @@ import { GetEnrollmentsUseCase } from "@/application/use-cases/enrollment/get-en
 import { CreateEnrollmentUseCase } from "@/application/use-cases/enrollment/create-enrollment.use-case";
 import { UpdateEnrollmentUseCase } from "@/application/use-cases/enrollment/update-enrollment.use-case";
 import { DeleteEnrollmentUseCase } from "@/application/use-cases/enrollment/delete-enrollment.use-case";
+import { GetStudyLoadPdfUseCase } from "@/application/use-cases/enrollment/get-study-load-pdf.use-case";
 import { GetStudentSubjectsUseCase } from "@/application/use-cases/registration/get-student-subjects.use-case";
 import { CreateSubjectUseCase } from "@/application/use-cases/subject/create-subject.use-case";
+import { SubmitEvaluationUseCase } from "@/application/use-cases/evaluation/submit-evaluation.use-case";
+import { GetStudentEvaluationsUseCase } from "@/application/use-cases/evaluation/get-student-evaluations.use-case";
 
 import { db } from "@/infrastructure/db/client";
 import { BorrowRecordPgRepository } from "@/infrastructure/db/repositories/borrow-record.pg.repository";
@@ -43,6 +49,7 @@ import { GradeRecordPgRepository } from "@/infrastructure/db/repositories/grade-
 import { EnrollmentPgRepository } from "@/infrastructure/db/repositories/enrollment.pg.repository";
 import { SubjectRegistrationPgRepository } from "@/infrastructure/db/repositories/subject-registration.pg.repository";
 import { SubjectPgRepository } from "@/infrastructure/db/repositories/subject.pg.repository";
+import { EvaluationPgRepository } from "@/infrastructure/db/repositories/evaluation.pg.repository";
 
 import { AuthController } from "@/presentation/controllers/auth.controller";
 import { StudentProfileController } from "@/presentation/controllers/student-profile.controller";
@@ -58,6 +65,7 @@ import { TransactionController } from "@/presentation/controllers/transaction.co
 import { EnrollmentController } from "@/presentation/controllers/enrollment.controller";
 import { SubjectRegistrationController } from "@/presentation/controllers/subject-registration.controller";
 import { SubjectController } from "@/presentation/controllers/subject.controller";
+import { EvaluationController } from "@/presentation/controllers/evaluation.controller";
 
 // --- Repositories ---
 const studentRepo = new StudentPgRepository(db);
@@ -74,6 +82,7 @@ const gradeRecordRepo = new GradeRecordPgRepository(db);
 const enrollmentRepo = new EnrollmentPgRepository(db);
 const registrationRepo = new SubjectRegistrationPgRepository(db);
 const subjectRepo = new SubjectPgRepository(db);
+const evaluationRepo = new EvaluationPgRepository(db);
 
 // --- Use Cases ---
 const getStudentUseCase = new GetStudentUseCase(studentRepo);
@@ -90,13 +99,16 @@ const getBorrowHistoryUseCase = new GetBorrowHistoryUseCase(borrowRecordRepo);
 
 const getDocumentRequestsUseCase = new GetDocumentRequestsUseCase(documentRequestRepo, studentRepo);
 const getDocumentRequestUseCase = new GetDocumentRequestUseCase(documentRequestRepo);
-const createDocumentRequestUseCase = new CreateDocumentRequestUseCase(documentRequestRepo);
+const createDocumentRequestUseCase = new CreateDocumentRequestUseCase(documentRequestRepo, transactionRepo);
 
 const getComplaintsUseCase = new GetComplaintsUseCase(complaintRepo, studentRepo);
 const createComplaintUseCase = new CreateComplaintUseCase(complaintRepo);
 
-const getStudentBalanceUseCase = new GetStudentBalanceUseCase(transactionRepo);
+const getStudentBalanceUseCase = new GetStudentBalanceUseCase(transactionRepo, studentRepo);
 const processTransactionUseCase = new ProcessTransactionUseCase(transactionRepo);
+const getAssessmentUseCase = new GetAssessmentUseCase(studentRepo, studentProfileRepo, enrollmentRepo, courseRepo, transactionRepo);
+const getPaymentSlipUseCase = new GetPaymentSlipUseCase(getAssessmentUseCase, transactionRepo, studentRepo);
+const getTransactionHistoryUseCase = new GetTransactionHistoryUseCase(transactionRepo, studentRepo);
 
 const getProgramsUseCase = new GetProgramsUseCase(programRepo);
 const getProgramUseCase = new GetProgramUseCase(programRepo);
@@ -111,11 +123,15 @@ const getTransactionsUseCase = new GetTransactionsUseCase(transactionRepo, stude
 
 const getEnrollmentsUseCase = new GetEnrollmentsUseCase(enrollmentRepo, studentRepo);
 const createEnrollmentUseCase = new CreateEnrollmentUseCase(enrollmentRepo, courseRepo);
-const updateEnrollmentUseCase = new UpdateEnrollmentUseCase(enrollmentRepo);
+const updateEnrollmentUseCase = new UpdateEnrollmentUseCase(enrollmentRepo, courseRepo);
 const deleteEnrollmentUseCase = new DeleteEnrollmentUseCase(enrollmentRepo);
+const getStudyLoadPdfUseCase = new GetStudyLoadPdfUseCase(enrollmentRepo, studentProfileRepo, courseRepo);
 
 const getStudentSubjectsUseCase = new GetStudentSubjectsUseCase(registrationRepo);
 const createSubjectUseCase = new CreateSubjectUseCase(subjectRepo);
+
+const submitEvaluationUseCase = new SubmitEvaluationUseCase(evaluationRepo);
+const getStudentEvaluationsUseCase = new GetStudentEvaluationsUseCase(evaluationRepo);
 
 // --- Controllers ---
 export const authController = new AuthController(loginUseCase, getStudentUseCase);
@@ -148,6 +164,9 @@ export const complaintController = new ComplaintController(
 export const financeController = new FinanceController(
   getStudentBalanceUseCase,
   processTransactionUseCase,
+  getAssessmentUseCase,
+  getPaymentSlipUseCase,
+  getTransactionHistoryUseCase,
   transactionRepo
 );
 
@@ -168,7 +187,8 @@ export const enrollmentController = new EnrollmentController(
   getEnrollmentsUseCase,
   createEnrollmentUseCase,
   updateEnrollmentUseCase,
-  deleteEnrollmentUseCase
+  deleteEnrollmentUseCase,
+  getStudyLoadPdfUseCase
 );
 
 export const subjectRegistrationController = new SubjectRegistrationController(
@@ -176,3 +196,8 @@ export const subjectRegistrationController = new SubjectRegistrationController(
 );
 
 export const subjectController = new SubjectController(createSubjectUseCase);
+
+export const evaluationController = new EvaluationController(
+  submitEvaluationUseCase,
+  getStudentEvaluationsUseCase
+);

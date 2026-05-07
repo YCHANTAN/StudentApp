@@ -28,22 +28,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun QuickActionsSection() {
+fun QuickActionsSection(
+    onPaymentSlipClick: () -> Unit = {},
+    onAssessmentClick: () -> Unit = {}
+) {
     Text("Quick Actions", fontWeight = FontWeight.Bold, fontSize = 16.sp)
     Spacer(modifier = Modifier.height(12.dp))
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        QuickActionButton("Payment Slip", Icons.Default.ReceiptLong, Modifier.weight(1f))
-        QuickActionButton("Assessment", Icons.Default.Description, Modifier.weight(1f))
+        QuickActionButton("Payment Slip", Icons.Default.ReceiptLong, Modifier.weight(1f), onClick = onPaymentSlipClick)
+        QuickActionButton("Assessment", Icons.Default.Description, Modifier.weight(1f), onClick = onAssessmentClick)
     }
 }
 
 @Composable
-fun QuickActionButton(label: String, icon: ImageVector, modifier: Modifier = Modifier) {
+fun QuickActionButton(label: String, icon: ImageVector, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        onClick = onClick
     ) {
         Column(
             modifier = Modifier.padding(16.dp),

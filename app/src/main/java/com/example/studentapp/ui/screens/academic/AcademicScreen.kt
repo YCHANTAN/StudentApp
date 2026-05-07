@@ -11,9 +11,11 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.domain.usecase.GetAcademicOverviewUseCase
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.components.StudentBottomNavBar
@@ -29,7 +31,6 @@ import com.example.studentapp.ui.theme.StudentAppTheme
 
 @Composable
 fun AcademicScreen(
-    state: AcademicUiState,
     navigationItems: List<StudentBottomNavItem>,
     selectedNavItemId: String,
     onBottomNavSelected: (StudentBottomNavItem) -> Unit,
@@ -45,8 +46,14 @@ fun AcademicScreen(
     onNotificationClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val viewModel: AcademicViewModel = viewModel()
+    
+    LaunchedEffect(Unit) {
+        viewModel.loadProfile()
+    }
+    
     AcademicServicesScreen(
-        state = state,
+        state = viewModel.uiState,
         navigationItems = navigationItems,
         selectedNavItemId = selectedNavItemId,
         onBottomNavSelected = onBottomNavSelected,
@@ -147,7 +154,10 @@ fun AcademicServicesContent(
         item(span = { GridItemSpan(maxLineSpan) }) {
             AcademicHeroCard(
                 studentName = state.studentName,
-                programSummary = state.programSummary
+                studentId = state.studentId,
+                program = state.programSummary,
+                yearLevel = state.yearLevel,
+                currentTerm = state.currentTerm
             )
         }
 
@@ -172,14 +182,21 @@ fun AcademicServicesContent(
 @Composable
 fun AcademicScreenPreview() {
     StudentAppTheme(dynamicColor = false) {
-        AcademicScreen(
+        AcademicServicesScreen(
             state = GetAcademicOverviewUseCase().invoke().toUiState(),
             navigationItems = buildPrimaryBottomNavItems(),
             selectedNavItemId = "academic",
             onBottomNavSelected = {},
             onBackClick = {},
             onViewAllClick = {},
-            onContactSupportClick = {}
+            onContactSupportClick = {},
+            onCoursesClick = {},
+            onEnrollmentClick = {},
+            onProgramsClick = {},
+            onGradesClick = {},
+            onEvaluationClick = {},
+            onStudyLoadClick = {},
+            onNotificationClick = {}
         )
     }
 }

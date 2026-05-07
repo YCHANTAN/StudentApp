@@ -15,6 +15,7 @@ import { gradeRecordRouter } from '@/presentation/routes/grade-record.routes';
 import { transactionRouter } from '@/presentation/routes/transaction.routes';
 import { enrollmentRouter } from '@/presentation/routes/enrollment.routes';
 import { subjectRouter } from '@/presentation/routes/subject.routes';
+import evaluationRouter from '@/presentation/routes/evaluation.routes';
 import { globalRateLimiter } from "@/presentation/middleware/rate-limit.middleware";
 
 export const app = express();
@@ -31,10 +32,11 @@ app.use('/api/v1/complaints', complaintRouter);
 app.use('/api/v1/finance', financeRouter);
 app.use('/api/v1/programs', programRouter);
 app.use('/api/v1/courses', courseRouter);
-app.use('/api/v1/schedule', scheduleEntryRouter);
-app.use('/api/v1/grades', gradeRecordRouter);
+app.use('/api/v1/schedule-entries', scheduleEntryRouter);
+app.use('/api/v1/grade-records', gradeRecordRouter);
 app.use('/api/v1/transactions', transactionRouter);
 app.use('/api/v1/enrollments', enrollmentRouter);
 app.use('/api/v1/subjects', subjectRouter);
+app.use('/api/v1/evaluations', evaluationRouter);
 
 app.use(errorMiddleware);

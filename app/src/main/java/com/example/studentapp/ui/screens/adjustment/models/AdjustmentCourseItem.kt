@@ -6,6 +6,7 @@ enum class AdjustmentCourseIconType {
 }
 
 data class AdjustmentCourseItem(
+    val id: String,
     val title: String,
     val scheduleAndUnits: String,
     val professor: String,

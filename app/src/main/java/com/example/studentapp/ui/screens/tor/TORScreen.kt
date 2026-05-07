@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.ui.components.StudentBottomNavBar
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
@@ -26,8 +27,11 @@ fun TORScreen(
     selectedNavItemId: String = "services",
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
     onBackClick: () -> Unit = {},
-    onNotificationClick: () -> Unit = {}
+    onNotificationClick: () -> Unit = {},
+    viewModel: TORViewModel = viewModel()
 ) {
+    val profile = viewModel.profile
+
     Scaffold(
         topBar = {
             TORHeader(
@@ -52,9 +56,9 @@ fun TORScreen(
                 .padding(16.dp)
         ) {
             StudentProfileHeader(
-                name = "Johnathan Doe",
-                studentId = "2023-000123",
-                courseYear = "BS Computer Science - 4th Year",
+                name = profile?.fullName ?: "Loading...",
+                studentId = profile?.accountId ?: "---",
+                courseYear = profile?.programSummary ?: "---",
                 imageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBhyatqy3NA5y0usr0T-RBR7iZOzY-kOaNvtGrCIc_bu1CNa2dp4KqfXHZMwl1R_YHFz9nNPwWie304Z_ZcSvRuFWCsLPt1OnQxsBEpyWflteLmsTUd6-oZE4mc6bF7riUG_3Ko1FYzUt7vRL3zK1vWzWbFmoBz9FwRT9kx1rekJVoKFsXlUsTh5wyRiWtgDS3hk2AmPIvuPwncJHenOu73pq97E2O3vIO3ph9cLM5BBmjDxza6SwLbyAlwUpxaFwWaeVUHkbQjZh0"
             )
 

@@ -1,4 +1,4 @@
-import { eq, count, inArray } from 'drizzle-orm';
+import { eq, count, inArray, and } from 'drizzle-orm';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { CourseRepository } from '@/application/repositories/course.repository';
 import type { Course, CourseStatus } from '@/core/entities/course.entity';
@@ -9,12 +9,16 @@ export class CoursePgRepository implements CourseRepository {
 
   async findAll(
     pagination: { page: number; limit: number },
-    filter?: { programId?: string }
+    filter?: { programId?: string; code?: string }
   ): Promise<{ data: Course[]; total: number }> {
     const { page, limit } = pagination;
     const offset = (page - 1) * limit;
 
-    const whereClause = filter?.programId ? eq(courses.programId, filter.programId) : undefined;
+    const conditions = [];
+    if (filter?.programId) conditions.push(eq(courses.programId, filter.programId));
+    if (filter?.code) conditions.push(eq(courses.code, filter.code));
+
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
     const data = await this.db
       .select()
@@ -62,6 +66,7 @@ export class CoursePgRepository implements CourseRepository {
     if (row.progress !== null && row.progress !== undefined) course.progress = Number(row.progress);
     if (row.status) course.status = row.status as CourseStatus;
     if (row.tuition !== null && row.tuition !== undefined) course.tuition = Number(row.tuition);
+    if (row.remainingSlots !== null && row.remainingSlots !== undefined) course.remainingSlots = row.remainingSlots;
     if (row.isLocked !== null && row.isLocked !== undefined) course.isLocked = row.isLocked;
     if (row.lockReason) course.lockReason = row.lockReason;
     if (row.programId) course.programId = row.programId;

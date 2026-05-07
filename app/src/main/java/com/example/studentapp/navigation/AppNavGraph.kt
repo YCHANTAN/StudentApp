@@ -18,7 +18,10 @@ import com.example.studentapp.ui.screens.dashboard.DashboardScreen
 import com.example.studentapp.ui.screens.enrollment.EnrollmentScreen
 import com.example.studentapp.ui.screens.evaluations.EvaluationScreen
 import com.example.studentapp.ui.screens.finance.FinanceScreen
+import com.example.studentapp.ui.screens.finance.AssessmentScreen
+import com.example.studentapp.ui.screens.finance.PaymentSlipScreen
 import com.example.studentapp.ui.screens.goodmoral.GoodMoralScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.ui.screens.grades.GradesScreen
 import com.example.studentapp.ui.screens.library.LibraryScreen
 import com.example.studentapp.ui.screens.library.models.LibraryTab
@@ -39,18 +42,6 @@ fun AppNavGraph() {
     }
 
     val primaryBottomNavItems = remember { buildPrimaryBottomNavItems() }
-
-    // Academic overview placeholder
-    val academicOverview = remember { com.example.studentapp.ui.screens.academic.models.AcademicUiState(
-        studentName = "Student",
-        programSummary = "N/A • Year Level",
-        services = emptyList(),
-        supportCard = com.example.studentapp.ui.screens.academic.models.AcademicSupportUiModel(
-            title = "Academic Support",
-            description = "Get help with your studies",
-            actionLabel = "Contact Support"
-        )
-    ) }
 
     val navigateToNotifications = {
         currentRoute = AppDestination.Notifications.route
@@ -88,7 +79,6 @@ fun AppNavGraph() {
             }
 
             AcademicScreen(
-                state = academicOverview,
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "academic",
                 onBottomNavSelected = { item ->
@@ -226,9 +216,6 @@ fun AppNavGraph() {
                 },
                 onBackClick = {
                     currentRoute = AppDestination.Dashboard.route
-                },
-                onChangeScheduleClick = {
-                    currentRoute = AppDestination.ChangeSchedule.route
                 }
             )
         }
@@ -268,7 +255,39 @@ fun AppNavGraph() {
                 onPayNowClick = {
                     currentRoute = AppDestination.PaymentQueue.route
                 },
+                onAssessmentClick = {
+                    currentRoute = AppDestination.Assessment.route
+                },
+                onPaymentSlipClick = {
+                    currentRoute = AppDestination.PaymentSlip.route
+                },
                 onNotificationClick = navigateToNotifications
+            )
+        }
+
+        currentRoute == AppDestination.Assessment.route -> {
+            BackHandler {
+                currentRoute = AppDestination.Finance.route
+            }
+            val financeViewModel: com.example.studentapp.ui.screens.finance.FinanceViewModel = viewModel()
+            AssessmentScreen(
+                assessment = financeViewModel.assessment,
+                onBackClick = {
+                    currentRoute = AppDestination.Finance.route
+                }
+            )
+        }
+
+        currentRoute == AppDestination.PaymentSlip.route -> {
+            BackHandler {
+                currentRoute = AppDestination.Finance.route
+            }
+            val financeViewModel: com.example.studentapp.ui.screens.finance.FinanceViewModel = viewModel()
+            PaymentSlipScreen(
+                paymentSlip = financeViewModel.paymentSlip,
+                onBackClick = {
+                    currentRoute = AppDestination.Finance.route
+                }
             )
         }
 

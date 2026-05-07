@@ -42,6 +42,7 @@ export class GradeRecordPgRepository implements GradeRecordRepository {
       gradePoint: row.gradePoint,
       status: row.status as GradeRecordStatus,
       semesterLabel: row.semesterLabel || undefined,
+      remarks: row.remarks || undefined,
       createdAt: row.createdAt,
     };
   }

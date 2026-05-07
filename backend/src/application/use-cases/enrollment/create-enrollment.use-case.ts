@@ -2,6 +2,7 @@ import type { EnrollmentRepository } from '@/application/repositories/enrollment
 import type { CourseRepository } from '@/application/repositories/course.repository';
 import type { CreateEnrollmentInput } from '@/application/dtos/enrollment.dto';
 import type { Enrollment } from '@/core/entities/enrollment.entity';
+import { CourseFullError } from '@/core/errors/domain.error';
 
 export class CreateEnrollmentUseCase {
   constructor(
@@ -12,6 +13,13 @@ export class CreateEnrollmentUseCase {
   async execute(input: CreateEnrollmentInput): Promise<Enrollment> {
     const courses = await this.courseRepo.findByIds(input.courseIds);
     
+    // Validate slots
+    for (const course of courses) {
+      if (course.remainingSlots !== undefined && course.remainingSlots <= 0) {
+        throw new CourseFullError(course.code);
+      }
+    }
+
     // Rules from ENROLLMENT_RULES.md
     const costPerUnit = 1500;
     const registrationFee = 1000;

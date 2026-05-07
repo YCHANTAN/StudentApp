@@ -12,6 +12,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.example.studentapp.ui.components.StudentBottomNavBar
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.ui.screens.enrollment.components.EnrollmentBottomSheet
 import com.example.studentapp.ui.screens.enrollment.components.EnrollmentConfirmationStepContent
 import com.example.studentapp.ui.screens.enrollment.components.EnrollmentCourseStepContent
@@ -37,10 +40,14 @@ import com.example.studentapp.ui.screens.enrollment.components.EnrollmentHeaderS
 import com.example.studentapp.ui.screens.enrollment.components.EnrollmentPaymentStepContent
 import com.example.studentapp.ui.screens.enrollment.components.EnrollmentPersonalInfoStepContent
 import com.example.studentapp.ui.screens.enrollment.models.EnrollmentStep
-import com.example.studentapp.ui.screens.enrollment.models.buildEnrollableCourses
 import com.example.studentapp.ui.screens.enrollment.models.buildEnrollmentConfirmationCourses
 import com.example.studentapp.ui.screens.enrollment.models.filterEnrollableCourses
 import com.example.studentapp.ui.theme.StudentAppTheme
+
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.layout.Box
 
 @Composable
 fun EnrollmentScreen(
@@ -51,15 +58,26 @@ fun EnrollmentScreen(
     onDownloadReceiptClick: () -> Unit = {},
     onHomeClick: () -> Unit = {},
     onAdjustmentClick: () -> Unit = {},
+    viewModel: EnrollmentViewModel = viewModel(),
     modifier: Modifier = Modifier
 ) {
+    val uiState = viewModel.uiState
     var currentStep by rememberSaveable { mutableStateOf(EnrollmentStep.Courses) }
     var searchQuery by rememberSaveable { mutableStateOf("") }
-    val courses = remember { buildEnrollableCourses() }
-    var selectedCourseCodes by rememberSaveable {
-        mutableStateOf(
-            courses.filter { it.isInitiallySelected }.map { it.code }
+    
+    val filteredCourses = remember(searchQuery, uiState.courses) {
+        filterEnrollableCourses(
+            courses = uiState.courses,
+            searchQuery = searchQuery
         )
+    }
+    val selectedCourses = remember(uiState.selectedCourseIds, uiState.courses) {
+        uiState.courses.filter { course -> uiState.selectedCourseIds.contains(course.id) }
+    }
+    val selectedCredits = selectedCourses.sumOf { it.units }
+    val estimatedTuition = selectedCourses.sumOf { it.tuition }
+    val confirmationCourses = remember(selectedCourses) {
+        buildEnrollmentConfirmationCourses(selectedCourses)
     }
 
     var fullName by rememberSaveable { mutableStateOf("") }
@@ -69,21 +87,6 @@ fun EnrollmentScreen(
     var emergencyContactName by rememberSaveable { mutableStateOf("") }
     var relationship by rememberSaveable { mutableStateOf("Parent") }
     var emergencyPhone by rememberSaveable { mutableStateOf("") }
-
-    val filteredCourses = remember(searchQuery, courses) {
-        filterEnrollableCourses(
-            courses = courses,
-            searchQuery = searchQuery
-        )
-    }
-    val selectedCourses = remember(selectedCourseCodes, courses) {
-        courses.filter { course -> selectedCourseCodes.contains(course.code) }
-    }
-    val selectedCredits = selectedCourses.sumOf { it.units }
-    val estimatedTuition = selectedCourses.sumOf { it.tuition }
-    val confirmationCourses = remember(selectedCourses) {
-        buildEnrollmentConfirmationCourses(selectedCourses)
-    }
 
     Scaffold(
         modifier = modifier
@@ -124,7 +127,9 @@ fun EnrollmentScreen(
                         maxCredits = 18,
                         estimatedTuition = estimatedTuition,
                         onNextClick = {
-                            currentStep = EnrollmentStep.PersonalInfo
+                            if (uiState.selectedCourseIds.isNotEmpty()) {
+                                currentStep = EnrollmentStep.PersonalInfo
+                            }
                         }
                     )
                 }
@@ -137,115 +142,141 @@ fun EnrollmentScreen(
             }
         }
     ) { innerPadding ->
-        AnimatedContent(
-            targetState = currentStep,
-            transitionSpec = {
-                val movingForward = targetState.stepNumber > initialState.stepNumber
-                (
-                    slideInHorizontally(
-                        animationSpec = tween(320),
-                        initialOffsetX = { fullWidth ->
-                            if (movingForward) fullWidth / 3 else -fullWidth / 3
-                        }
-                    ) + fadeIn(animationSpec = tween(320))
-                ).togetherWith(
-                    slideOutHorizontally(
-                        animationSpec = tween(280),
-                        targetOffsetX = { fullWidth ->
-                            if (movingForward) -fullWidth / 5 else fullWidth / 5
-                        }
-                    ) + fadeOut(animationSpec = tween(220))
-                ).using(SizeTransform(clip = false))
-            },
-            label = "enrollment_step_transition"
-        ) { step ->
-            when (step) {
-                EnrollmentStep.Courses -> {
-                    EnrollmentCourseStepContent(
-                        courses = filteredCourses,
-                        selectedCourseCodes = selectedCourseCodes,
-                        searchQuery = searchQuery,
-                        contentPadding = PaddingValues(
-                            start = 16.dp,
-                            top = innerPadding.calculateTopPadding() + 24.dp,
-                            end = 16.dp,
-                            bottom = innerPadding.calculateBottomPadding() + 16.dp
-                        ),
-                        onSearchQueryChange = { searchQuery = it },
-                        onCourseToggle = { course ->
-                            if (course.isLocked) return@EnrollmentCourseStepContent
-
-                            selectedCourseCodes = if (selectedCourseCodes.contains(course.code)) {
-                                selectedCourseCodes - course.code
-                            } else {
-                                selectedCourseCodes + course.code
+        Box(modifier = Modifier.fillMaxSize()) {
+            AnimatedContent(
+                targetState = currentStep,
+                transitionSpec = {
+                    val movingForward = targetState.stepNumber > initialState.stepNumber
+                    (
+                        slideInHorizontally(
+                            animationSpec = tween(320),
+                            initialOffsetX = { fullWidth ->
+                                if (movingForward) fullWidth / 3 else -fullWidth / 3
                             }
-                        }
-                    )
-                }
+                        ) + fadeIn(animationSpec = tween(320))
+                    ).togetherWith(
+                        slideOutHorizontally(
+                            animationSpec = tween(280),
+                            targetOffsetX = { fullWidth ->
+                                if (movingForward) -fullWidth / 5 else fullWidth / 5
+                            }
+                        ) + fadeOut(animationSpec = tween(220))
+                    ).using(SizeTransform(clip = false))
+                },
+                label = "enrollment_step_transition"
+            ) { step ->
+                when (step) {
+                    EnrollmentStep.Courses -> {
+                        EnrollmentCourseStepContent(
+                            courses = filteredCourses,
+                            selectedCourseCodes = uiState.selectedCourseIds.toList(),
+                            searchQuery = searchQuery,
+                            contentPadding = PaddingValues(
+                                start = 16.dp,
+                                top = innerPadding.calculateTopPadding() + 24.dp,
+                                end = 16.dp,
+                                bottom = innerPadding.calculateBottomPadding() + 16.dp
+                            ),
+                            onSearchQueryChange = { searchQuery = it },
+                            onCourseToggle = { course ->
+                                if (course.isLocked) return@EnrollmentCourseStepContent
+                                viewModel.toggleCourse(course.id)
+                            }
+                        )
+                    }
 
-                EnrollmentStep.PersonalInfo -> {
-                    EnrollmentPersonalInfoStepContent(
-                        fullName = fullName,
-                        studentId = studentId,
-                        emailAddress = emailAddress,
-                        phoneNumber = phoneNumber,
-                        emergencyContactName = emergencyContactName,
-                        relationship = relationship,
-                        emergencyPhone = emergencyPhone,
-                        contentPadding = PaddingValues(
-                            start = 24.dp,
-                            top = innerPadding.calculateTopPadding() + 24.dp,
-                            end = 24.dp,
-                            bottom = innerPadding.calculateBottomPadding() + 32.dp
-                        ),
-                        onFullNameChange = { fullName = it },
-                        onStudentIdChange = { studentId = it },
-                        onEmailAddressChange = { emailAddress = it },
-                        onPhoneNumberChange = { phoneNumber = it },
-                        onEmergencyContactNameChange = { emergencyContactName = it },
-                        onRelationshipChange = { relationship = it },
-                        onEmergencyPhoneChange = { emergencyPhone = it },
-                        onNextClick = { currentStep = EnrollmentStep.Payment }
-                    )
-                }
 
-                EnrollmentStep.Payment -> {
-                    EnrollmentPaymentStepContent(
-                        selectedCourses = selectedCourses,
-                        selectedCredits = selectedCredits,
-                        estimatedTuition = estimatedTuition,
-                        fullName = fullName,
-                        studentId = studentId,
-                        emailAddress = emailAddress,
-                        phoneNumber = phoneNumber,
-                        emergencyContactName = emergencyContactName,
-                        relationship = relationship,
-                        emergencyPhone = emergencyPhone,
-                        contentPadding = PaddingValues(
-                            start = 24.dp,
-                            top = innerPadding.calculateTopPadding() + 24.dp,
-                            end = 24.dp,
-                            bottom = innerPadding.calculateBottomPadding() + 32.dp
-                        ),
-                        onConfirmClick = { currentStep = EnrollmentStep.Confirmation }
-                    )
-                }
+                    EnrollmentStep.PersonalInfo -> {
+                        EnrollmentPersonalInfoStepContent(
+                            fullName = fullName,
+                            studentId = studentId,
+                            emailAddress = emailAddress,
+                            phoneNumber = phoneNumber,
+                            emergencyContactName = emergencyContactName,
+                            relationship = relationship,
+                            emergencyPhone = emergencyPhone,
+                            contentPadding = PaddingValues(
+                                start = 24.dp,
+                                top = innerPadding.calculateTopPadding() + 24.dp,
+                                end = 24.dp,
+                                bottom = innerPadding.calculateBottomPadding() + 32.dp
+                            ),
+                            onFullNameChange = { fullName = it },
+                            onStudentIdChange = { studentId = it },
+                            onEmailAddressChange = { emailAddress = it },
+                            onPhoneNumberChange = { phoneNumber = it },
+                            onEmergencyContactNameChange = { emergencyContactName = it },
+                            onRelationshipChange = { relationship = it },
+                            onEmergencyPhoneChange = { emergencyPhone = it },
+                            onNextClick = { currentStep = EnrollmentStep.Payment }
+                        )
+                    }
 
-                EnrollmentStep.Confirmation -> {
-                    EnrollmentConfirmationStepContent(
-                        courses = confirmationCourses,
-                        contentPadding = PaddingValues(
-                            start = 16.dp,
-                            top = 16.dp,
-                            end = 16.dp,
-                            bottom = innerPadding.calculateBottomPadding() + 32.dp
-                        ),
-                        onBackClick = { currentStep = EnrollmentStep.Payment },
-                        onDownloadReceiptClick = onDownloadReceiptClick,
-                        onHomeClick = onHomeClick,
-                        onAdjustmentClick = onAdjustmentClick
-                    )
+                    EnrollmentStep.Payment -> {
+                        EnrollmentPaymentStepContent(
+                            selectedCourses = selectedCourses,
+                            selectedCredits = selectedCredits,
+                            estimatedTuition = estimatedTuition,
+                            fullName = fullName,
+                            studentId = studentId,
+                            emailAddress = emailAddress,
+                            phoneNumber = phoneNumber,
+                            emergencyContactName = emergencyContactName,
+                            relationship = relationship,
+                            emergencyPhone = emergencyPhone,
+                            contentPadding = PaddingValues(
+                                start = 24.dp,
+                                top = innerPadding.calculateTopPadding() + 24.dp,
+                                end = 24.dp,
+                                bottom = innerPadding.calculateBottomPadding() + 32.dp
+                            ),
+                            onConfirmClick = { 
+                                // In the prototype, we use the internal ID 'user_123' for the database
+                                viewModel.submitEnrollment("user_123")
+                            }
+                        )
+                    }
+
+                    EnrollmentStep.Confirmation -> {
+                        EnrollmentConfirmationStepContent(
+                            courses = confirmationCourses,
+                            studentName = fullName.ifBlank { "Christian Osorno" },
+                            studentId = studentId.ifBlank { "STU-2024-1" },
+                            program = "BS Computer Science", 
+                            semester = "Spring 2024",
+                            totalUnits = selectedCredits,
+                            estimatedTuition = estimatedTuition,
+                            contentPadding = PaddingValues(
+                                start = 16.dp,
+                                top = 16.dp,
+                                end = 16.dp,
+                                bottom = innerPadding.calculateBottomPadding() + 32.dp
+                            ),
+                            onBackClick = { currentStep = EnrollmentStep.Payment },
+                            onDownloadReceiptClick = onDownloadReceiptClick,
+                            onHomeClick = onHomeClick,
+                            onAdjustmentClick = onAdjustmentClick
+                        )
+                    }
+                }
+            }
+
+            // Observe success to transition
+            LaunchedEffect(uiState.enrollmentSuccess) {
+                if (uiState.enrollmentSuccess) {
+                    currentStep = EnrollmentStep.Confirmation
+                }
+            }
+
+            if (uiState.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.3f))
+                        .clickable(enabled = false) {},
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             }
         }

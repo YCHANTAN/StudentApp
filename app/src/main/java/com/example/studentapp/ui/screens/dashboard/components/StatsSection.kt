@@ -3,12 +3,10 @@ package com.example.studentapp.ui.screens.dashboard.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -35,15 +33,18 @@ fun StatsSection(stats: List<DashboardStat>) {
             StatCard(stat = stat, modifier = Modifier.fillMaxWidth())
         }
 
-        // Regular stats stay in a row
+        // Regular stats stay in a row, filling the width to match the lining
         val regularStats = stats.filter { !it.isHighlighted }
         if (regularStats.isNotEmpty()) {
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(end = 8.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                items(regularStats) { stat ->
-                    StatCard(stat = stat, modifier = Modifier.width(160.dp))
+                regularStats.forEach { stat ->
+                    StatCard(
+                        stat = stat,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
         }
@@ -62,7 +63,7 @@ private fun StatCard(
 
     Card(
         modifier = modifier,
-        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor),
         border = BorderStroke(1.dp, borderColor),
         elevation = CardDefaults.cardElevation(defaultElevation = if (stat.isHighlighted) 6.dp else 2.dp)
@@ -87,7 +88,8 @@ private fun StatCard(
             Text(
                 text = stat.label,
                 color = labelColor,
-                fontSize = 12.sp
+                fontSize = 12.sp,
+                maxLines = 1
             )
         }
     }

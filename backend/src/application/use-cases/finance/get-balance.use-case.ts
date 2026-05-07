@@ -1,10 +1,23 @@
 import type { TransactionRepository } from '@/application/repositories/transaction.repository';
+import type { StudentRepository } from '@/application/repositories/student.repository';
 
 export class GetStudentBalanceUseCase {
-  constructor(private readonly transactionRepository: TransactionRepository) {}
+  constructor(
+    private readonly transactionRepository: TransactionRepository,
+    private readonly studentRepo: StudentRepository
+  ) {}
 
   async execute(studentId: string): Promise<{ balance: number; lastUpdated: Date | null }> {
-    const transactions = await this.transactionRepository.findByStudentId(studentId);
+    let targetId = studentId;
+
+    if (studentId && !this.isUuid(studentId)) {
+      const student = await this.studentRepo.findByStudentId(studentId);
+      if (student) {
+        targetId = student.id;
+      }
+    }
+
+    const transactions = await this.transactionRepository.findByStudentId(targetId);
 
     let balance = 0;
     let lastUpdated: Date | null = null;
@@ -31,5 +44,10 @@ export class GetStudentBalanceUseCase {
       balance: Math.max(0, balance), 
       lastUpdated 
     };
+  }
+
+  private isUuid(id: string): boolean {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(id);
   }
 }

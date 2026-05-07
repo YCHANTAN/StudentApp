@@ -9,6 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.School
 import androidx.compose.ui.graphics.Color
+import com.example.studentapp.data.remote.AssessmentResponse
+import com.example.studentapp.data.remote.PaymentSlipResponse
 import com.example.studentapp.domain.repository.AuthRepository
 import com.example.studentapp.domain.repository.FinanceRepository
 import com.example.studentapp.ui.screens.finance.models.Transaction
@@ -22,6 +24,12 @@ class FinanceViewModel(
         private set
     
     var transactions by mutableStateOf<List<Transaction>>(emptyList())
+        private set
+
+    var assessment by mutableStateOf<AssessmentResponse?>(null)
+        private set
+
+    var paymentSlip by mutableStateOf<PaymentSlipResponse?>(null)
         private set
 
     var isLoading by mutableStateOf(false)
@@ -52,6 +60,9 @@ class FinanceViewModel(
                         iconTint = if (isFee) Color(0xFFF8A824) else Color(0xFF059669)
                     )
                 }
+
+                assessment = financeRepository.getAssessment(studentId)
+                paymentSlip = financeRepository.getPaymentSlip(studentId)
             }
             isLoading = false
         }

@@ -1,0 +1,1 @@
+ALTER TABLE "courses" ADD COLUMN "remaining_slots" integer DEFAULT 0;

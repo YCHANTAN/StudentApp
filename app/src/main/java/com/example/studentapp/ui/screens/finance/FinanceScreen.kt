@@ -27,7 +27,6 @@ import com.example.studentapp.ui.screens.finance.components.BalanceCard
 import com.example.studentapp.ui.screens.finance.components.QuickActionsSection
 import com.example.studentapp.ui.screens.finance.components.TransactionHistoryHeader
 import com.example.studentapp.ui.screens.finance.components.TransactionItem
-import com.example.studentapp.ui.screens.finance.models.sampleTransactions
 import com.example.studentapp.ui.theme.Spacing
 
 import androidx.compose.foundation.layout.Box
@@ -47,6 +46,8 @@ fun FinanceScreen(
     onBackClick: () -> Unit = {},
     onNotificationClick: () -> Unit = {},
     onPayNowClick: () -> Unit = {},
+    onAssessmentClick: () -> Unit = {},
+    onPaymentSlipClick: () -> Unit = {},
     viewModel: FinanceViewModel = viewModel()
 ) {
     val balance = viewModel.balance
@@ -94,7 +95,10 @@ fun FinanceScreen(
 
                 item {
                     Spacer(modifier = Modifier.height(Spacing.Large))
-                    QuickActionsSection()
+                    QuickActionsSection(
+                        onAssessmentClick = onAssessmentClick,
+                        onPaymentSlipClick = onPaymentSlipClick
+                    )
                 }
 
                 item {

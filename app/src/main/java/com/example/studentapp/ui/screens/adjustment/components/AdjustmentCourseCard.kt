@@ -37,6 +37,8 @@ import com.example.studentapp.ui.theme.Spacing
 @Composable
 fun AdjustmentCourseCard(
     item: AdjustmentCourseItem,
+    isAddMode: Boolean = false,
+    onAddClick: () -> Unit = {},
     onChangeScheduleClick: () -> Unit = {},
     onRemoveClick: () -> Unit = {}
 ) {
@@ -93,41 +95,60 @@ fun AdjustmentCourseCard(
                 }
             }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
-            ) {
+            if (isAddMode) {
                 Button(
-                    onClick = onChangeScheduleClick,
-                    modifier = Modifier.weight(1f),
+                    onClick = onAddClick,
+                    modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(Radius.Medium),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                        contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     ),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
                 ) {
                     Text(
-                        text = "Change Schedule",
+                        text = "Add Course",
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
-
-                Button(
-                    onClick = onRemoveClick,
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(Radius.Medium),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer,
-                        contentColor = MaterialTheme.colorScheme.onErrorContainer
-                    ),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
                 ) {
-                    Text(
-                        text = "Remove",
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    Button(
+                        onClick = onChangeScheduleClick,
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(Radius.Medium),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+                    ) {
+                        Text(
+                            text = "Change Schedule",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+
+                    Button(
+                        onClick = onRemoveClick,
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(Radius.Medium),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+                    ) {
+                        Text(
+                            text = "Remove",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
         }

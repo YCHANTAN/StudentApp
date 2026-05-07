@@ -38,6 +38,7 @@ export class ScheduleEntryPgRepository implements ScheduleEntryRepository {
       id: row.id,
       studentId: row.studentId,
       dayLabel: row.dayLabel,
+      day: row.dayLabel, // Alias for frontend
       courseCode: row.courseCode,
       courseTitle: row.courseTitle,
       timeRange: row.timeRange,

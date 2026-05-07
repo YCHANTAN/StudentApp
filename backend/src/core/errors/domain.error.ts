@@ -32,6 +32,12 @@ export class ConflictError extends DomainError {
   }
 }
 
+export class CourseFullError extends DomainError {
+  constructor(courseCode: string) {
+    super(`Course ${courseCode} is full`, "COURSE_FULL");
+  }
+}
+
 export class UnauthorizedError extends DomainError {
   constructor(message = "Unauthorized") {
     super(message, "UNAUTHORIZED");

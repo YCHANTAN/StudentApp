@@ -61,6 +61,7 @@ fun StudyLoadScreen(
     val totalUnits = viewModel.totalUnits
     val semesterLabel = viewModel.semesterLabel
     val isLoading = viewModel.isLoading
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -97,7 +98,13 @@ fun StudyLoadScreen(
                 ) {
                     Column {
                         Button(
-                            onClick = onDownloadClick,
+                            onClick = {
+                                viewModel.downloadPdf(context) { file ->
+                                    if (file != null) {
+                                        onDownloadClick() // This could show a "Download started" toast
+                                    }
+                                }
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(56.dp),

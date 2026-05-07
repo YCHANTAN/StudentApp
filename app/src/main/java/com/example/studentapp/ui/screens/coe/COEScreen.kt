@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.ui.components.StudentBottomNavBar
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
@@ -28,8 +29,11 @@ fun COEScreen(
     selectedNavItemId: String = "services",
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
     onBackClick: () -> Unit = {},
-    onNotificationClick: () -> Unit = {}
+    onNotificationClick: () -> Unit = {},
+    viewModel: COEViewModel = viewModel()
 ) {
+    val profile = viewModel.profile
+
     Scaffold(
         topBar = {
             COEHeader(
@@ -53,7 +57,10 @@ fun COEScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
         ) {
-            COEIntroduction()
+            COEIntroduction(
+                studentName = profile?.fullName ?: "Loading...",
+                studentId = profile?.accountId ?: "---"
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 

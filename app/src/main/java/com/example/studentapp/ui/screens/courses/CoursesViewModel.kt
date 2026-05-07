@@ -10,9 +10,9 @@ import com.example.studentapp.ui.screens.courses.models.CourseEntry
 import com.example.studentapp.ui.screens.courses.models.CourseStatus
 import kotlinx.coroutines.launch
 
-class CoursesViewModel(
+class CoursesViewModel : ViewModel() {
     private val academicRepository: AcademicRepository = com.example.studentapp.data.repository.AcademicRepositoryImpl()
-) : ViewModel() {
+    
     var allCourses by mutableStateOf<List<CourseEntry>>(emptyList())
         private set
     

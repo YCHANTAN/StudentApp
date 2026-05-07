@@ -43,9 +43,9 @@ fun CoursesScreen(
     selectedNavItemId: String,
     onBottomNavSelected: (StudentBottomNavItem) -> Unit,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: CoursesViewModel = viewModel()
+    modifier: Modifier = Modifier
 ) {
+    val viewModel: CoursesViewModel = viewModel()
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var selectedStatus by rememberSaveable { mutableStateOf(CourseStatus.Enrolled) }
     
@@ -126,7 +126,7 @@ fun CoursesContent(
 
         items(
             items = courses,
-            key = { it.code }
+            key = { "${it.code}_${it.status.name}" }
         ) { course ->
             CourseCard(
                 course = course,
