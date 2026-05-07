@@ -10,7 +10,8 @@ import com.example.studentapp.ui.screens.studyload.models.StudyLoadItem
 import kotlinx.coroutines.launch
 
 class StudyLoadViewModel(
-    private val academicRepository: AcademicRepository = com.example.studentapp.data.repository.AcademicRepositoryImpl()
+    private val academicRepository: AcademicRepository = com.example.studentapp.data.repository.AcademicRepositoryImpl(),
+    private val enrollmentRepository: com.example.studentapp.domain.repository.EnrollmentRepository = com.example.studentapp.data.repository.EnrollmentRepositoryImpl()
 ) : ViewModel() {
     var subjects by mutableStateOf<List<StudyLoadItem>>(emptyList())
         private set
@@ -25,31 +26,46 @@ class StudyLoadViewModel(
         private set
 
     init {
-        loadStudyLoad()
+        loadStudyLoad("user_123") // Hardcoded for prototype consistency
     }
 
-    fun loadStudyLoad() {
+    fun loadStudyLoad(studentId: String) {
         viewModelScope.launch {
             isLoading = true
-            val courses = academicRepository.getCourses()
-            val enrolledCourses = courses.filter { it.status == "Enrolled" }
-            
-            subjects = enrolledCourses.map { response ->
-                StudyLoadItem(
-                    title = response.title,
-                    code = response.code,
-                    schedule = response.schedule ?: "TBA",
-                    room = response.location ?: "TBA",
-                    instructor = response.instructor ?: "TBA",
-                    units = response.units ?: 0,
-                    status = response.status ?: "Enrolled"
-                )
+            try {
+                val enrollments = enrollmentRepository.getEnrollments(studentId)
+                val activeEnrollment = enrollments
+                    .filter { it.status != "REJECTED" }
+                    .maxByOrNull { it.createdAt }
+
+                if (activeEnrollment != null) {
+                    val allCourses = academicRepository.getCourses()
+                    val enrolledCourses = allCourses.filter { activeEnrollment.courseIds.contains(it.id) }
+                    
+                    subjects = enrolledCourses.map { response ->
+                        StudyLoadItem(
+                            title = response.title,
+                            code = response.code,
+                            schedule = response.schedule ?: "TBA",
+                            room = response.location ?: "TBA",
+                            instructor = response.instructor ?: "TBA",
+                            units = response.units ?: 0,
+                            status = "Enrolled"
+                        )
+                    }
+                    
+                    totalUnits = subjects.sumOf { it.units }
+                    semesterLabel = enrolledCourses.firstOrNull()?.semesterTitle ?: "Current Semester"
+                } else {
+                    subjects = emptyList()
+                    totalUnits = 0
+                    semesterLabel = "No Active Enrollment"
+                }
+            } catch (e: Exception) {
+                // Handle error state
+            } finally {
+                isLoading = false
             }
-            
-            totalUnits = subjects.sumOf { it.units }
-            semesterLabel = enrolledCourses.firstOrNull()?.semesterTitle ?: "Current Semester"
-            
-            isLoading = false
         }
     }
 }
