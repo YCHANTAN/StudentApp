@@ -1,5 +1,6 @@
 package com.example.studentapp.ui.screens.studyload.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,103 +39,126 @@ fun StudyLoadSubjectCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(20.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = item.title,
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                    StatusBadge(status = item.status)
+                    
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                        Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = item.title,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        lineHeight = 24.sp
+                    )
 
-                        StatusBadge(status = item.status)
-                    }
-
-                    Spacer(modifier = Modifier.height(4.dp))
+                    Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
                         text = item.code,
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary
                     )
                 }
 
-                Column(horizontalAlignment = Alignment.End) {
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .background(
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.05f),
+                            shape = RoundedCornerShape(12.dp)
+                        )
+                        .padding(horizontal = 12.dp, vertical = 8.dp)
+                ) {
                     Text(
-                        text = "Units",
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        text = "UNITS",
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Black,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f),
+                        letterSpacing = 1.sp
                     )
                     Text(
                         text = item.units.toString(),
-                        fontSize = 28.sp,
+                        fontSize = 32.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(1.dp)
+                    .background(MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
+            )
+            
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Outlined.AccessTime,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = item.schedule,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Outlined.LocationOn,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = item.room,
+                        fontSize = 13.sp,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    imageVector = Icons.Outlined.AccessTime,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(15.dp)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = item.schedule,
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-
-            Spacer(modifier = Modifier.height(6.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    modifier = Modifier.weight(1f),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.LocationOn,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(15.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = item.room,
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-
-                Text(
-                    text = item.instructor,
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
+            Text(
+                text = "Instructor: ${item.instructor}",
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                fontWeight = FontWeight.Normal
+            )
         }
     }
 }
@@ -157,16 +181,17 @@ private fun StatusBadge(status: String) {
 
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(50))
+            .clip(RoundedCornerShape(8.dp))
             .background(bgColor)
-            .padding(horizontal = 10.dp, vertical = 4.dp),
+            .padding(horizontal = 8.dp, vertical = 4.dp),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = status.uppercase(),
             fontSize = 10.sp,
-            fontWeight = FontWeight.Bold,
-            color = textColor
+            fontWeight = FontWeight.Black,
+            color = textColor,
+            letterSpacing = 0.5.sp
         )
     }
 }

@@ -23,11 +23,11 @@ class EnrollmentRepositoryImpl(
         }
     }
 
-    override suspend fun createEnrollment(studentId: String, courseIds: List<String>): EnrollmentResponse? {
+    override suspend fun getStudyLoad(studentId: String): com.example.studentapp.data.remote.StudyLoadResponse? {
         return try {
-            val response = api.createEnrollment(CreateEnrollmentRequest(studentId, courseIds))
+            val response = api.getStudyLoad(studentId)
             if (response.isSuccessful) {
-                response.body()
+                response.body()?.data
             } else {
                 null
             }
@@ -36,11 +36,45 @@ class EnrollmentRepositoryImpl(
         }
     }
 
+    override suspend fun createEnrollment(studentId: String, courseIds: List<String>): EnrollmentResponse? {
+        val response = api.createEnrollment(CreateEnrollmentRequest(studentId, courseIds))
+        if (response.isSuccessful) {
+            val apiResponse = response.body()
+            return if (apiResponse?.success == true) {
+                apiResponse.data
+            } else {
+                null
+            }
+        } else {
+            val errorBody = response.errorBody()?.string()
+            val errorMessage = parseErrorMessage(errorBody)
+            throw Exception(errorMessage ?: "Failed to submit enrollment")
+        }
+    }
+
     override suspend fun updateEnrollment(enrollmentId: String, courseIds: List<String>): EnrollmentResponse? {
+        val response = api.updateEnrollment(enrollmentId, com.example.studentapp.data.remote.UpdateEnrollmentRequest(courseIds = courseIds))
+        if (response.isSuccessful) {
+            val apiResponse = response.body()
+            return if (apiResponse?.success == true) {
+                apiResponse.data
+            } else {
+                null
+            }
+        } else {
+            val errorBody = response.errorBody()?.string()
+            val errorMessage = parseErrorMessage(errorBody)
+            throw Exception(errorMessage ?: "Failed to update enrollment")
+        }
+    }
+
+    private fun parseErrorMessage(json: String?): String? {
+        if (json == null) return null
         return try {
-            val response = api.updateEnrollment(enrollmentId, com.example.studentapp.data.remote.UpdateEnrollmentRequest(courseIds = courseIds))
-            if (response.isSuccessful) {
-                response.body()
+            val gson = com.google.gson.Gson()
+            val errorObj = gson.fromJson(json, com.google.gson.JsonObject::class.java)
+            if (errorObj.has("error")) {
+                errorObj.getAsJsonObject("error").get("message").asString
             } else {
                 null
             }

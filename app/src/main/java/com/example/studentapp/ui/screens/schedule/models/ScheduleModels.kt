@@ -1,4 +1,4 @@
-package com.example.studentapp.ui.screens.schedule.models
+ package com.example.studentapp.ui.screens.schedule.models
 
 import androidx.compose.runtime.Immutable
 

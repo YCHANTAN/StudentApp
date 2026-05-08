@@ -27,15 +27,21 @@ export class GetAssessmentUseCase {
     const profile = await this.studentProfileRepo.findById(internalId);
     if (!profile) throw new Error("Student profile not found");
 
-    const enrollmentsResult = await this.enrollmentRepo.findAll({ page: 1, limit: 1 }, { studentId: internalId });
-    const enrollment = enrollmentsResult.data[0];
-    if (!enrollment) throw new Error("No enrollment found for student");
+    const enrollmentsResult = await this.enrollmentRepo.findAll({ page: 1, limit: 100 }, { studentId: internalId });
+    const activeEnrollments = enrollmentsResult.data.filter(e => e.status !== 'REJECTED');
+    
+    if (activeEnrollments.length === 0) throw new Error("No active enrollment found for student");
 
-    const courses = await this.courseRepo.findByIds(enrollment.courseIds);
+    const allCourseIds = [...new Set(activeEnrollments.flatMap(e => e.courseIds))];
+    const courses = await this.courseRepo.findByIds(allCourseIds);
+    
+    const totalTuition = activeEnrollments.reduce((sum, e) => sum + e.totalTuition, 0);
+    const totalUnits = courses.reduce((sum, c) => sum + (c.units || 0), 0);
+
     const transactions = await this.transactionRepo.findByStudentId(internalId);
 
     const miscellaneousFees = transactions
-        .filter(t => t.type === 'FEE' && t.title !== 'Tuition') // Assuming generic FEES are miscellaneous
+        .filter(t => t.type === 'FEE' && !t.title.includes('Tuition Fee')) 
         .map(t => ({
             description: t.title,
             amount: parseFloat(t.amount)
@@ -55,10 +61,10 @@ export class GetAssessmentUseCase {
         units: c.units || 0,
         tuition: c.tuition || 0,
       })),
-      totalUnits: enrollment.totalUnits,
-      totalTuition: enrollment.totalTuition,
+      totalUnits,
+      totalTuition,
       miscellaneousFees,
-      totalAssessment: enrollment.totalTuition + totalMiscellaneous,
+      totalAssessment: totalTuition + totalMiscellaneous,
     };
   }
 }

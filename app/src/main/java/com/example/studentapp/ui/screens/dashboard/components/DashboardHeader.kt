@@ -76,11 +76,13 @@ fun DashboardHeader(
 }
 
 private fun buildInitials(fullName: String): String {
+    if (fullName.isBlank()) return "??"
     return fullName
-        .split(" ")
+        .split(Regex("\\s+"))
         .filter { it.isNotBlank() }
         .take(2)
         .joinToString(separator = "") { it.first().uppercase() }
+        .ifEmpty { "??" }
 }
 
 @Composable

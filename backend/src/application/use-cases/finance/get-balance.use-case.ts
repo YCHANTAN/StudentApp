@@ -19,27 +19,29 @@ export class GetStudentBalanceUseCase {
 
     const transactions = await this.transactionRepository.findByStudentId(targetId);
 
-    let balance = 0;
+    let totalFees = 0;
+    let totalPayments = 0;
     let lastUpdated: Date | null = null;
 
-    // Loop through history to calculate the current balance
     for (const txn of transactions) {
-      const amount = parseFloat(txn.amount.replace(/[^0-9.-]+/g, ""));
+      const amount = parseFloat(txn.amount);
       if (isNaN(amount)) continue;
 
       if (txn.type === 'FEE') {
-        balance += amount; // Charges increase what the student owes
+        totalFees += amount;
       } else if (txn.type === 'PAYMENT' && txn.status === 'COMPLETED') {
-        balance -= amount; // Completed payments reduce the debt
+        totalPayments += amount;
       }
 
-      // Track the date of the most recent activity
       if (!lastUpdated || txn.createdAt > lastUpdated) {
         lastUpdated = txn.createdAt;
       }
     }
 
-    // Prevent negative balances just in case of overpayment
+    const balance = totalFees - totalPayments;
+    
+    console.log(`Calculated Balance for ${targetId}: Fees(${totalFees}) - Payments(${totalPayments}) = ${balance}`);
+
     return { 
       balance: Math.max(0, balance), 
       lastUpdated 

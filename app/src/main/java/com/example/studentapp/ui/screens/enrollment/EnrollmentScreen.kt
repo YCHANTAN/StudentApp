@@ -49,6 +49,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.layout.Box
 
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+
 @Composable
 fun EnrollmentScreen(
     navigationItems: List<StudentBottomNavItem>,
@@ -64,6 +68,8 @@ fun EnrollmentScreen(
     val uiState = viewModel.uiState
     var currentStep by rememberSaveable { mutableStateOf(EnrollmentStep.Courses) }
     var searchQuery by rememberSaveable { mutableStateOf("") }
+    
+    // ... rest of logic ...
     
     val filteredCourses = remember(searchQuery, uiState.courses) {
         filterEnrollableCourses(
@@ -87,6 +93,21 @@ fun EnrollmentScreen(
     var emergencyContactName by rememberSaveable { mutableStateOf("") }
     var relationship by rememberSaveable { mutableStateOf("Parent") }
     var emergencyPhone by rememberSaveable { mutableStateOf("") }
+
+    // Auto-fill from profile once loaded
+    var hasAutoFilled by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(uiState.studentProfile) {
+        if (uiState.studentProfile != null && !hasAutoFilled) {
+            fullName = uiState.studentProfile.fullName
+            studentId = uiState.studentProfile.accountId
+            emailAddress = uiState.studentProfile.emailAddress
+            phoneNumber = uiState.studentProfile.phoneNumber
+            emergencyContactName = uiState.studentProfile.emergencyContact.name
+            relationship = uiState.studentProfile.emergencyContact.relationship
+            emergencyPhone = uiState.studentProfile.emergencyContact.phoneNumber
+            hasAutoFilled = true
+        }
+    }
 
     Scaffold(
         modifier = modifier
@@ -231,8 +252,7 @@ fun EnrollmentScreen(
                                 bottom = innerPadding.calculateBottomPadding() + 32.dp
                             ),
                             onConfirmClick = { 
-                                // In the prototype, we use the internal ID 'user_123' for the database
-                                viewModel.submitEnrollment("user_123")
+                                viewModel.submitEnrollment(studentId)
                             }
                         )
                     }
@@ -240,9 +260,9 @@ fun EnrollmentScreen(
                     EnrollmentStep.Confirmation -> {
                         EnrollmentConfirmationStepContent(
                             courses = confirmationCourses,
-                            studentName = fullName.ifBlank { "Christian Osorno" },
-                            studentId = studentId.ifBlank { "STU-2024-1" },
-                            program = "BS Computer Science", 
+                            studentName = fullName.ifBlank { uiState.studentProfile?.fullName ?: "N/A" },
+                            studentId = studentId.ifBlank { uiState.studentProfile?.accountId ?: "N/A" },
+                            program = uiState.studentProfile?.programSummary?.split("•")?.get(0)?.trim() ?: "N/A", 
                             semester = "Spring 2024",
                             totalUnits = selectedCredits,
                             estimatedTuition = estimatedTuition,
@@ -266,6 +286,20 @@ fun EnrollmentScreen(
                 if (uiState.enrollmentSuccess) {
                     currentStep = EnrollmentStep.Confirmation
                 }
+            }
+
+            // Error Dialog
+            if (uiState.error != null) {
+                AlertDialog(
+                    onDismissRequest = { viewModel.clearError() },
+                    title = { Text("Enrollment Error") },
+                    text = { Text(uiState.error!!) },
+                    confirmButton = {
+                        TextButton(onClick = { viewModel.clearError() }) {
+                            Text("OK")
+                        }
+                    }
+                )
             }
 
             if (uiState.isLoading) {

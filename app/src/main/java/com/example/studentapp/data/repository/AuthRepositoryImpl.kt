@@ -43,19 +43,19 @@ class AuthRepositoryImpl : AuthRepository {
                         accountId = user.studentId,
                         fullName = "${user.firstName} ${user.lastName}",
                         emailAddress = user.email,
-                        phoneNumber = "+63 000 000 0000",
-                        accountLabel = "Student Portal Account",
-                        programSummary = "${user.program ?: "N/A"} • Year ${user.yearLevel ?: "N/A"}",
+                        phoneNumber = user.phoneNumber ?: "Not Set",
+                        accountLabel = user.accountLabel ?: "Student Portal Account",
+                        programSummary = user.programSummary ?: "${user.program ?: "N/A"} • Year ${user.yearLevel ?: "N/A"}",
                         emergencyContact = EmergencyContactInfo(
-                            name = "Not Set",
-                            relationship = "N/A",
-                            phoneNumber = "N/A"
+                            name = user.emergencyContact?.name ?: "Not Set",
+                            relationship = user.emergencyContact?.relationship ?: "N/A",
+                            phoneNumber = user.emergencyContact?.phoneNumber ?: "N/A"
                         ),
                         twoFactorStatus = TwoFactorStatus.Disabled,
                         notificationPreferences = NotificationPreferences(
-                            emailNotifications = true,
-                            smsNotifications = false,
-                            systemAlerts = true
+                            emailNotifications = user.notifications?.email ?: true,
+                            smsNotifications = user.notifications?.sms ?: false,
+                            systemAlerts = user.notifications?.system ?: true
                         )
                     )
                 } else {
@@ -74,6 +74,6 @@ class AuthRepositoryImpl : AuthRepository {
     }
 
     override suspend fun isLoggedIn(): Boolean {
-        return false 
+        return NetworkModule.getAuthToken() != null
     }
 }

@@ -51,16 +51,12 @@ class StudyLoadViewModel(
         viewModelScope.launch {
             isLoading = true
             try {
-                val enrollments = enrollmentRepository.getEnrollments(studentId)
-                val activeEnrollment = enrollments
-                    .filter { it.status != "REJECTED" }
-                    .maxByOrNull { it.createdAt }
+                val studyLoad = enrollmentRepository.getStudyLoad(studentId)
 
-                if (activeEnrollment != null) {
-                    val allCourses = academicRepository.getCourses()
-                    val enrolledCourses = allCourses.filter { activeEnrollment.courseIds.contains(it.id) }
-                    
-                    subjects = enrolledCourses.map { response ->
+                if (studyLoad != null && studyLoad.courses.isNotEmpty()) {
+                    subjects = studyLoad.courses
+                        .distinctBy { it.code }
+                        .map { response ->
                         StudyLoadItem(
                             title = response.title,
                             code = response.code,
@@ -72,12 +68,12 @@ class StudyLoadViewModel(
                         )
                     }
                     
-                    totalUnits = subjects.sumOf { it.units }
-                    semesterLabel = enrolledCourses.firstOrNull()?.semesterTitle ?: "Current Semester"
+                    totalUnits = studyLoad.totalUnits
+                    semesterLabel = studyLoad.semesterLabel
                 } else {
                     subjects = emptyList()
                     totalUnits = 0
-                    semesterLabel = "No Active Enrollment"
+                    semesterLabel = if (studyLoad != null) studyLoad.semesterLabel else "No Active Enrollment"
                 }
             } catch (e: Exception) {
                 // Handle error state

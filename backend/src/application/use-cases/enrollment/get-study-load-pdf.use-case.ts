@@ -22,7 +22,17 @@ export class GetStudyLoadPdfUseCase {
 
     if (!activeEnrollment) throw new Error('No active enrollment found');
 
-    const courses = await this.courseRepository.findByIds(activeEnrollment.courseIds);
+    const allCourses = await this.courseRepository.findByIds(activeEnrollment.courseIds);
+
+    // Ensure unique courses by code
+    const uniqueCourses: typeof allCourses = [];
+    const seenCodes = new Set<string>();
+    for (const course of allCourses) {
+      if (!seenCodes.has(course.code)) {
+        uniqueCourses.push(course);
+        seenCodes.add(course.code);
+      }
+    }
 
     return new Promise((resolve, reject) => {
       const doc = new PDFDocument({ margin: 50 });
@@ -60,7 +70,7 @@ export class GetStudyLoadPdfUseCase {
       doc.moveDown(1);
 
       // Table Body
-      courses.forEach((course) => {
+      uniqueCourses.forEach((course) => {
         const y = doc.y;
         doc.text(course.code, 50, y);
         doc.text(course.title, 100, y, { width: 240 });
@@ -74,8 +84,9 @@ export class GetStudyLoadPdfUseCase {
 
       // Summary
       doc.fontSize(11).font('Helvetica-Bold');
-      doc.text(`Total Units: ${activeEnrollment.totalUnits}`, { align: 'right' });
-      doc.text(`Semester: ${courses[0]?.semesterTitle || 'Current Semester'}`, { align: 'right' });
+      const totalUnits = uniqueCourses.reduce((sum, c) => sum + (c.units ?? 0), 0);
+      doc.text(`Total Units: ${totalUnits}`, { align: 'right' });
+      doc.text(`Semester: ${uniqueCourses[0]?.semesterTitle || 'Current Semester'}`, { align: 'right' });
 
       // Footer
       doc.fontSize(8).font('Helvetica-Oblique')

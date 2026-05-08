@@ -58,57 +58,60 @@ fun StudyLoadSection(
 @Composable
 private fun CourseCard(course: CourseSnapshot) {
     Card(
-        shape = RoundedCornerShape(Radius.Large),
+        shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(Spacing.Medium),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.Medium),
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(48.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                        shape = RoundedCornerShape(Radius.Medium)
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
+                        shape = RoundedCornerShape(12.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = course.code,
+                    text = course.code.take(4),
                     color = MaterialTheme.colorScheme.primary,
                     style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.ExtraBold
                 )
             }
 
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
                     text = course.title,
                     color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1
                 )
 
                 Text(
                     text = course.schedule,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Medium
                 )
             }
 
             Icon(
                 imageVector = Icons.Filled.ChevronRight,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.outline
+                tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                modifier = Modifier.size(20.dp)
             )
         }
     }

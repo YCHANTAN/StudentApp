@@ -118,10 +118,10 @@ interface AcademicApi {
     @GET("evaluations/student/{studentId}")
     suspend fun getEvaluations(
         @Path("studentId") studentId: String
-    ): Response<List<EvaluationResponse>>
+    ): Response<ApiResponse<List<EvaluationResponse>>>
 
     @retrofit2.http.POST("evaluations")
     suspend fun submitEvaluation(
         @retrofit2.http.Body request: CreateEvaluationRequest
-    ): Response<EvaluationResponse>
+    ): Response<ApiResponse<EvaluationResponse>>
 }

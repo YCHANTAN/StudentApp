@@ -12,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -61,7 +63,6 @@ fun ScheduleScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             ScheduleHeader(
-                studentName = state.studentName,
                 onBackClick = onBackClick
             )
         }
@@ -74,13 +75,20 @@ fun ScheduleScreen(
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(
-                    start = Spacing.Large,
+                    start = Spacing.Medium,
                     top = innerPadding.calculateTopPadding() + Spacing.Medium,
-                    end = Spacing.Large,
+                    end = Spacing.Medium,
                     bottom = innerPadding.calculateBottomPadding() + Spacing.Large
                 ),
                 verticalArrangement = Arrangement.spacedBy(Spacing.Large)
             ) {
+                item {
+                    ScheduleHeroCard(
+                        studentName = state.studentName,
+                        courseCount = state.sections.sumOf { it.entries.size }
+                    )
+                }
+
                 items(state.sections) { section ->
                     ScheduleDaySectionCard(section = section)
                 }
@@ -91,57 +99,107 @@ fun ScheduleScreen(
 
 @Composable
 private fun ScheduleHeader(
-    studentName: String,
     onBackClick: () -> Unit
 ) {
-    Surface(color = MaterialTheme.colorScheme.surface) {
-        Column {
+    Surface(
+        color = MaterialTheme.colorScheme.surface,
+        shadowElevation = 2.dp
+    ) {
+        Column(modifier = Modifier.statusBarsPadding()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = Spacing.Large, vertical = Spacing.Medium),
+                    .padding(horizontal = Spacing.Medium, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
 
                 Spacer(modifier = Modifier.width(Spacing.Small))
 
-                Column {
-                    Text(
-                        text = "Class Schedule",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-
-                    Text(
-                        text = studentName,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+                Text(
+                    text = "Class Schedule",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
             }
-
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
     }
 }
 
 @Composable
-private fun ScheduleDaySectionCard(section: ScheduleDaySection) {
-    Column(verticalArrangement = Arrangement.spacedBy(Spacing.Small)) {
-        Text(
-            text = section.dayLabel,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onSurface
+private fun ScheduleHeroCard(
+    studentName: String,
+    courseCount: Int
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primary
         )
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Text(
+                text = "Weekly Schedule",
+                color = Color.White.copy(alpha = 0.8f),
+                style = MaterialTheme.typography.labelLarge
+            )
+            
+            Text(
+                text = studentName,
+                color = Color.White,
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.Bold
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Surface(
+                color = Color.White.copy(alpha = 0.2f),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    text = "$courseCount Scheduled Sessions",
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ScheduleDaySectionCard(section: ScheduleDaySection) {
+    Column(verticalArrangement = Arrangement.spacedBy(Spacing.Medium)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(8.dp)
+                    .background(MaterialTheme.colorScheme.primary, CircleShape)
+            )
+            Text(
+                text = section.dayLabel,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
 
         Column(verticalArrangement = Arrangement.spacedBy(Spacing.Small)) {
             section.entries.forEach { entry ->

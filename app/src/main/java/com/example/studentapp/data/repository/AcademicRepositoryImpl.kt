@@ -88,7 +88,12 @@ class AcademicRepositoryImpl : AcademicRepository {
         try {
             val response = NetworkModule.academicApi.getEvaluations(studentId)
             if (response.isSuccessful) {
-                response.body() ?: emptyList()
+                val apiResponse = response.body()
+                if (apiResponse?.success == true) {
+                    apiResponse.data
+                } else {
+                    emptyList()
+                }
             } else {
                 emptyList()
             }
@@ -115,7 +120,12 @@ class AcademicRepositoryImpl : AcademicRepository {
                 comments
             )
             val response = NetworkModule.academicApi.submitEvaluation(request)
-            response.isSuccessful
+            if (response.isSuccessful) {
+                val apiResponse = response.body()
+                apiResponse?.success == true
+            } else {
+                false
+            }
         } catch (e: Exception) {
             false
         }

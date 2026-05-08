@@ -44,45 +44,34 @@ data class ServiceRequestStatus(
 
 fun buildDashboardUiState(): DashboardUiState {
     return DashboardUiState(
-        studentName = "Christian Osorno",
-        studentId = "STU-2024-1",
-        idStatus = "Active",
+        studentName = "---",
+        studentId = "---",
+        idStatus = "---",
         stats = listOf(
             DashboardStat(
-                value = "₱1,050.00",
+                value = "₱0.00",
                 label = "Current Balance",
                 icon = Icons.Filled.AccountBalanceWallet,
                 isHighlighted = true
             ),
             DashboardStat(
-                value = "1.25",
+                value = "0.00",
                 label = "GPA",
                 icon = Icons.Filled.Star
             ),
             DashboardStat(
-                value = "15",
+                value = "0",
                 label = "Units Completed",
                 icon = Icons.Filled.School
             )
         ),
-        courses = listOf(
-            CourseSnapshot(
-                code = "CS301",
-                title = "Advanced Algorithms",
-                schedule = "Mon/Wed | 10:00 AM — 11:30 AM"
-            ),
-            CourseSnapshot(
-                code = "MATH402",
-                title = "Stochastic Processes",
-                schedule = "Tue/Thu | 01:00 PM — 02:30 PM"
-            )
-        ),
+        courses = emptyList(),
         requestStatus = ServiceRequestStatus(
-            title = "Request for TOR",
-            reference = "REQ-TOR-001",
-            statusLabel = "READY_FOR_PICKUP",
-            progress = 0.9f,
-            estimatedCompletion = "Ready for Pickup"
+            title = "No recent requests",
+            reference = "---",
+            statusLabel = "---",
+            progress = 0f,
+            estimatedCompletion = "---"
         )
     )
 }

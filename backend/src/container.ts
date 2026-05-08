@@ -29,6 +29,7 @@ import { CreateEnrollmentUseCase } from "@/application/use-cases/enrollment/crea
 import { UpdateEnrollmentUseCase } from "@/application/use-cases/enrollment/update-enrollment.use-case";
 import { DeleteEnrollmentUseCase } from "@/application/use-cases/enrollment/delete-enrollment.use-case";
 import { GetStudyLoadPdfUseCase } from "@/application/use-cases/enrollment/get-study-load-pdf.use-case";
+import { GetStudyLoadUseCase } from "@/application/use-cases/enrollment/get-study-load.use-case";
 import { GetStudentSubjectsUseCase } from "@/application/use-cases/registration/get-student-subjects.use-case";
 import { CreateSubjectUseCase } from "@/application/use-cases/subject/create-subject.use-case";
 import { SubmitEvaluationUseCase } from "@/application/use-cases/evaluation/submit-evaluation.use-case";
@@ -122,10 +123,11 @@ const getGradeRecordsUseCase = new GetGradeRecordsUseCase(gradeRecordRepo, stude
 const getTransactionsUseCase = new GetTransactionsUseCase(transactionRepo, studentRepo);
 
 const getEnrollmentsUseCase = new GetEnrollmentsUseCase(enrollmentRepo, studentRepo);
-const createEnrollmentUseCase = new CreateEnrollmentUseCase(enrollmentRepo, courseRepo);
+const createEnrollmentUseCase = new CreateEnrollmentUseCase(enrollmentRepo, courseRepo, transactionRepo, studentRepo);
 const updateEnrollmentUseCase = new UpdateEnrollmentUseCase(enrollmentRepo, courseRepo);
 const deleteEnrollmentUseCase = new DeleteEnrollmentUseCase(enrollmentRepo);
 const getStudyLoadPdfUseCase = new GetStudyLoadPdfUseCase(enrollmentRepo, studentProfileRepo, courseRepo);
+const getStudyLoadUseCase = new GetStudyLoadUseCase(enrollmentRepo, courseRepo, studentRepo);
 
 const getStudentSubjectsUseCase = new GetStudentSubjectsUseCase(registrationRepo);
 const createSubjectUseCase = new CreateSubjectUseCase(subjectRepo);
@@ -134,7 +136,7 @@ const submitEvaluationUseCase = new SubmitEvaluationUseCase(evaluationRepo);
 const getStudentEvaluationsUseCase = new GetStudentEvaluationsUseCase(evaluationRepo);
 
 // --- Controllers ---
-export const authController = new AuthController(loginUseCase, getStudentUseCase);
+export const authController = new AuthController(loginUseCase, getStudentUseCase, getStudentProfileUseCase);
 
 export const studentProfileController = new StudentProfileController(
   getStudentProfileUseCase,
@@ -188,7 +190,8 @@ export const enrollmentController = new EnrollmentController(
   createEnrollmentUseCase,
   updateEnrollmentUseCase,
   deleteEnrollmentUseCase,
-  getStudyLoadPdfUseCase
+  getStudyLoadPdfUseCase,
+  getStudyLoadUseCase
 );
 
 export const subjectRegistrationController = new SubjectRegistrationController(

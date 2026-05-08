@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from "express";
 
 import type { LoginUseCase } from "@/application/use-cases/auth/login.use-case";
 import type { GetStudentUseCase } from "@/application/use-cases/student/get-student.use-case";
+import type { GetStudentProfileUseCase } from "@/application/use-cases/student-profile/get-student-profile.use-case";
 
 /**
  * Handles HTTP transport concerns for authentication endpoints.
@@ -9,7 +10,8 @@ import type { GetStudentUseCase } from "@/application/use-cases/student/get-stud
 export class AuthController {
   constructor(
     private readonly loginUseCase: LoginUseCase,
-    private readonly getStudentUseCase: GetStudentUseCase
+    private readonly getStudentUseCase: GetStudentUseCase,
+    private readonly getStudentProfileUseCase: GetStudentProfileUseCase
   ) {}
 
   /**
@@ -33,11 +35,19 @@ export class AuthController {
       }
 
       const student = await this.getStudentUseCase.execute(studentId);
+      const profile = await this.getStudentProfileUseCase.execute(studentId);
       
       // Split fullName into firstName and lastName for Android app compatibility
-      const nameParts = student.fullName.split(" ");
+      const nameParts = profile.fullName.split(" ");
       const firstName = nameParts[0] || "";
       const lastName = nameParts.slice(1).join(" ") || "";
+
+      // Extract Year Level from programSummary (e.g., "BS Computer Science • Year 2")
+      const yearMatch = profile.programSummary.match(/Year\s+(\d+)/i);
+      const yearLevel = yearMatch ? parseInt(yearMatch[1], 10) : 1;
+
+      // Extract Program from programSummary (e.g., "BS Computer Science • Year 2")
+      const program = profile.programSummary.split("•")[0]?.trim() || "N/A";
 
       res.status(200).json({ 
         success: true, 
@@ -47,8 +57,21 @@ export class AuthController {
           firstName,
           lastName,
           email: student.email,
-          program: "BS Computer Science", // Placeholder for now, can be fetched from enrollment if needed
-          yearLevel: 3 // Placeholder
+          program: program,
+          yearLevel: yearLevel,
+          phoneNumber: profile.phoneNumber,
+          accountLabel: profile.accountLabel,
+          programSummary: profile.programSummary,
+          emergencyContact: {
+            name: profile.emergencyContactName,
+            relationship: profile.emergencyContactRelationship,
+            phoneNumber: profile.emergencyContactPhoneNumber
+          },
+          notifications: {
+            email: profile.emailNotifications,
+            sms: profile.smsNotifications,
+            system: profile.systemAlerts
+          }
         } 
       });
     } catch (err) {

@@ -31,6 +31,12 @@ data class UpdateEnrollmentRequest(
     @SerializedName("status") val status: String? = null
 )
 
+data class StudyLoadResponse(
+    @SerializedName("courses") val courses: List<CourseResponse>,
+    @SerializedName("totalUnits") val totalUnits: Int,
+    @SerializedName("semesterLabel") val semesterLabel: String
+)
+
 interface EnrollmentApi {
     @GET("enrollments")
     suspend fun getEnrollments(
@@ -39,16 +45,21 @@ interface EnrollmentApi {
         @Query("limit") limit: Int = 50
     ): Response<PaginatedResponse<EnrollmentResponse>>
 
+    @GET("enrollments/study-load/student/{studentId}")
+    suspend fun getStudyLoad(
+        @Path("studentId") studentId: String
+    ): Response<ApiResponse<StudyLoadResponse>>
+
     @POST("enrollments")
     suspend fun createEnrollment(
         @Body request: CreateEnrollmentRequest
-    ): Response<EnrollmentResponse>
+    ): Response<ApiResponse<EnrollmentResponse>>
 
     @retrofit2.http.PATCH("enrollments/{id}")
     suspend fun updateEnrollment(
         @Path("id") id: String,
         @Body request: UpdateEnrollmentRequest
-    ): Response<EnrollmentResponse>
+    ): Response<ApiResponse<EnrollmentResponse>>
 
     @Streaming
     @GET("enrollments/student/{studentId}/pdf")
