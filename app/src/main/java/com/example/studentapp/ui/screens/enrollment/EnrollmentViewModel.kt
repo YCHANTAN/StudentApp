@@ -6,8 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.studentapp.data.repository.AcademicRepositoryImpl
+import com.example.studentapp.data.repository.AuthRepositoryImpl
 import com.example.studentapp.data.repository.EnrollmentRepositoryImpl
+import com.example.studentapp.domain.model.ProfileOverview
 import com.example.studentapp.domain.repository.AcademicRepository
+import com.example.studentapp.domain.repository.AuthRepository
 import com.example.studentapp.domain.repository.EnrollmentRepository
 import com.example.studentapp.ui.screens.enrollment.models.EnrollableCourse
 import kotlinx.coroutines.launch
@@ -17,18 +20,29 @@ data class EnrollmentUiState(
     val selectedCourseIds: Set<String> = emptySet(),
     val isLoading: Boolean = false,
     val error: String? = null,
-    val enrollmentSuccess: Boolean = false
+    val enrollmentSuccess: Boolean = false,
+    val studentProfile: ProfileOverview? = null
 )
 
 class EnrollmentViewModel : ViewModel() {
     private val academicRepository: AcademicRepository = AcademicRepositoryImpl()
     private val enrollmentRepository: EnrollmentRepository = EnrollmentRepositoryImpl()
+    private val authRepository: AuthRepository = AuthRepositoryImpl()
 
     var uiState by mutableStateOf(EnrollmentUiState())
         private set
 
     init {
-        loadCourses()
+        loadInitialData()
+    }
+
+    private fun loadInitialData() {
+        viewModelScope.launch {
+            uiState = uiState.copy(isLoading = true)
+            val profile = authRepository.getProfile()
+            uiState = uiState.copy(studentProfile = profile)
+            loadCourses()
+        }
     }
 
     fun loadCourses() {
@@ -90,8 +104,12 @@ class EnrollmentViewModel : ViewModel() {
                     uiState = uiState.copy(isLoading = false, error = "Failed to submit enrollment")
                 }
             } catch (e: Exception) {
-                uiState = uiState.copy(isLoading = false, error = e.message)
+                uiState = uiState.copy(isLoading = false, error = e.localizedMessage ?: "Network error")
             }
         }
+    }
+
+    fun clearError() {
+        uiState = uiState.copy(error = null)
     }
 }

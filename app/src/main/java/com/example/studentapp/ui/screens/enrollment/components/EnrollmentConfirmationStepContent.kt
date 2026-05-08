@@ -68,7 +68,7 @@ fun EnrollmentConfirmationStepContent(
         }
 
         item {
-            EnrollmentConfirmationSuccessSection()
+            EnrollmentConfirmationSuccessSection(semester = semester)
         }
 
         item {
@@ -263,6 +263,7 @@ fun EnrollmentConfirmationHeader(
 
 @Composable
 fun EnrollmentConfirmationSuccessSection(
+    semester: String,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -296,7 +297,7 @@ fun EnrollmentConfirmationSuccessSection(
         )
 
         Text(
-            text = "Congratulations! You have been successfully enrolled for the Fall 2024 semester.",
+            text = "Congratulations! You have been successfully enrolled for the $semester semester.",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 14.sp,
             lineHeight = 22.sp,
