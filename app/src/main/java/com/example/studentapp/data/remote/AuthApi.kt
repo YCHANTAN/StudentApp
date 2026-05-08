@@ -26,7 +26,24 @@ data class UserProfileResponse(
     @SerializedName("lastName") val lastName: String,
     @SerializedName("email") val email: String,
     @SerializedName("program") val program: String? = null,
-    @SerializedName("yearLevel") val yearLevel: Int? = null
+    @SerializedName("yearLevel") val yearLevel: Int? = null,
+    @SerializedName("phoneNumber") val phoneNumber: String? = null,
+    @SerializedName("accountLabel") val accountLabel: String? = null,
+    @SerializedName("programSummary") val programSummary: String? = null,
+    @SerializedName("emergencyContact") val emergencyContact: EmergencyContactResponse? = null,
+    @SerializedName("notifications") val notifications: NotificationSettingsResponse? = null
+)
+
+data class EmergencyContactResponse(
+    @SerializedName("name") val name: String,
+    @SerializedName("relationship") val relationship: String,
+    @SerializedName("phoneNumber") val phoneNumber: String
+)
+
+data class NotificationSettingsResponse(
+    @SerializedName("email") val email: Boolean,
+    @SerializedName("sms") val sms: Boolean,
+    @SerializedName("system") val system: Boolean
 )
 
 data class ApiResponse<T>(

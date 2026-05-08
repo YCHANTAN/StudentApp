@@ -16,6 +16,8 @@ object NetworkModule {
         authToken = token
     }
 
+    fun getAuthToken(): String? = authToken
+
     private val authInterceptor = Interceptor { chain ->
         val originalRequest = chain.request()
         val requestBuilder = originalRequest.newBuilder()
