@@ -33,28 +33,26 @@ class EvaluationViewModel(
             val profile = authRepository.getProfile()
             if (profile != null) {
                 val studentId = profile.accountId
-                val enrollments = enrollmentRepository.getEnrollments(studentId)
-                val activeEnrollment = enrollments
-                    .filter { it.status != "REJECTED" }
-                    .maxByOrNull { it.createdAt }
-
-                if (activeEnrollment != null) {
-                    val allCourses = academicRepository.getCourses()
+                try {
+                    val studyLoad = enrollmentRepository.getStudyLoad(studentId)
                     val evaluations = academicRepository.getEvaluations(studentId)
-                    val evaluatedCourseIds = evaluations.map { it.courseId }
+                    val evaluatedCourseIds = evaluations.map { it.courseId }.toSet()
 
-                    // Only include courses from the active enrollment that haven't been evaluated
-                    pendingCourses = allCourses
-                        .filter { activeEnrollment.courseIds.contains(it.id) && !evaluatedCourseIds.contains(it.id) }
-                        .map { response ->
-                            EvaluationCourseItem(
-                                id = response.id,
-                                codeTitle = "${response.code} - ${response.title}",
-                                instructor = response.instructor ?: "TBA",
-                                iconType = if (response.code.contains("CS")) EvaluationCourseIconType.DOCUMENT else EvaluationCourseIconType.CHART
-                            )
-                        }
-                } else {
+                    if (studyLoad != null && studyLoad.courses.isNotEmpty()) {
+                        pendingCourses = studyLoad.courses
+                            .filter { !evaluatedCourseIds.contains(it.id) }
+                            .map { response ->
+                                EvaluationCourseItem(
+                                    id = response.id,
+                                    codeTitle = "${response.code} - ${response.title}",
+                                    instructor = response.instructor ?: "TBA",
+                                    iconType = if (response.code.contains("CS")) EvaluationCourseIconType.DOCUMENT else EvaluationCourseIconType.CHART
+                                )
+                            }
+                    } else {
+                        pendingCourses = emptyList()
+                    }
+                } catch (e: Exception) {
                     pendingCourses = emptyList()
                 }
             }
