@@ -24,7 +24,10 @@ export class GetScheduleEntriesUseCase {
       }
     }
 
-    return this.scheduleEntryRepo.findAll({ page, limit }, { studentId: targetId });
+    const filter: { studentId?: string } = {};
+    if (targetId !== undefined) filter.studentId = targetId;
+
+    return this.scheduleEntryRepo.findAll({ page, limit }, filter);
   }
 
   private isUuid(id: string): boolean {

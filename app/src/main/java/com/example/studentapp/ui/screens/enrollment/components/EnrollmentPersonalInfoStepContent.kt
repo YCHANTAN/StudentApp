@@ -39,6 +39,13 @@ fun EnrollmentPersonalInfoStepContent(
     onNextClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val isFormValid = fullName.isNotBlank() && 
+                      studentId.isNotBlank() && 
+                      emailAddress.isNotBlank() && 
+                      phoneNumber.isNotBlank() && 
+                      emergencyContactName.isNotBlank() && 
+                      emergencyPhone.isNotBlank()
+
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = contentPadding,
@@ -87,8 +94,6 @@ fun EnrollmentPersonalInfoStepContent(
         item {
             EnrollmentSectionHeader(
                 title = "Emergency Contact",
-                // HTML uses the Material Symbol `emergency_home`; Compose Material icons do not
-                // expose an exact match, so `ContactPhone` is the closest official equivalent.
                 icon = Icons.Outlined.ContactPhone
             )
             EnrollmentTextField(
@@ -125,7 +130,8 @@ fun EnrollmentPersonalInfoStepContent(
             EnrollmentPrimaryButton(
                 text = "Proceed to Payment",
                 icon = Icons.Outlined.Payments,
-                onClick = onNextClick
+                onClick = onNextClick,
+                enabled = isFormValid
             )
             Text(
                 text = "By proceeding, you agree to our terms of enrollment.",

@@ -14,6 +14,7 @@ export type Course = {
   progress?: number;
   status?: CourseStatus;
   tuition?: number;
+  remainingSlots?: number;
   isLocked?: boolean;
   lockReason?: string;
   programId?: string;

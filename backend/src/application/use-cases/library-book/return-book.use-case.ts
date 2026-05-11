@@ -1,4 +1,4 @@
-import type { BookRepository } from '@/application/repositories/book.repository';
+import type { LibraryBookRepository } from '@/application/repositories/library-book.repository';
 import type { BorrowRecordRepository } from '@/application/repositories/borrow-record.repository';
 import type { ReturnBookInput } from '@/application/dtos/borrow-record.dto';
 import type { BorrowRecord } from '@/core/entities/borrow-record.entity';
@@ -6,7 +6,7 @@ import { NotFoundError, ConflictError } from '@/core/errors/domain.error';
 
 export class ReturnBookUseCase {
   constructor(
-    private readonly bookRepo: BookRepository,
+    private readonly bookRepo: LibraryBookRepository,
     private readonly borrowRecordRepo: BorrowRecordRepository,
   ) {}
 

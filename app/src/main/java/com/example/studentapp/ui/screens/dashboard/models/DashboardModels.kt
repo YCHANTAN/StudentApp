@@ -3,6 +3,7 @@ package com.example.studentapp.ui.screens.dashboard.models
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -11,6 +12,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 data class DashboardUiState(
     val studentName: String,
     val studentId: String,
+    val idStatus: String,
     val stats: List<DashboardStat>,
     val courses: List<CourseSnapshot>,
     val requestStatus: ServiceRequestStatus
@@ -42,44 +44,34 @@ data class ServiceRequestStatus(
 
 fun buildDashboardUiState(): DashboardUiState {
     return DashboardUiState(
-        studentName = "Alex Harrison",
-        studentId = "2024-08912-CS",
+        studentName = "---",
+        studentId = "---",
+        idStatus = "---",
         stats = listOf(
             DashboardStat(
-                value = "₱2,450.00",
+                value = "₱0.00",
                 label = "Current Balance",
                 icon = Icons.Filled.AccountBalanceWallet,
                 isHighlighted = true
             ),
-//            DashboardStat(
-//                value = "3.85",
-//                label = "Cumulative GPA",
-//                icon = Icons.Filled.Star
-//            ),
-//            DashboardStat(
-//                value = "4 New",
-//                label = "Notifications",
-//                icon = Icons.Filled.Notifications
-//            )
-        ),
-        courses = listOf(
-            CourseSnapshot(
-                code = "CS",
-                title = "Advanced Algorithms",
-                schedule = "Mon, Wed | 09:00 AM"
+            DashboardStat(
+                value = "0.00",
+                label = "GPA",
+                icon = Icons.Filled.Star
             ),
-            CourseSnapshot(
-                code = "UI",
-                title = "Human Computer Interaction",
-                schedule = "Tue, Thu | 02:30 PM"
+            DashboardStat(
+                value = "0",
+                label = "Units Completed",
+                icon = Icons.Filled.School
             )
         ),
+        courses = emptyList(),
         requestStatus = ServiceRequestStatus(
-            title = "Official Transcript Request",
-            reference = "#REQ-99021",
-            statusLabel = "PROCESSING",
-            progress = 0.65f,
-            estimatedCompletion = "2 Days"
+            title = "No recent requests",
+            reference = "---",
+            statusLabel = "---",
+            progress = 0f,
+            estimatedCompletion = "---"
         )
     )
 }

@@ -4,12 +4,14 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class EnrollableCourse(
+    val id: String,
     val code: String,
     val title: String,
-    val instructorSchedule: String,
+    val instructor: String,
+    val schedule: String,
     val units: Int,
     val tuition: Double,
-    val isInitiallySelected: Boolean,
+    val remainingSlots: Int,
     val isLocked: Boolean = false,
     val lockReason: String? = null
 )
@@ -62,45 +64,6 @@ enum class EnrollmentStep(
         progressLabel = "Step 4 of 4: Confirmation",
         progressPercentageLabel = "100% Complete",
         progressFraction = 1.0f
-    )
-}
-
-fun buildEnrollableCourses(): List<EnrollableCourse> {
-    return listOf(
-        EnrollableCourse(
-            code = "CS301",
-            title = "Advanced Algorithms",
-            instructorSchedule = "Dr. Sarah Jenkins \u2022 Mon/Wed 10:00 AM",
-            units = 4,
-            tuition = 710.0,
-            isInitiallySelected = true
-        ),
-        EnrollableCourse(
-            code = "CS305",
-            title = "Database Management",
-            instructorSchedule = "Prof. Michael Chen \u2022 Tue/Thu 2:00 PM",
-            units = 3,
-            tuition = 530.0,
-            isInitiallySelected = false
-        ),
-        EnrollableCourse(
-            code = "UI102",
-            title = "User Interface Design",
-            instructorSchedule = "Amanda Waller \u2022 Fri 09:00 AM",
-            units = 3,
-            tuition = 530.0,
-            isInitiallySelected = true
-        ),
-        EnrollableCourse(
-            code = "CS401",
-            title = "Machine Learning",
-            instructorSchedule = "",
-            units = 4,
-            tuition = 720.0,
-            isInitiallySelected = false,
-            isLocked = true,
-            lockReason = "Prerequisite not met (CS301 required)"
-        )
     )
 }
 

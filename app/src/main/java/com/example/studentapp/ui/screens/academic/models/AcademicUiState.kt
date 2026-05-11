@@ -4,7 +4,10 @@ import com.example.studentapp.domain.model.AcademicOverview
 
 data class AcademicUiState(
     val studentName: String,
+    val studentId: String = "",
     val programSummary: String,
+    val yearLevel: String = "",
+    val currentTerm: String = "2nd Semester, 2024-2025",
     val services: List<AcademicServiceCardUiModel>,
     val supportCard: AcademicSupportUiModel
 )

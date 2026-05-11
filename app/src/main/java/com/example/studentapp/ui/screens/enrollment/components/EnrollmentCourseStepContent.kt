@@ -55,11 +55,11 @@ fun EnrollmentCourseStepContent(
 
         items(
             items = courses,
-            key = { it.code }
+            key = { it.id }
         ) { course ->
             EnrollmentCourseCard(
                 course = course,
-                isSelected = selectedCourseCodes.contains(course.code),
+                isSelected = selectedCourseCodes.contains(course.id),
                 onClick = { onCourseToggle(course) }
             )
         }

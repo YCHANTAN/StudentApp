@@ -12,6 +12,9 @@ export class GetProgramsUseCase {
 
   async execute(input: GetProgramsInput) {
     const { page, limit, category } = input;
-    return this.programRepo.findAll({ page, limit }, { category });
+    const filter: { category?: ProgramCategory } = {};
+    if (category !== undefined) filter.category = category;
+
+    return this.programRepo.findAll({ page, limit }, filter);
   }
 }

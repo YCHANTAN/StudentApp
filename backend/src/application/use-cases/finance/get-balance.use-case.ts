@@ -1,32 +1,55 @@
 import type { TransactionRepository } from '@/application/repositories/transaction.repository';
+import type { StudentRepository } from '@/application/repositories/student.repository';
 
 export class GetStudentBalanceUseCase {
-  constructor(private readonly transactionRepository: TransactionRepository) {}
+  constructor(
+    private readonly transactionRepository: TransactionRepository,
+    private readonly studentRepo: StudentRepository
+  ) {}
 
   async execute(studentId: string): Promise<{ balance: number; lastUpdated: Date | null }> {
-    const transactions = await this.transactionRepository.findByStudentId(studentId);
+    let targetId = studentId;
 
-    let balance = 0;
+    if (studentId && !this.isUuid(studentId)) {
+      const student = await this.studentRepo.findByStudentId(studentId);
+      if (student) {
+        targetId = student.id;
+      }
+    }
+
+    const transactions = await this.transactionRepository.findByStudentId(targetId);
+
+    let totalFees = 0;
+    let totalPayments = 0;
     let lastUpdated: Date | null = null;
 
-    // Loop through history to calculate the current balance
     for (const txn of transactions) {
-      if (txn.type === 'CHARGE') {
-        balance += txn.amount; // Charges increase what the student owes
+      const amount = parseFloat(txn.amount);
+      if (isNaN(amount)) continue;
+
+      if (txn.type === 'FEE') {
+        totalFees += amount;
       } else if (txn.type === 'PAYMENT' && txn.status === 'COMPLETED') {
-        balance -= txn.amount; // Completed payments reduce the debt
+        totalPayments += amount;
       }
 
-      // Track the date of the most recent activity
       if (!lastUpdated || txn.createdAt > lastUpdated) {
         lastUpdated = txn.createdAt;
       }
     }
 
-    // Prevent negative balances just in case of overpayment
+    const balance = totalFees - totalPayments;
+    
+    console.log(`Calculated Balance for ${targetId}: Fees(${totalFees}) - Payments(${totalPayments}) = ${balance}`);
+
     return { 
       balance: Math.max(0, balance), 
       lastUpdated 
     };
+  }
+
+  private isUuid(id: string): boolean {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(id);
   }
 }

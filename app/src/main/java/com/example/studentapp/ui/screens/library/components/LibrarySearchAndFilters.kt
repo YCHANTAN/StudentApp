@@ -2,6 +2,7 @@ package com.example.studentapp.ui.screens.library.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -28,6 +29,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studentapp.ui.screens.library.models.FilterChip
+
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @Composable
 fun LibrarySearchAndFilters(
@@ -98,7 +106,7 @@ fun LibrarySearchAndFilters(
             modifier = Modifier
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
+                .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             filters.forEach { filter ->
@@ -110,30 +118,57 @@ fun LibrarySearchAndFilters(
 
 @Composable
 private fun FilterChipItem(chip: FilterChip) {
+    var expanded by remember { mutableStateOf(false) }
     val background = if (chip.selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.18f) else MaterialTheme.colorScheme.surfaceVariant
     val border = if (chip.selected) MaterialTheme.colorScheme.primary.copy(alpha = 0.35f) else MaterialTheme.colorScheme.outlineVariant
     val content = if (chip.selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
 
-    Row(
-        modifier = Modifier
-            .background(background, RoundedCornerShape(999.dp))
-            .border(1.dp, border, RoundedCornerShape(999.dp))
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = chip.label,
-            color = content,
-            fontSize = 14.sp,
-            fontWeight = FontWeight.Medium
-        )
+    androidx.compose.foundation.layout.Box {
+        Row(
+            modifier = Modifier
+                .background(background, RoundedCornerShape(999.dp))
+                .border(1.dp, border, RoundedCornerShape(999.dp))
+                .clickable { expanded = true }
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = chip.label,
+                color = content,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium
+            )
 
-        Icon(
-            imageVector = Icons.Default.KeyboardArrowDown,
-            contentDescription = null,
-            tint = content,
-            modifier = Modifier.size(16.dp)
-        )
+            Icon(
+                imageVector = Icons.Default.KeyboardArrowDown,
+                contentDescription = null,
+                tint = content,
+                modifier = Modifier.size(16.dp)
+            )
+        }
+
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false },
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface)
+        ) {
+            val options = when (chip.label) {
+                "Genre" -> listOf("Science Fiction", "Mathematics", "History", "Literature")
+                "Author" -> listOf("Stephen Hawking", "Albert Einstein", "Isaac Newton")
+                "Year" -> listOf("2024", "2023", "2022", "Before 2020")
+                else -> listOf("All " + chip.label)
+            }
+
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(option) },
+                    onClick = {
+                        expanded = false
+                        // Handle selection
+                    }
+                )
+            }
+        }
     }
 }

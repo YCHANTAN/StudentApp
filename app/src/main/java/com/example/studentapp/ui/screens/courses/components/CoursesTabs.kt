@@ -52,11 +52,7 @@ fun CoursesTabItem(
         modifier = modifier.clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val activeColor = if (status == CourseStatus.Waitlisted) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.secondary
-        }
+        val activeColor = MaterialTheme.colorScheme.primary
 
         Text(
             text = status.label,

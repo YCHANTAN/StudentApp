@@ -34,7 +34,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,6 +44,9 @@ import com.example.studentapp.ui.screens.studyload.components.StudyLoadSubjectCa
 import com.example.studentapp.ui.screens.studyload.components.StudyLoadSummaryCard
 import com.example.studentapp.ui.screens.studyload.models.StudyLoadItem
 
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.lifecycle.viewmodel.compose.viewModel
+
 @Composable
 @Preview
 fun StudyLoadScreen(
@@ -52,46 +54,14 @@ fun StudyLoadScreen(
     selectedNavItemId: String = "",
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
     onBackClick: () -> Unit = {},
-    onDownloadClick: () -> Unit = {}
+    onDownloadClick: () -> Unit = {},
+    viewModel: StudyLoadViewModel = viewModel()
 ) {
-    val subjects = listOf(
-        StudyLoadItem(
-            title = "Digital Illustration",
-            code = "CS301",
-            schedule = "T-TH 10:00 - 12:00",
-            room = "Art Studio",
-            instructor = "Prof. Sarah Lee",
-            units = 3,
-            status = "Enrolled"
-        ),
-        StudyLoadItem(
-            title = "Technical Writing",
-            code = "ENG202",
-            schedule = "M-W-F 1:00 - 2:00",
-            room = "Room 205",
-            instructor = "Prof. Michael Chen",
-            units = 3,
-            status = "Enrolled"
-        ),
-        StudyLoadItem(
-            title = "Software Engineering",
-            code = "CS401",
-            schedule = "M-W 3:00 - 5:00",
-            room = "CS Lab 1",
-            instructor = "Prof. David Park",
-            units = 3,
-            status = "Enrolled"
-        ),
-        StudyLoadItem(
-            title = "Team Sports",
-            code = "PE201",
-            schedule = "SAT 10:00 - 12:00",
-            room = "Gymnasium",
-            instructor = "Coach Emma Wilson",
-            units = 3,
-            status = "Confirmed"
-        )
-    )
+    val subjects = viewModel.subjects
+    val totalUnits = viewModel.totalUnits
+    val semesterLabel = viewModel.semesterLabel
+    val isLoading = viewModel.isLoading
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
@@ -128,46 +98,35 @@ fun StudyLoadScreen(
                 ) {
                     Column {
                         Button(
-                            onClick = onDownloadClick,
+                            onClick = {
+                                viewModel.downloadPdf(context) { file ->
+                                    if (file != null) {
+                                        onDownloadClick() // This could show a "Download started" toast
+                                    }
+                                }
+                            },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(56.dp),
                             shape = RoundedCornerShape(18.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = androidx.compose.ui.graphics.Color.Transparent
-                            ),
-                            contentPadding = PaddingValues()
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
                         ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(18.dp))
-                                    .background(
-                                        brush = Brush.horizontalGradient(
-                                            listOf(
-                                                MaterialTheme.colorScheme.secondary,
-                                                MaterialTheme.colorScheme.primary
-                                            )
-                                        )
-                                    ),
-                                contentAlignment = Alignment.Center
+                            androidx.compose.foundation.layout.Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
                             ) {
-                                androidx.compose.foundation.layout.Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.FileDownload,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSecondary
-                                    )
-                                    Spacer(modifier = Modifier.padding(horizontal = 4.dp))
-                                    Text(
-                                        text = "Download Study Load PDF",
-                                        color = MaterialTheme.colorScheme.onSecondary,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                }
+                                Icon(
+                                    imageVector = Icons.Outlined.FileDownload,
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.padding(horizontal = 4.dp))
+                                Text(
+                                    text = "Download Study Load PDF",
+                                    fontWeight = FontWeight.SemiBold
+                                )
                             }
                         }
 
@@ -198,38 +157,44 @@ fun StudyLoadScreen(
             }
         }
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.background)
-                .padding(innerPadding),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
-            item {
-                StudyLoadSummaryCard(
-                    totalUnits = 12,
-                    semester = "1st, 2024-2025",
-                    courseCount = 4
-                )
+        if (isLoading && subjects.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(innerPadding),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                item {
+                    StudyLoadSummaryCard(
+                        totalUnits = totalUnits,
+                        semester = semesterLabel,
+                        courseCount = subjects.size
+                    )
+                }
 
-            item {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "Current Semester Load",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
+                item {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Current Semester Load",
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
+                }
 
-            items(subjects) { subject ->
-                StudyLoadSubjectCard(item = subject)
-            }
+                items(subjects) { subject ->
+                    StudyLoadSubjectCard(item = subject)
+                }
 
-            item {
-                Spacer(modifier = Modifier.height(6.dp))
+                item {
+                    Spacer(modifier = Modifier.height(6.dp))
+                }
             }
         }
     }

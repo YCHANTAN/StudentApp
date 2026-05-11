@@ -9,6 +9,7 @@ export type LibraryBook = {
   genre: string;
   stockLabel: string;
   stockStatus: StockStatus;
+  availableCopies: number;
   isNew: boolean;
   tab: LibraryBookTab;
   createdAt: Date;

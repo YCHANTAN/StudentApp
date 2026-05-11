@@ -23,9 +23,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentNotificationButton
 import com.example.studentapp.ui.screens.library.models.LibraryTab
-import com.example.studentapp.ui.theme.DarkGreen
-import com.example.studentapp.ui.theme.Gold
 
 @Composable
 fun LibraryHeaderSection(
@@ -35,50 +35,24 @@ fun LibraryHeaderSection(
     onNotificationClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    androidx.compose.foundation.layout.Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .border(1.dp, MaterialTheme.colorScheme.outlineVariant)
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = onBackClick, modifier = Modifier.size(36.dp)) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            Text(
-                text = "Campus Library",
-                color = MaterialTheme.colorScheme.onSurface,
-                fontWeight = FontWeight.Bold,
-                fontSize = 28.sp,
-                modifier = Modifier.padding(horizontal = 8.dp)
+    StudentHeader(
+        title = "Campus Library",
+        onBackClick = onBackClick,
+        modifier = modifier,
+        actions = {
+            StudentNotificationButton(
+                onClick = onNotificationClick
             )
-
-            IconButton(onClick = onNotificationClick, modifier = Modifier.size(36.dp)) {
-                Icon(
-                    imageVector = Icons.Default.Notifications,
-                    contentDescription = "Notifications",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
+        },
+        bottomContent = {
+            LibraryTabSwitcher(
+                tabs = LibraryTab.entries,
+                selectedTab = selectedTab,
+                onTabSelected = onTabSelected,
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+            )
         }
-
-        LibraryTabSwitcher(
-            tabs = LibraryTab.entries,
-            selectedTab = selectedTab,
-            onTabSelected = onTabSelected,
-            modifier = Modifier.padding(top = 10.dp)
-        )
-    }
+    )
 }
 
 @Composable

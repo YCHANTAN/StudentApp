@@ -1,4 +1,4 @@
-import { pgTable, text, varchar, timestamp, integer, decimal, uuid, pgEnum } from 'drizzle-orm/pg-core';
+import { pgTable, text, varchar, timestamp, integer, decimal, uuid, pgEnum, primaryKey } from 'drizzle-orm/pg-core';
 import { studentProfiles } from './student-profile.schema';
 import { courses } from './course.schema';
 
@@ -17,7 +17,9 @@ export const enrollments = pgTable('enrollments', {
 export const enrollmentCourses = pgTable('enrollment_courses', {
   enrollmentId: uuid('enrollment_id').references(() => enrollments.id, { onDelete: 'cascade' }).notNull(),
   courseId: uuid('course_id').references(() => courses.id, { onDelete: 'cascade' }).notNull(),
-});
+}, (t) => ({
+  pk: primaryKey({ columns: [t.enrollmentId, t.courseId] }),
+}));
 
 export type EnrollmentRow = typeof enrollments.$inferSelect;
 export type InsertEnrollmentRow = typeof enrollments.$inferInsert;

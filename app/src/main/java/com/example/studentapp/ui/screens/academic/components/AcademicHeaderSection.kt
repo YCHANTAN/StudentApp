@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -18,50 +18,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentNotificationButton
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 fun AcademicHeaderSection(
     onBackClick: () -> Unit,
+    onNotificationClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
-    ) {
-        Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                AcademicIconCircleButton(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = "Back",
-                    onClick = onBackClick
-                )
-
-                Text(
-                    text = "Academic Services",
-                    modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = (-0.2).sp,
-                    textAlign = TextAlign.Center
-                )
-
-                AcademicIconCircleButton(
-                    imageVector = Icons.Outlined.Notifications,
-                    contentDescription = "Notifications",
-                    onClick = {}
-                )
-            }
-
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+    StudentHeader(
+        title = "Academic Services",
+        onBackClick = onBackClick,
+        modifier = modifier,
+        actions = {
+            StudentNotificationButton(
+                onClick = onNotificationClick
+            )
         }
-    }
+    )
 }

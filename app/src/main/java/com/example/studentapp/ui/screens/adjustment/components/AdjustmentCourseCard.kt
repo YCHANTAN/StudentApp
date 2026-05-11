@@ -19,34 +19,38 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.screens.adjustment.AdjustmentScreenColors
 import com.example.studentapp.ui.screens.adjustment.models.AdjustmentCourseIconType
 import com.example.studentapp.ui.screens.adjustment.models.AdjustmentCourseItem
+import com.example.studentapp.ui.theme.Radius
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 fun AdjustmentCourseCard(
     item: AdjustmentCourseItem,
+    isAddMode: Boolean = false,
+    onAddClick: () -> Unit = {},
     onChangeScheduleClick: () -> Unit = {},
     onRemoveClick: () -> Unit = {}
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(containerColor = AdjustmentScreenColors.CardBackground),
+        shape = RoundedCornerShape(Radius.Large),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
         Column(
-            modifier = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
+            modifier = Modifier.padding(Spacing.Medium),
+            verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -54,8 +58,8 @@ fun AdjustmentCourseCard(
                 Box(
                     modifier = Modifier
                         .size(52.dp)
-                        .clip(RoundedCornerShape(14.dp))
-                        .background(AdjustmentScreenColors.PrimaryGreen),
+                        .clip(RoundedCornerShape(Radius.Medium))
+                        .background(MaterialTheme.colorScheme.primary),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -64,66 +68,87 @@ fun AdjustmentCourseCard(
                             AdjustmentCourseIconType.GRID -> Icons.Outlined.GridView
                         },
                         contentDescription = null,
-                        tint = androidx.compose.ui.graphics.Color.White
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
 
-                Spacer(modifier = Modifier.width(14.dp))
+                Spacer(modifier = Modifier.width(Spacing.Medium))
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = item.title,
-                        fontSize = 18.sp,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = AdjustmentScreenColors.TextPrimary
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = item.scheduleAndUnits,
-                        fontSize = 13.sp,
-                        color = AdjustmentScreenColors.TextPrimary
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         text = item.professor,
-                        fontSize = 13.sp,
-                        color = AdjustmentScreenColors.TextSecondary,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontStyle = FontStyle.Italic
                     )
                 }
             }
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
+            if (isAddMode) {
                 Button(
-                    onClick = onChangeScheduleClick,
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(14.dp),
+                    onClick = onAddClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(Radius.Medium),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = androidx.compose.ui.graphics.Color.White,
-                        contentColor = AdjustmentScreenColors.TextPrimary
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
                     ),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
                 ) {
                     Text(
-                        text = "Change Schedule",
+                        text = "Add Course",
+                        style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold
                     )
                 }
-
-                Button(
-                    onClick = onRemoveClick,
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = AdjustmentScreenColors.RedSoft,
-                        contentColor = AdjustmentScreenColors.RedText
-                    ),
-                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+            } else {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
                 ) {
-                    Text(
-                        text = "Remove",
-                        fontWeight = FontWeight.SemiBold
-                    )
+                    Button(
+                        onClick = onChangeScheduleClick,
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(Radius.Medium),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+                    ) {
+                        Text(
+                            text = "Change Schedule",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
+
+                    Button(
+                        onClick = onRemoveClick,
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(Radius.Medium),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                            contentColor = MaterialTheme.colorScheme.onErrorContainer
+                        ),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+                    ) {
+                        Text(
+                            text = "Remove",
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
             }
         }

@@ -23,7 +23,7 @@ export class DocumentRequestController {
 
       const { data, total } = await this.getDocumentRequestsUseCase.execute({
         ...pagination,
-        studentId: filter.studentId,
+        ...(filter.studentId !== undefined && { studentId: filter.studentId }),
       });
 
       ok(res, data, {
@@ -39,7 +39,8 @@ export class DocumentRequestController {
 
   getDocumentRequest = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const request = await this.getDocumentRequestUseCase.execute(req.params.id);
+      const id = req.params.id as string;
+      const request = await this.getDocumentRequestUseCase.execute(id);
       ok(res, request);
     } catch (err) {
       next(err);

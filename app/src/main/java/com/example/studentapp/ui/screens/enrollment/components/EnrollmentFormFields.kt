@@ -47,7 +47,7 @@ fun EnrollmentSectionHeader(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.secondary
+            tint = MaterialTheme.colorScheme.primary
         )
         Text(
             text = title.uppercase(),
@@ -65,7 +65,8 @@ fun EnrollmentTextField(
     value: String,
     onValueChange: (String) -> Unit,
     placeholder: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    error: String? = null
 ) {
     Column(
         modifier = modifier,
@@ -86,7 +87,7 @@ fun EnrollmentTextField(
                 )
                 .border(
                     width = 1.dp,
-                    color = MaterialTheme.colorScheme.outline,
+                    color = if (error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline,
                     shape = RoundedCornerShape(12.dp)
                 )
         ) {
@@ -101,7 +102,7 @@ fun EnrollmentTextField(
                     color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 14.sp
                 ),
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.secondary),
+                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 decorationBox = { innerTextField ->
                     Box(
                         modifier = Modifier.fillMaxWidth(),
@@ -110,13 +111,21 @@ fun EnrollmentTextField(
                         if (value.isEmpty()) {
                             Text(
                                 text = placeholder,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
                                 fontSize = 14.sp
                             )
                         }
                         innerTextField()
                     }
                 }
+            )
+        }
+        if (error != null) {
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 4.dp)
             )
         }
     }
@@ -128,7 +137,8 @@ fun EnrollmentSelectField(
     value: String,
     options: List<String>,
     onValueSelected: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    error: String? = null
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -153,7 +163,7 @@ fun EnrollmentSelectField(
                     )
                     .border(
                         width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline,
+                        color = if (error != null) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.outline,
                         shape = RoundedCornerShape(12.dp)
                     )
                     .clickable { expanded = true }
@@ -188,6 +198,14 @@ fun EnrollmentSelectField(
                 }
             }
         }
+        if (error != null) {
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 4.dp)
+            )
+        }
     }
 }
 
@@ -196,16 +214,17 @@ fun EnrollmentPrimaryButton(
     text: String,
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .background(
-                color = MaterialTheme.colorScheme.secondary,
+                color = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
                 shape = RoundedCornerShape(12.dp)
             )
-            .clickable(onClick = onClick)
+            .clickable(enabled = enabled, onClick = onClick)
             .padding(vertical = 16.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -215,14 +234,14 @@ fun EnrollmentPrimaryButton(
         ) {
             Text(
                 text = text,
-                color = MaterialTheme.colorScheme.onSecondary,
+                color = if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSecondary
+                tint = if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }

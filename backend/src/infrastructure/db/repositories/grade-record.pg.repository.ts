@@ -23,14 +23,13 @@ export class GradeRecordPgRepository implements GradeRecordRepository {
       .limit(limit)
       .offset(offset);
 
-    const [totalResult] = await this.db
-      .select({ value: count() })
-      .from(gradeRecords)
-      .where(whereClause);
+    const [totalResult] = await this.db.select({ value: count() }).from(gradeRecords).where(whereClause);
+
+    const total = totalResult?.value ? Number(totalResult.value) : 0;
 
     return {
       data: data.map(this.mapToEntity),
-      total: Number(totalResult.value),
+      total,
     };
   }
 
@@ -43,7 +42,9 @@ export class GradeRecordPgRepository implements GradeRecordRepository {
       gradePoint: row.gradePoint,
       status: row.status as GradeRecordStatus,
       semesterLabel: row.semesterLabel || undefined,
+      remarks: row.remarks || undefined,
       createdAt: row.createdAt,
     };
   }
 }
+

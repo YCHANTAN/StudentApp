@@ -1,10 +1,10 @@
 package com.example.studentapp.ui.screens.academic.models
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AssignmentTurnedIn
-import androidx.compose.material.icons.outlined.BarChart
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.List
 import androidx.compose.material.icons.outlined.MenuBook
-import androidx.compose.material.icons.outlined.PersonAddAlt1
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Schedule
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.runtime.Immutable
@@ -39,18 +39,17 @@ fun buildAcademicDashboardMenuItems(): List<AcademicDashboardMenuItem> {
         AcademicDashboardMenuItem(
             id = ACADEMIC_MENU_ENROLLMENT,
             label = "Enrollment",
-            // Material Icons does not expose `person_add_alt`; `PersonAddAlt1` is the closest official equivalent.
-            icon = Icons.Outlined.PersonAddAlt1
+            icon = Icons.Outlined.Person
         ),
         AcademicDashboardMenuItem(
             id = ACADEMIC_MENU_GRADES,
             label = "Grades",
-            icon = Icons.Outlined.BarChart
+            icon = Icons.Outlined.List
         ),
         AcademicDashboardMenuItem(
             id = ACADEMIC_MENU_EVALUATION,
             label = "Evaluations",
-            icon = Icons.Outlined.AssignmentTurnedIn
+            icon = Icons.Outlined.Check
         ),
         AcademicDashboardMenuItem(
             id = ACADEMIC_MENU_STUDY_LOAD,

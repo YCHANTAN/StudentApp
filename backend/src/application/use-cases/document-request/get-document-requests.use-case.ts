@@ -24,7 +24,10 @@ export class GetDocumentRequestsUseCase {
       }
     }
 
-    return this.documentRequestRepo.findAll({ page, limit }, { studentId: targetId });
+    const filter: { studentId?: string } = {};
+    if (targetId !== undefined) filter.studentId = targetId;
+
+    return this.documentRequestRepo.findAll({ page, limit }, filter);
   }
 
   private isUuid(id: string): boolean {

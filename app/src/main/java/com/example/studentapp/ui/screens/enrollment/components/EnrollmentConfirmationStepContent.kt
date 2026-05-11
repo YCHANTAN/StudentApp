@@ -45,6 +45,12 @@ import com.example.studentapp.ui.screens.enrollment.models.EnrollmentConfirmatio
 @Composable
 fun EnrollmentConfirmationStepContent(
     courses: List<EnrollmentConfirmationCourse>,
+    studentName: String,
+    studentId: String,
+    program: String,
+    semester: String,
+    totalUnits: Int,
+    estimatedTuition: Double,
     contentPadding: PaddingValues,
     onBackClick: () -> Unit,
     onDownloadReceiptClick: () -> Unit,
@@ -62,7 +68,16 @@ fun EnrollmentConfirmationStepContent(
         }
 
         item {
-            EnrollmentConfirmationSuccessSection()
+            EnrollmentConfirmationSuccessSection(semester = semester)
+        }
+
+        item {
+            EnrollmentStudentInfoSection(
+                name = studentName,
+                id = studentId,
+                program = program,
+                semester = semester
+            )
         }
 
         item {
@@ -80,6 +95,14 @@ fun EnrollmentConfirmationStepContent(
         }
 
         item {
+            EnrollmentFeeSummary(
+                totalUnits = totalUnits,
+                tuitionFee = estimatedTuition,
+                miscFees = 2300.0 // Constant for now
+            )
+        }
+
+        item {
             EnrollmentConfirmationActions(
                 onDownloadReceiptClick = onDownloadReceiptClick,
                 onHomeClick = onHomeClick,
@@ -87,6 +110,77 @@ fun EnrollmentConfirmationStepContent(
             )
         }
     }
+}
+
+@Composable
+fun EnrollmentFeeSummary(
+    totalUnits: Int,
+    tuitionFee: Double,
+    miscFees: Double,
+    modifier: Modifier = Modifier
+) {
+    val totalAmount = tuitionFee + miscFees
+    
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f),
+                shape = RoundedCornerShape(16.dp)
+            )
+            .padding(20.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "FEE SUMMARY",
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        
+        FeeRow("Total Units", totalUnits.toString())
+        FeeRow("Tuition Fee", formatCurrency(tuitionFee))
+        FeeRow("Miscellaneous Fees", formatCurrency(miscFees))
+        
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(MaterialTheme.colorScheme.outlineVariant)
+        )
+        
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = "Total Amount",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = formatCurrency(totalAmount),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
+    }
+}
+
+@Composable
+fun FeeRow(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(text = label, style = MaterialTheme.typography.bodyMedium)
+        Text(text = value, style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
+    }
+}
+
+private fun formatCurrency(amount: Double): String {
+    return String.format(java.util.Locale.US, "₱%,.2f", amount)
 }
 
 @Composable
@@ -116,14 +210,9 @@ fun EnrollmentConfirmationHeader(
             }
 
             Text(
-                text = buildAnnotatedString {
-                    append("STEP 04: ")
-                    withStyle(SpanStyle(color = MaterialTheme.colorScheme.secondary)) {
-                        append("CONF")
-                    }
-                },
+                text = "ENROLLED",
                 modifier = Modifier.weight(1f),
-                color = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
@@ -164,7 +253,7 @@ fun EnrollmentConfirmationHeader(
                     .fillMaxWidth()
                     .height(8.dp)
                     .background(
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = MaterialTheme.colorScheme.primary,
                         shape = CircleShape
                     )
             )
@@ -174,6 +263,7 @@ fun EnrollmentConfirmationHeader(
 
 @Composable
 fun EnrollmentConfirmationSuccessSection(
+    semester: String,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -185,7 +275,7 @@ fun EnrollmentConfirmationSuccessSection(
             modifier = Modifier
                 .size(96.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.primaryContainer,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
                     shape = CircleShape
                 ),
             contentAlignment = Alignment.Center
@@ -207,11 +297,57 @@ fun EnrollmentConfirmationSuccessSection(
         )
 
         Text(
-            text = "Congratulations! You have been successfully enrolled for the Fall 2024 semester.",
+            text = "Congratulations! You have been successfully enrolled for the $semester semester.",
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 14.sp,
             lineHeight = 22.sp,
             textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun EnrollmentStudentInfoSection(
+    name: String,
+    id: String,
+    program: String,
+    semester: String,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outlineVariant,
+                shape = RoundedCornerShape(12.dp)
+            )
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        InfoRow("Student Name", name)
+        InfoRow("Student ID", id)
+        InfoRow("Program", program)
+        InfoRow("Semester", semester)
+    }
+}
+
+@Composable
+fun InfoRow(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
@@ -241,7 +377,7 @@ fun EnrollmentConfirmationCourseItem(
             modifier = Modifier
                 .size(40.dp)
                 .background(
-                    color = MaterialTheme.colorScheme.primaryContainer,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f),
                     shape = RoundedCornerShape(10.dp)
                 ),
             contentAlignment = Alignment.Center
@@ -318,7 +454,7 @@ fun EnrollmentSecondaryButton(
             )
             .border(
                 width = 1.dp,
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.20f),
+                color = MaterialTheme.colorScheme.secondary.copy(alpha = 0.20f),
                 shape = RoundedCornerShape(12.dp)
             )
             .clickable(onClick = onClick)
@@ -327,7 +463,7 @@ fun EnrollmentSecondaryButton(
     ) {
         Text(
             text = text,
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.secondary,
             fontSize = 14.sp,
             fontWeight = FontWeight.Bold
         )

@@ -17,7 +17,7 @@ export class TransactionController {
 
       const { data, total } = await this.getTransactionsUseCase.execute({
         ...pagination,
-        studentId: filter.studentId,
+        ...(filter.studentId !== undefined && { studentId: filter.studentId }),
       });
 
       ok(res, data, {

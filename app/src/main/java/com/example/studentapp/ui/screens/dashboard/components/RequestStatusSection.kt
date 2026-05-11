@@ -30,10 +30,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studentapp.ui.screens.dashboard.models.ServiceRequestStatus
 import com.example.studentapp.ui.theme.DarkGreen
+import com.example.studentapp.ui.theme.ErrorRed
+import com.example.studentapp.ui.theme.ErrorRedSoft
 import com.example.studentapp.ui.theme.Gold
+import com.example.studentapp.ui.theme.SuccessGreen
+import com.example.studentapp.ui.theme.SuccessGreenSoft
+import com.example.studentapp.ui.theme.WarningYellow
+import com.example.studentapp.ui.theme.WarningYellowSoft
 
 @Composable
 fun RequestStatusSection(requestStatus: ServiceRequestStatus) {
+    val (statusColor, statusBg) = when (requestStatus.statusLabel.lowercase()) {
+        "active", "finished", "completed", "done" -> SuccessGreen to SuccessGreenSoft
+        "processing", "under maintenance", "pending", "ongoing" -> WarningYellow to WarningYellowSoft
+        "not processed", "not active", "inactive", "cancelled", "failed" -> ErrorRed to ErrorRedSoft
+        else -> WarningYellow to WarningYellowSoft
+    }
+
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(
             text = "Request Status Overview",
@@ -65,13 +78,13 @@ fun RequestStatusSection(requestStatus: ServiceRequestStatus) {
                     ) {
                         Box(
                             modifier = Modifier
-                                .background(Gold.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
+                                .background(statusColor.copy(alpha = 0.1f), RoundedCornerShape(12.dp))
                                 .padding(8.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Filled.Description,
                                 contentDescription = requestStatus.title,
-                                tint = Gold
+                                tint = statusColor
                             )
                         }
 
@@ -92,11 +105,11 @@ fun RequestStatusSection(requestStatus: ServiceRequestStatus) {
 
                     Surface(
                         shape = RoundedCornerShape(8.dp),
-                        color = DarkGreen
+                        color = statusBg
                     ) {
                         Text(
                             text = requestStatus.statusLabel,
-                            color = Color.White,
+                            color = statusColor,
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
@@ -110,7 +123,7 @@ fun RequestStatusSection(requestStatus: ServiceRequestStatus) {
                         .fillMaxWidth()
                         .height(6.dp)
                         .clip(RoundedCornerShape(999.dp)),
-                    color = DarkGreen,
+                    color = statusColor,
                     trackColor = MaterialTheme.colorScheme.outlineVariant
                 )
 

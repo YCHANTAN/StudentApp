@@ -23,14 +23,13 @@ export class ScheduleEntryPgRepository implements ScheduleEntryRepository {
       .limit(limit)
       .offset(offset);
 
-    const [totalResult] = await this.db
-      .select({ value: count() })
-      .from(scheduleEntries)
-      .where(whereClause);
+    const [totalResult] = await this.db.select({ value: count() }).from(scheduleEntries).where(whereClause);
+
+    const total = totalResult?.value ? Number(totalResult.value) : 0;
 
     return {
       data: data.map(this.mapToEntity),
-      total: Number(totalResult.value),
+      total,
     };
   }
 
@@ -39,6 +38,7 @@ export class ScheduleEntryPgRepository implements ScheduleEntryRepository {
       id: row.id,
       studentId: row.studentId,
       dayLabel: row.dayLabel,
+      day: row.dayLabel, // Alias for frontend
       courseCode: row.courseCode,
       courseTitle: row.courseTitle,
       timeRange: row.timeRange,
@@ -48,3 +48,4 @@ export class ScheduleEntryPgRepository implements ScheduleEntryRepository {
     };
   }
 }
+

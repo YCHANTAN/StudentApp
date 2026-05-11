@@ -26,12 +26,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.studentapp.ui.screens.academic.models.AcademicDashboardMenuItem
+import com.example.studentapp.ui.theme.Radius
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 fun AcademicDashboardMenuCard(
@@ -50,31 +52,19 @@ fun AcademicDashboardMenuCard(
                 scaleX = if (isPressed) 0.95f else 1f
                 scaleY = if (isPressed) 0.95f else 1f
             }
-            .shadow(
-                elevation = if (isPressed) 8.dp else 0.dp,
-                shape = RoundedCornerShape(16.dp),
-                clip = false
-            )
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = onClick
             ),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(12.dp),
         color = MaterialTheme.colorScheme.surfaceVariant,
-        border = BorderStroke(
-            width = 1.dp,
-            color = if (isPressed) {
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.30f)
-            } else {
-                MaterialTheme.colorScheme.outlineVariant
-            }
-        )
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(Spacing.Medium),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -82,28 +72,22 @@ fun AcademicDashboardMenuCard(
                 modifier = Modifier
                     .size(56.dp)
                     .clip(CircleShape)
-                    .background(
-                        if (isPressed) {
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.10f)
-                        } else {
-                            MaterialTheme.colorScheme.primary.copy(alpha = 0.05f)
-                        }
-                    ),
+                    .background(MaterialTheme.colorScheme.secondary),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = item.icon,
                     contentDescription = item.label,
-                    tint = MaterialTheme.colorScheme.secondary,
+                    tint = Color.Black,
                     modifier = Modifier.size(30.dp)
                 )
             }
 
             Text(
                 text = item.label,
-                modifier = Modifier.padding(top = 16.dp),
+                modifier = Modifier.padding(top = Spacing.Medium),
                 color = MaterialTheme.colorScheme.onSurface,
-                fontSize = 14.sp,
+                style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center
             )

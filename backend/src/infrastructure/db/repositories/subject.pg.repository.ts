@@ -14,6 +14,7 @@ export class SubjectPgRepository implements SubjectRepository {
 
   async save(subject: Subject): Promise<Subject> {
     const [row] = await this.db.insert(subjects).values(subject).returning();
+    if (!row) throw new Error('Failed to save subject');
     return row;
   }
 }

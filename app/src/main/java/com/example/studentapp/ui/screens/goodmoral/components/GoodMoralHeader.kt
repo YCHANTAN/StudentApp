@@ -17,33 +17,24 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.material.icons.filled.Notifications
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentNotificationButton
+
 @Composable
 fun GoodMoralHeader(
     onBackClick: () -> Unit,
+    onNotificationClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = onBackClick) {
-            Icon(
-                imageVector = Icons.Default.ArrowBack,
-                contentDescription = "Back",
-                tint = MaterialTheme.colorScheme.onSurface
+    StudentHeader(
+        title = "Good Moral Certificate",
+        onBackClick = onBackClick,
+        modifier = modifier,
+        actions = {
+            StudentNotificationButton(
+                onClick = onNotificationClick
             )
         }
-        Text(
-            text = "Good Moral Certificate",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.weight(1f),
-            textAlign = androidx.compose.ui.text.style.TextAlign.Center
-        )
-        // Spacer for centering
-        androidx.compose.foundation.layout.Spacer(modifier = Modifier.padding(horizontal = 24.dp))
-    }
+    )
 }

@@ -24,7 +24,10 @@ export class GetComplaintsUseCase {
       }
     }
 
-    return this.complaintRepo.findAll({ page, limit }, { studentId: targetId });
+    const filter: { studentId?: string } = {};
+    if (targetId !== undefined) filter.studentId = targetId;
+
+    return this.complaintRepo.findAll({ page, limit }, filter);
   }
 
   private isUuid(id: string): boolean {

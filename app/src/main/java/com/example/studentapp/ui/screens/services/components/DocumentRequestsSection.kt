@@ -1,6 +1,7 @@
 package com.example.studentapp.ui.screens.services.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -26,15 +28,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.studentapp.ui.screens.services.models.DocumentRequestItem
 import com.example.studentapp.ui.screens.services.models.DocumentType
 import com.example.studentapp.ui.theme.DarkGreen
 
 @Composable
-fun DocumentRequestsSection(activeRequestCount: Int = 3) {
+fun DocumentRequestsSection(requests: List<DocumentRequestItem>) {
     Column {
         // Header
         Row(
@@ -52,7 +56,7 @@ fun DocumentRequestsSection(activeRequestCount: Int = 3) {
                 color = DarkGreen.copy(alpha = 0.2f)
             ) {
                 Text(
-                    "$activeRequestCount Active Requests",
+                    "${requests.size} Active Requests",
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Medium,
@@ -61,45 +65,46 @@ fun DocumentRequestsSection(activeRequestCount: Int = 3) {
             }
         }
 
-        // Timeline Card
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                // Step 1 - Processing (active)
-                TimelineStep(
-                    icon = Icons.Default.Schedule,
-                    iconTint = Color(0xFFD4AF37),
-                    title = "Processing",
-                    subtitle = "Transcript of Records (TOR) - Submitted Oct 10",
-                    isActive = true,
-                    showLine = true
-                )
+        // Timeline Card for the first active request
+        requests.firstOrNull()?.let { request ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    val status = request.status.uppercase()
+                    
+                    TimelineStep(
+                        icon = Icons.Default.Schedule,
+                        iconTint = if (status == "PROCESSING") Color(0xFFD4AF37) else DarkGreen.copy(alpha = 0.4f),
+                        title = "Processing",
+                        subtitle = "${request.type} - Submitted ${request.date}",
+                        isActive = status == "PROCESSING",
+                        showLine = true
+                    )
 
-                // Step 2 - Accepted (inactive)
-                TimelineStep(
-                    icon = Icons.Default.CheckCircle,
-                    iconTint = DarkGreen.copy(alpha = 0.4f),
-                    title = "Accepted",
-                    subtitle = "Verified by Registrar",
-                    isActive = false,
-                    showLine = true
-                )
+                    TimelineStep(
+                        icon = Icons.Default.CheckCircle,
+                        iconTint = if (status == "ACCEPTED" || status == "READY_FOR_PICKUP") DarkGreen else DarkGreen.copy(alpha = 0.4f),
+                        title = "Accepted",
+                        subtitle = "Verified by Registrar",
+                        isActive = status == "ACCEPTED",
+                        showLine = true
+                    )
 
-                // Step 3 - Ready for Pickup (inactive)
-                TimelineStep(
-                    icon = Icons.Default.Inventory2,
-                    iconTint = DarkGreen.copy(alpha = 0.4f),
-                    title = "Ready for Pickup",
-                    subtitle = "Counter 4, Admin Building",
-                    isActive = false,
-                    showLine = false
-                )
+                    TimelineStep(
+                        icon = Icons.Default.Inventory2,
+                        iconTint = if (status == "READY_FOR_PICKUP") DarkGreen else DarkGreen.copy(alpha = 0.4f),
+                        title = "Ready for Pickup",
+                        subtitle = "Counter 4, Admin Building",
+                        isActive = status == "READY_FOR_PICKUP",
+                        showLine = false
+                    )
+                }
             }
         }
     }
@@ -202,12 +207,20 @@ private fun DocumentTypeCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Icon(
-                imageVector = docType.icon,
-                contentDescription = null,
-                tint = docType.iconTint,
-                modifier = Modifier.size(24.dp)
-            )
+            Box(
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.secondary),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = docType.icon,
+                    contentDescription = null,
+                    tint = Color.Black,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
             Text(
                 docType.label,
                 fontSize = 11.sp,

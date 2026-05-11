@@ -22,13 +22,13 @@ fun SubjectStatusBadge(status: SubjectStatus) {
     }
 
     val bgColor = when (status) {
-        SubjectStatus.COMPLETED -> MaterialTheme.colorScheme.primaryContainer
-        SubjectStatus.IN_PROGRESS -> androidx.compose.ui.graphics.Color.Transparent
+        SubjectStatus.COMPLETED -> MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+        SubjectStatus.IN_PROGRESS -> MaterialTheme.colorScheme.secondary.copy(alpha = 0.12f)
     }
 
     val textColor = when (status) {
-        SubjectStatus.COMPLETED -> MaterialTheme.colorScheme.onPrimaryContainer
-        SubjectStatus.IN_PROGRESS -> MaterialTheme.colorScheme.onSurfaceVariant
+        SubjectStatus.COMPLETED -> MaterialTheme.colorScheme.primary
+        SubjectStatus.IN_PROGRESS -> MaterialTheme.colorScheme.secondary
     }
 
     Box(

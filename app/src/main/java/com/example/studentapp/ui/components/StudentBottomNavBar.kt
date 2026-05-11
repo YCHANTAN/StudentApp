@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.theme.DarkGreen
+import com.example.studentapp.ui.theme.Spacing
 
 @Immutable
 data class StudentBottomNavItem(
@@ -83,7 +83,7 @@ fun StudentBottomNavBar(
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
-                    .padding(horizontal = 24.dp, vertical = 8.dp),
+                    .padding(horizontal = Spacing.Large, vertical = Spacing.Small),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -106,7 +106,7 @@ private fun BottomNavItemButton(
     onClick: () -> Unit
 ) {
     val itemColor = if (isSelected) {
-        DarkGreen
+        MaterialTheme.colorScheme.primary
     } else {
         MaterialTheme.colorScheme.onSurfaceVariant
     }
@@ -120,9 +120,9 @@ private fun BottomNavItemButton(
     Column(
         modifier = Modifier
             .clickable(onClick = onClick)
-            .padding(vertical = 4.dp),
+            .padding(vertical = Spacing.ExtraSmall),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)
     ) {
         Icon(
             imageVector = item.icon,
@@ -133,9 +133,8 @@ private fun BottomNavItemButton(
         Text(
             text = item.label,
             color = itemColor,
-            fontSize = 10.sp,
-            fontWeight = itemWeight,
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelSmall,
+            fontWeight = itemWeight
         )
     }
 }

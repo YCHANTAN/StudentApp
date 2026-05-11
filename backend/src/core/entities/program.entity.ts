@@ -9,5 +9,6 @@ export type Program = {
   scheduleLine: string;
   description: string;
   category: ProgramCategory;
+  prospectusUrl?: string;
   createdAt: Date;
 };

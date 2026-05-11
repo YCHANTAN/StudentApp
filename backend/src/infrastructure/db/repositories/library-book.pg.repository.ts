@@ -28,9 +28,11 @@ export class LibraryBookPgRepository implements LibraryBookRepository {
       .from(libraryBooks)
       .where(whereClause);
 
+    const total = totalResult?.value ? Number(totalResult.value) : 0;
+
     return {
       data: data.map(this.mapToEntity),
-      total: Number(totalResult.value),
+      total,
     };
   }
 
@@ -59,6 +61,7 @@ export class LibraryBookPgRepository implements LibraryBookRepository {
       genre: row.genre,
       stockLabel: row.stockLabel,
       stockStatus: row.stockStatus,
+      availableCopies: row.availableCopies,
       isNew: row.isNew,
       tab: row.tab,
       createdAt: row.createdAt,

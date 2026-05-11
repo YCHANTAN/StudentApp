@@ -71,7 +71,7 @@ fun CourseCard(
                 Column {
                     Text(
                         text = course.code,
-                        color = MaterialTheme.colorScheme.secondary,
+                        color = MaterialTheme.colorScheme.primary,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         letterSpacing = 1.sp
@@ -89,7 +89,14 @@ fun CourseCard(
 
             CourseMetadataSection(course = course)
 
-            CourseProgressBar(progress = course.progress)
+            CourseProgressBar(
+                progress = course.progress,
+                color = if (course.status == CourseStatus.Completed) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.secondary
+                }
+            )
         }
     }
 }
@@ -103,12 +110,12 @@ fun CourseTrailingBadge(
         Box(
             modifier = modifier
                 .clip(RoundedCornerShape(4.dp))
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .background(MaterialTheme.colorScheme.primary)
                 .padding(horizontal = 8.dp, vertical = 4.dp)
         ) {
             Text(
                 text = "Completed",
-                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp
@@ -148,7 +155,7 @@ fun CourseMetadataSection(
             icon = Icons.Outlined.Person,
             text = course.instructor,
             iconTint = if (course.status == CourseStatus.Enrolled) {
-                MaterialTheme.colorScheme.secondary
+                MaterialTheme.colorScheme.primary
             } else {
                 MaterialTheme.colorScheme.onSurfaceVariant
             }
@@ -159,12 +166,12 @@ fun CourseMetadataSection(
                 CourseMetadataRow(
                     icon = Icons.Outlined.CalendarToday,
                     text = course.schedule.orEmpty(),
-                    iconTint = MaterialTheme.colorScheme.secondary
+                    iconTint = MaterialTheme.colorScheme.primary
                 )
                 CourseMetadataRow(
                     icon = Icons.Outlined.LocationOn,
                     text = course.location.orEmpty(),
-                    iconTint = MaterialTheme.colorScheme.secondary
+                    iconTint = MaterialTheme.colorScheme.primary
                 )
             }
 
@@ -172,7 +179,7 @@ fun CourseMetadataSection(
                 CourseMetadataRow(
                     icon = Icons.Outlined.CheckCircle,
                     text = course.grade.orEmpty(),
-                    iconTint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    iconTint = MaterialTheme.colorScheme.primary,
                     textColor = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -182,13 +189,13 @@ fun CourseMetadataSection(
                 CourseMetadataRow(
                     icon = Icons.Outlined.CalendarToday,
                     text = course.schedule.orEmpty(),
-                    iconTint = MaterialTheme.colorScheme.onSurfaceVariant
+                    iconTint = MaterialTheme.colorScheme.primary
                 )
                 CourseMetadataRow(
                     icon = Icons.Outlined.LocationOn,
                     text = course.waitlistStatus.orEmpty(),
-                    iconTint = MaterialTheme.colorScheme.secondary,
-                    textColor = MaterialTheme.colorScheme.secondary,
+                    iconTint = MaterialTheme.colorScheme.primary,
+                    textColor = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -228,6 +235,7 @@ fun CourseMetadataRow(
 @Composable
 fun CourseProgressBar(
     progress: Float,
+    color: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.secondary,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -241,7 +249,7 @@ fun CourseProgressBar(
             modifier = Modifier
                 .fillMaxWidth(progress)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondary)
+                .background(color)
                 .padding(vertical = 3.dp)
         )
     }

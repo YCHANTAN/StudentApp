@@ -9,6 +9,7 @@ export const gradeRecords = pgTable('grade_records', {
   gradePoint: varchar('grade_point', { length: 20 }).notNull(),
   status: varchar('status', { length: 50 }).notNull(), // COMPLETED, IN_PROGRESS
   semesterLabel: varchar('semester_label', { length: 100 }),
+  remarks: varchar('remarks', { length: 255 }),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

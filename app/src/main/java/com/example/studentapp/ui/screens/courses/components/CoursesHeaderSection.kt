@@ -19,6 +19,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentHeaderIconButton
+import com.example.studentapp.ui.components.StudentSearchBar
 import com.example.studentapp.ui.screens.courses.models.CourseStatus
 
 @Composable
@@ -30,52 +33,15 @@ fun CoursesHeaderSection(
     onStatusSelected: (CourseStatus) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            CoursesIconButton(
-                imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                contentDescription = "Back",
-                onClick = onBackClick
-            )
-
-            Text(
-                text = "My Courses",
-                modifier = Modifier.weight(1f),
-                color = MaterialTheme.colorScheme.onBackground,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = (-0.27).sp,
-                textAlign = TextAlign.Center
-            )
-
-            Box(
-                modifier = Modifier.size(48.dp),
-                contentAlignment = Alignment.CenterEnd
-            ) {
-                CoursesIconButton(
-                    imageVector = Icons.Outlined.Notifications,
-                    contentDescription = "Notifications",
-                    onClick = {}
-                )
-            }
-        }
-
-        androidx.compose.foundation.layout.Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomStart)
-                .padding(top = 72.dp)
-        ) {
-            CoursesSearchBar(
+    StudentHeader(
+        title = "My Courses",
+        onBackClick = onBackClick,
+        modifier = modifier,
+        bottomContent = {
+            StudentSearchBar(
                 value = searchQuery,
-                onValueChange = onSearchQueryChange
+                onValueChange = onSearchQueryChange,
+                placeholder = "Search courses..."
             )
 
             CoursesTabs(
@@ -83,5 +49,5 @@ fun CoursesHeaderSection(
                 onStatusSelected = onStatusSelected
             )
         }
-    }
+    )
 }

@@ -15,6 +15,7 @@ export const CreateCourseDto = z.object({
   progress: z.number().min(0).max(1).optional(),
   status: CourseStatusDto.optional(),
   tuition: z.number().optional(),
+  remainingSlots: z.number().int().optional(),
   isLocked: z.boolean().optional(),
   lockReason: z.string().optional(),
   programId: z.string().uuid().optional(),
@@ -36,6 +37,7 @@ export const CourseResponseDto = z.object({
   progress: z.number().optional(),
   status: CourseStatusDto.optional(),
   tuition: z.number().optional(),
+  remainingSlots: z.number().int().optional(),
   isLocked: z.boolean().optional(),
   lockReason: z.string().optional(),
   programId: z.string().uuid().optional(),
@@ -47,4 +49,5 @@ export type UpdateCourseInput = z.infer<typeof UpdateCourseDto>;
 
 export const GetCoursesQueryDto = z.object({
   programId: z.string().uuid().optional(),
+  code: z.string().optional(),
 });

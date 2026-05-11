@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.studentapp.ui.components.StudentHeader
 import com.example.studentapp.ui.screens.enrollment.models.EnrollmentStep
 
 @Composable
@@ -36,49 +37,14 @@ fun EnrollmentHeaderSection(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .statusBarsPadding()
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .clickable(onClick = onBackClick)
-                        .padding(8.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                        contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                }
-
-                Text(
-                    text = step.title,
-                    modifier = Modifier.weight(1f),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    letterSpacing = (-0.2).sp,
-                    textAlign = TextAlign.Center
-                )
-
-                Box(modifier = Modifier.size(40.dp))
-            }
-
+    StudentHeader(
+        title = step.title,
+        onBackClick = onBackClick,
+        modifier = modifier,
+        bottomContent = {
             EnrollmentProgressSection(step = step)
         }
-    }
+    )
 }
 
 @Composable
@@ -97,9 +63,14 @@ fun EnrollmentProgressSection(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            val labelColor = if (step.progressFraction >= 1f) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                MaterialTheme.colorScheme.secondary
+            }
             Text(
                 text = step.progressLabel.uppercase(),
-                color = MaterialTheme.colorScheme.secondary,
+                color = labelColor,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.2.sp
@@ -138,12 +109,17 @@ fun EnrollmentProgressBar(
             .clip(CircleShape)
             .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
+        val barColor = if (progressFraction >= 1f) {
+            MaterialTheme.colorScheme.primary
+        } else {
+            MaterialTheme.colorScheme.secondary
+        }
         Box(
             modifier = Modifier
                 .fillMaxWidth(animatedProgress.value)
                 .height(6.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.secondary)
+                .background(barColor)
         )
     }
 }

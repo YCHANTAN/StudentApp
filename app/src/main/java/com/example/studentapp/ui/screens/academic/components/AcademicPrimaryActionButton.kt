@@ -20,7 +20,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.example.studentapp.ui.theme.Radius
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 fun AcademicPrimaryActionButton(
@@ -40,10 +41,10 @@ fun AcademicPrimaryActionButton(
             }
             .shadow(
                 elevation = if (isPressed) 4.dp else 6.dp,
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(Radius.Medium),
                 clip = false
             )
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(Radius.Medium))
             .background(
                 if (isPressed) {
                     MaterialTheme.colorScheme.primary.copy(alpha = 0.90f)
@@ -56,13 +57,13 @@ fun AcademicPrimaryActionButton(
                 indication = null,
                 onClick = onClick
             )
-            .padding(horizontal = 24.dp, vertical = 12.dp),
+            .padding(horizontal = Spacing.Large, vertical = Spacing.Medium),
         contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
             color = MaterialTheme.colorScheme.onPrimary,
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold
         )
     }

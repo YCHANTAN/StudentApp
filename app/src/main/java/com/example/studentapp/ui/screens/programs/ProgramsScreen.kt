@@ -1,6 +1,7 @@
 package com.example.studentapp.ui.screens.programs
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -34,6 +35,12 @@ import com.example.studentapp.ui.screens.programs.models.buildProgramEntries
 import com.example.studentapp.ui.screens.programs.models.filterProgramEntries
 import com.example.studentapp.ui.theme.StudentAppTheme
 
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.studentapp.ui.screens.programs.components.ProspectusViewer
+
 @Composable
 fun ProgramsScreen(
     navigationItems: List<StudentBottomNavItem>,
@@ -44,15 +51,32 @@ fun ProgramsScreen(
     onViewProgramClick: (ProgramEntry) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val viewModel: ProgramsViewModel = viewModel()
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var selectedTab by rememberSaveable { mutableStateOf(ProgramsTab.AllPrograms) }
-    val programs = remember { buildProgramEntries() }
+    var selectedProspectusUrl by remember { mutableStateOf<String?>(null) }
+
+    val programs = viewModel.allPrograms
+    val isLoading = viewModel.isLoading
+    
     val filteredPrograms = remember(searchQuery, selectedTab, programs) {
         filterProgramEntries(
             programs = programs,
             searchQuery = searchQuery,
             selectedTab = selectedTab
         )
+    }
+
+    if (selectedProspectusUrl != null) {
+        Dialog(
+            onDismissRequest = { selectedProspectusUrl = null },
+            properties = DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            ProspectusViewer(
+                url = selectedProspectusUrl!!,
+                onClose = { selectedProspectusUrl = null }
+            )
+        }
     }
 
     BoxWithConstraints(
@@ -96,17 +120,28 @@ fun ProgramsScreen(
                     )
                 }
             ) { innerPadding ->
-                ProgramsContent(
-                    programs = filteredPrograms,
-                    contentPadding = PaddingValues(
-                        start = 16.dp,
-                        top = innerPadding.calculateTopPadding() + 16.dp,
-                        end = 16.dp,
-                        bottom = innerPadding.calculateBottomPadding() + 16.dp
-                    ),
-                    onDownloadProspectusClick = onDownloadProspectusClick,
-                    onViewProgramClick = onViewProgramClick
-                )
+                if (isLoading && programs.isEmpty()) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
+                } else {
+                    ProgramsContent(
+                        programs = filteredPrograms,
+                        contentPadding = PaddingValues(
+                            start = 16.dp,
+                            top = innerPadding.calculateTopPadding() + 16.dp,
+                            end = 16.dp,
+                            bottom = innerPadding.calculateBottomPadding() + 16.dp
+                        ),
+                        onDownloadProspectusClick = { entry ->
+                            if (entry.prospectusUrl != null) {
+                                selectedProspectusUrl = entry.prospectusUrl
+                            }
+                            onDownloadProspectusClick(entry)
+                        },
+                        onViewProgramClick = onViewProgramClick
+                    )
+                }
             }
         }
     }
@@ -126,7 +161,7 @@ fun ProgramsContent(
     ) {
         items(
             items = programs,
-            key = { it.title }
+            key = { it.id }
         ) { entry ->
             ProgramCard(
                 entry = entry,

@@ -26,40 +26,52 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.theme.DarkGreen
 
 @Composable
-fun QuickActionsSection() {
+fun QuickActionsSection(
+    onPaymentSlipClick: () -> Unit = {},
+    onAssessmentClick: () -> Unit = {}
+) {
     Text("Quick Actions", fontWeight = FontWeight.Bold, fontSize = 16.sp)
     Spacer(modifier = Modifier.height(12.dp))
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        QuickActionButton("Payment Slip", Icons.Default.ReceiptLong, Modifier.weight(1f))
-        QuickActionButton("Assessment", Icons.Default.Description, Modifier.weight(1f))
+        QuickActionButton("Payment Slip", Icons.Default.ReceiptLong, Modifier.weight(1f), onClick = onPaymentSlipClick)
+        QuickActionButton("Assessment", Icons.Default.Description, Modifier.weight(1f), onClick = onAssessmentClick)
     }
 }
 
 @Composable
-fun QuickActionButton(label: String, icon: ImageVector, modifier: Modifier = Modifier) {
+fun QuickActionButton(label: String, icon: ImageVector, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Surface(
-            modifier = modifier,
-            shape = RoundedCornerShape(12.dp),
-            color = MaterialTheme.colorScheme.surfaceVariant,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        modifier = modifier,
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        onClick = onClick
     ) {
         Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Surface(modifier = Modifier.size(40.dp), shape = CircleShape, color = DarkGreen) {
+            Surface(
+                modifier = Modifier.size(40.dp),
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.secondary
+            ) {
                 Icon(
-                        icon,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.padding(8.dp)
+                    icon,
+                    contentDescription = null,
+                    tint = Color.Black,
+                    modifier = Modifier.padding(8.dp)
                 )
             }
-            Text(label, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                label,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
         }
     }
 }

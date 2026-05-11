@@ -11,6 +11,7 @@ export const libraryBooks = pgTable('library_books', {
   genre: varchar('genre', { length: 100 }).notNull(),
   stockLabel: varchar('stock_label', { length: 100 }).notNull(),
   stockStatus: stockStatusEnum('stock_status').notNull(),
+  availableCopies: integer('available_copies').default(0).notNull(),
   isNew: boolean('is_new').default(false).notNull(),
   tab: libraryBookTabEnum('tab').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),

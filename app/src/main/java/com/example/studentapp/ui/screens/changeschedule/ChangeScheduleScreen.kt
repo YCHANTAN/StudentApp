@@ -6,11 +6,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.studentapp.ui.components.StudentBottomNavBar
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.screens.changeschedule.components.*
 import com.example.studentapp.ui.screens.changeschedule.models.*
+import com.example.studentapp.ui.theme.Spacing
 
 @Composable
 @Preview
@@ -21,9 +21,7 @@ fun ChangeScheduleScreen(
     onBackClick: () -> Unit = {},
     onConfirmClick: () -> Unit = {}
 ) {
-
     var sections by remember {
-
         mutableStateOf(
             listOf(
                 SectionItem(
@@ -53,7 +51,6 @@ fun ChangeScheduleScreen(
     }
 
     Scaffold(
-
         topBar = {
             ChangeScheduleTopBar(onBack = onBackClick)
         },
@@ -64,52 +61,47 @@ fun ChangeScheduleScreen(
                 onItemSelected = onBottomNavSelected
             )
         },
-
-        containerColor = ChangeScheduleColors.Background
-
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
-
         LazyColumn(
             modifier = Modifier
-                .padding(padding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .fillMaxSize()
+                .padding(padding),
+            contentPadding = PaddingValues(Spacing.Medium),
+            verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
-
             item {
-
                 CurrentSelectionCard(
                     "CS101: Computer Science",
                     "Fall 2024",
                     "ACTIVE"
                 )
-
             }
 
             items(sections) { section ->
-
                 SectionItemCard(
                     item = section,
-                    onSelect = {}
+                    onSelect = {
+                        sections = sections.map {
+                            if (it.title == section.title) {
+                                it.copy(isSelected = !it.isSelected)
+                            } else {
+                                it.copy(isSelected = false)
+                            }
+                        }
+                    }
                 )
-
             }
 
             item {
-
                 ConflictInfoCard(
                     "Changing to Section 02 will free up your Monday morning slot."
                 )
-
             }
 
             item {
                 ConfirmScheduleButton(onClick = onConfirmClick)
-
             }
-
         }
-
     }
-
 }

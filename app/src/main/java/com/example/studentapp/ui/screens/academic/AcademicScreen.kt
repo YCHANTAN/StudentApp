@@ -1,6 +1,5 @@
 package com.example.studentapp.ui.screens.academic
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -12,10 +11,11 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.domain.usecase.GetAcademicOverviewUseCase
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.components.StudentBottomNavBar
@@ -25,21 +25,12 @@ import com.example.studentapp.ui.screens.academic.components.AcademicDashboardSe
 import com.example.studentapp.ui.screens.academic.components.AcademicHeaderSection
 import com.example.studentapp.ui.screens.academic.components.AcademicHeroCard
 import com.example.studentapp.ui.screens.academic.components.AcademicSupportSection
-import com.example.studentapp.ui.screens.academic.models.ACADEMIC_MENU_COURSES
-import com.example.studentapp.ui.screens.academic.models.ACADEMIC_MENU_ENROLLMENT
-import com.example.studentapp.ui.screens.academic.models.ACADEMIC_MENU_EVALUATION
-import com.example.studentapp.ui.screens.academic.models.ACADEMIC_MENU_GRADES
-import com.example.studentapp.ui.screens.academic.models.ACADEMIC_MENU_PROGRAMS
-import com.example.studentapp.ui.screens.academic.models.ACADEMIC_MENU_STUDY_LOAD
-import com.example.studentapp.ui.screens.academic.models.AcademicDashboardMenuItem
-import com.example.studentapp.ui.screens.academic.models.AcademicUiState
-import com.example.studentapp.ui.screens.academic.models.buildAcademicDashboardMenuItems
-import com.example.studentapp.ui.screens.academic.models.toUiState
+import com.example.studentapp.ui.screens.academic.models.*
+import com.example.studentapp.ui.theme.Spacing
 import com.example.studentapp.ui.theme.StudentAppTheme
 
 @Composable
 fun AcademicScreen(
-    state: AcademicUiState,
     navigationItems: List<StudentBottomNavItem>,
     selectedNavItemId: String,
     onBottomNavSelected: (StudentBottomNavItem) -> Unit,
@@ -52,10 +43,17 @@ fun AcademicScreen(
     onGradesClick: () -> Unit = {},
     onEvaluationClick: () -> Unit = {},
     onStudyLoadClick: () -> Unit = {},
+    onNotificationClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
+    val viewModel: AcademicViewModel = viewModel()
+    
+    LaunchedEffect(Unit) {
+        viewModel.loadProfile()
+    }
+    
     AcademicServicesScreen(
-        state = state,
+        state = viewModel.uiState,
         navigationItems = navigationItems,
         selectedNavItemId = selectedNavItemId,
         onBottomNavSelected = onBottomNavSelected,
@@ -68,6 +66,7 @@ fun AcademicScreen(
         onGradesClick = onGradesClick,
         onEvaluationClick = onEvaluationClick,
         onStudyLoadClick = onStudyLoadClick,
+        onNotificationClick = onNotificationClick,
         modifier = modifier
     )
 }
@@ -87,6 +86,7 @@ fun AcademicServicesScreen(
     onGradesClick: () -> Unit,
     onEvaluationClick: () -> Unit,
     onStudyLoadClick: () -> Unit,
+    onNotificationClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val dashboardItems = remember { buildAcademicDashboardMenuItems() }
@@ -96,7 +96,10 @@ fun AcademicServicesScreen(
         containerColor = MaterialTheme.colorScheme.background,
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         topBar = {
-            AcademicHeaderSection(onBackClick = onBackClick)
+            AcademicHeaderSection(
+                onBackClick = onBackClick,
+                onNotificationClick = onNotificationClick
+            )
         },
         bottomBar = {
             StudentBottomNavBar(
@@ -110,10 +113,10 @@ fun AcademicServicesScreen(
             state = state,
             dashboardItems = dashboardItems,
             contentPadding = PaddingValues(
-                start = 16.dp,
-                top = innerPadding.calculateTopPadding() + 24.dp,
-                end = 16.dp,
-                bottom = innerPadding.calculateBottomPadding() + 24.dp
+                start = Spacing.Medium,
+                top = innerPadding.calculateTopPadding() + Spacing.Large,
+                end = Spacing.Medium,
+                bottom = innerPadding.calculateBottomPadding() + Spacing.Large
             ),
             onViewAllClick = onViewAllClick,
             onContactSupportClick = onContactSupportClick,
@@ -145,13 +148,16 @@ fun AcademicServicesContent(
         columns = GridCells.Fixed(2),
         modifier = modifier.fillMaxSize(),
         contentPadding = contentPadding,
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        horizontalArrangement = Arrangement.spacedBy(Spacing.Medium),
+        verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
             AcademicHeroCard(
                 studentName = state.studentName,
-                programSummary = state.programSummary.replace("\u00E2\u20AC\u00A2", "\u2022")
+                studentId = state.studentId,
+                program = state.programSummary,
+                yearLevel = state.yearLevel,
+                currentTerm = state.currentTerm
             )
         }
 
@@ -176,14 +182,21 @@ fun AcademicServicesContent(
 @Composable
 fun AcademicScreenPreview() {
     StudentAppTheme(dynamicColor = false) {
-        AcademicScreen(
+        AcademicServicesScreen(
             state = GetAcademicOverviewUseCase().invoke().toUiState(),
             navigationItems = buildPrimaryBottomNavItems(),
             selectedNavItemId = "academic",
             onBottomNavSelected = {},
             onBackClick = {},
             onViewAllClick = {},
-            onContactSupportClick = {}
+            onContactSupportClick = {},
+            onCoursesClick = {},
+            onEnrollmentClick = {},
+            onProgramsClick = {},
+            onGradesClick = {},
+            onEvaluationClick = {},
+            onStudyLoadClick = {},
+            onNotificationClick = {}
         )
     }
 }

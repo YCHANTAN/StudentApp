@@ -31,14 +31,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.theme.DarkGreen
-import com.example.studentapp.ui.theme.Gold
 
 @Composable
 fun CampusDigitalIdCard(
     studentName: String,
-    studentId: String
+    studentId: String,
+    status: String = "Active"
 ) {
+    val (statusColor, statusBg) = when (status.lowercase()) {
+        "active", "finished", "completed", "done" -> MaterialTheme.colorScheme.tertiary to MaterialTheme.colorScheme.tertiaryContainer
+        "processing", "under maintenance", "pending", "ongoing" -> MaterialTheme.colorScheme.secondary to MaterialTheme.colorScheme.secondaryContainer
+        "not processed", "not active", "inactive", "cancelled", "failed" -> MaterialTheme.colorScheme.error to MaterialTheme.colorScheme.errorContainer
+        else -> MaterialTheme.colorScheme.secondary to MaterialTheme.colorScheme.secondaryContainer
+    }
+
     Card(
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -64,11 +70,11 @@ fun CampusDigitalIdCard(
 
                 Surface(
                     shape = RoundedCornerShape(8.dp),
-                    color = Gold.copy(alpha = 0.2f)
+                    color = statusBg
                 ) {
                     Text(
-                        text = "Active",
-                        color = Gold,
+                        text = status,
+                        color = statusColor,
                         fontSize = 10.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
@@ -118,19 +124,20 @@ fun CampusDigitalIdCard(
                 onClick = { },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = DarkGreen)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) {
                 Icon(
                     imageVector = Icons.Filled.Fullscreen,
-                    contentDescription = null,
-                    tint = Color.White
+                    contentDescription = null
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Text(
                     text = "Tap to View Full ID",
-                    color = Color.White,
                     fontWeight = FontWeight.Bold
                 )
             }

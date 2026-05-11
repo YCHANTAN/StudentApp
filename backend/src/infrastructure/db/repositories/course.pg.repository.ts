@@ -1,4 +1,4 @@
-import { eq, count, inArray } from 'drizzle-orm';
+import { eq, count, inArray, and } from 'drizzle-orm';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { CourseRepository } from '@/application/repositories/course.repository';
 import type { Course, CourseStatus } from '@/core/entities/course.entity';
@@ -9,12 +9,16 @@ export class CoursePgRepository implements CourseRepository {
 
   async findAll(
     pagination: { page: number; limit: number },
-    filter?: { programId?: string }
+    filter?: { programId?: string; code?: string }
   ): Promise<{ data: Course[]; total: number }> {
     const { page, limit } = pagination;
     const offset = (page - 1) * limit;
 
-    const whereClause = filter?.programId ? eq(courses.programId, filter.programId) : undefined;
+    const conditions = [];
+    if (filter?.programId) conditions.push(eq(courses.programId, filter.programId));
+    if (filter?.code) conditions.push(eq(courses.code, filter.code));
+
+    const whereClause = conditions.length > 0 ? and(...conditions) : undefined;
 
     const data = await this.db
       .select()
@@ -23,14 +27,13 @@ export class CoursePgRepository implements CourseRepository {
       .limit(limit)
       .offset(offset);
 
-    const [totalResult] = await this.db
-      .select({ value: count() })
-      .from(courses)
-      .where(whereClause);
+    const [totalResult] = await this.db.select({ value: count() }).from(courses).where(whereClause);
+
+    const total = totalResult?.value ? Number(totalResult.value) : 0;
 
     return {
       data: data.map(this.mapToEntity),
-      total: Number(totalResult.value),
+      total,
     };
   }
 
@@ -46,24 +49,29 @@ export class CoursePgRepository implements CourseRepository {
   }
 
   private mapToEntity(row: any): Course {
-    return {
+    const course: Course = {
       id: row.id,
       code: row.code,
       title: row.title,
-      semesterTitle: row.semesterTitle || undefined,
-      instructor: row.instructor || undefined,
-      units: row.units || undefined,
-      schedule: row.schedule || undefined,
-      location: row.location || undefined,
-      grade: row.grade || undefined,
-      waitlistStatus: row.waitlistStatus || undefined,
-      progress: row.progress ? Number(row.progress) : undefined,
-      status: row.status as CourseStatus | undefined,
-      tuition: row.tuition ? Number(row.tuition) : undefined,
-      isLocked: row.isLocked ?? undefined,
-      lockReason: row.lockReason || undefined,
-      programId: row.programId || undefined,
       createdAt: row.createdAt,
     };
+
+    if (row.semesterTitle) course.semesterTitle = row.semesterTitle;
+    if (row.instructor) course.instructor = row.instructor;
+    if (row.units !== null && row.units !== undefined) course.units = row.units;
+    if (row.schedule) course.schedule = row.schedule;
+    if (row.location) course.location = row.location;
+    if (row.grade) course.grade = row.grade;
+    if (row.waitlistStatus) course.waitlistStatus = row.waitlistStatus;
+    if (row.progress !== null && row.progress !== undefined) course.progress = Number(row.progress);
+    if (row.status) course.status = row.status as CourseStatus;
+    if (row.tuition !== null && row.tuition !== undefined) course.tuition = Number(row.tuition);
+    if (row.remainingSlots !== null && row.remainingSlots !== undefined) course.remainingSlots = row.remainingSlots;
+    if (row.isLocked !== null && row.isLocked !== undefined) course.isLocked = row.isLocked;
+    if (row.lockReason) course.lockReason = row.lockReason;
+    if (row.programId) course.programId = row.programId;
+
+    return course;
   }
 }
+

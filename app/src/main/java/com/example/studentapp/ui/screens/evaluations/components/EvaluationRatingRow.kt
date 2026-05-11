@@ -1,4 +1,4 @@
-package com.example.studentapp.ui.screens.evaluation.components
+package com.example.studentapp.ui.screens.evaluations.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column

@@ -2,15 +2,11 @@ package com.example.studentapp.ui.screens.programs.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,16 +24,17 @@ fun ProgramsTabs(
     onTabSelected: (ProgramsTab) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyRow(
-        modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(24.dp)
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
     ) {
-        items(ProgramsTab.entries) { tab ->
+        ProgramsTab.entries.forEach { tab ->
             ProgramsTabItem(
                 tab = tab,
                 isSelected = tab == selectedTab,
-                onClick = { onTabSelected(tab) }
+                onClick = { onTabSelected(tab) },
+                modifier = Modifier.weight(1f)
             )
         }
     }
@@ -54,30 +51,23 @@ fun ProgramsTabItem(
         modifier = modifier.clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val activeColor = MaterialTheme.colorScheme.primary
+
         Text(
             text = tab.label,
-            color = if (isSelected) {
-                MaterialTheme.colorScheme.primary
-            } else {
-                MaterialTheme.colorScheme.onSurfaceVariant
-            },
+            modifier = Modifier.padding(top = 16.dp, bottom = 13.dp),
+            color = if (isSelected) activeColor else MaterialTheme.colorScheme.onSurfaceVariant,
             fontSize = 14.sp,
-            fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+            letterSpacing = 0.21.sp
         )
-
         Box(
             modifier = Modifier
-                .padding(top = 10.dp)
-                .width(48.dp)
+                .fillMaxWidth()
                 .background(
-                    color = if (isSelected) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        Color.Transparent
-                    },
-                    shape = RoundedCornerShape(2.dp)
+                    color = if (isSelected) activeColor else Color.Transparent
                 )
-                .padding(vertical = 1.dp)
+                .padding(vertical = 1.5.dp)
         )
     }
 }

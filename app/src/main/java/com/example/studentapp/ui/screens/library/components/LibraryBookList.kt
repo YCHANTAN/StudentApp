@@ -45,18 +45,18 @@ fun LibraryBookList(
     ) {
         Text(
             text = "RECOMMENDED FOR YOU",
-            color = MaterialTheme.colorScheme.secondary,
-            fontSize = 24.sp,
+            color = MaterialTheme.colorScheme.primary,
+            style = MaterialTheme.typography.labelLarge,
             fontWeight = FontWeight.Bold,
-            letterSpacing = 1.1.sp,
-            modifier = Modifier.padding(top = 10.dp, bottom = 12.dp)
+            letterSpacing = 1.2.sp,
+            modifier = Modifier.padding(top = 16.dp, bottom = 16.dp)
         )
 
         books.forEach { book ->
             LibraryBookCard(
                 book = book,
                 showBorrowButton = selectedTab == LibraryTab.Available,
-                modifier = Modifier.padding(bottom = 12.dp)
+                modifier = Modifier.padding(bottom = 16.dp)
             )
         }
     }
@@ -71,8 +71,8 @@ private fun LibraryBookCard(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(16.dp))
-            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(16.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f), RoundedCornerShape(24.dp))
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(24.dp))
             .padding(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -80,7 +80,7 @@ private fun LibraryBookCard(
             modifier = Modifier
                 .width(86.dp)
                 .height(118.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(10.dp)),
+                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(18.dp)),
             contentAlignment = Alignment.Center
         ) {
             Icon(

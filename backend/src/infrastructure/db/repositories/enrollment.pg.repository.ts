@@ -28,6 +28,8 @@ export class EnrollmentPgRepository implements EnrollmentRepository {
       .from(enrollments)
       .where(whereClause);
 
+    const total = totalResult?.value ? Number(totalResult.value) : 0;
+
     const data: Enrollment[] = [];
     for (const row of rows) {
       const coursesRows = await this.db
@@ -40,7 +42,7 @@ export class EnrollmentPgRepository implements EnrollmentRepository {
 
     return {
       data,
-      total: Number(totalResult.value),
+      total,
     };
   }
 

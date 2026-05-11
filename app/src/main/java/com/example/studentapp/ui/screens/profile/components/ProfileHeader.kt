@@ -18,7 +18,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.studentapp.ui.theme.DarkGreen
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import com.example.studentapp.ui.components.StudentHeaderIconButton
+
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentHeaderIconButton
 
 @Composable
 fun ProfileHeader(
@@ -28,40 +34,17 @@ fun ProfileHeader(
     actionLabel: String = "Support",
     onActionClick: () -> Unit = {}
 ) {
-    Surface(
+    StudentHeader(
+        title = title,
+        onBackClick = onBackClick,
         modifier = modifier,
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
-    ) {
-        Column(modifier = Modifier.statusBarsPadding()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                HeaderAction(
-                    label = "Back",
-                    onClick = onBackClick
-                )
-
-                Text(
-                    text = title,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
-                )
-
-                HeaderAction(
-                    label = actionLabel,
-                    onClick = onActionClick
-                )
-            }
-
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+        actions = {
+            HeaderAction(
+                label = actionLabel,
+                onClick = onActionClick
+            )
         }
-    }
+    )
 }
 
 @Composable
@@ -76,7 +59,7 @@ private fun HeaderAction(
     ) {
         Text(
             text = label,
-            color = DarkGreen,
+            color = MaterialTheme.colorScheme.primary,
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)

@@ -13,29 +13,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-@OptIn(ExperimentalMaterial3Api::class)
+import com.example.studentapp.ui.components.StudentHeader
+
 @Composable
 fun PaymentQueueHeader(
     onBackClick: () -> Unit
 ) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = "Payment Queue",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back"
-                )
-            }
-        },
-        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
-        )
+    StudentHeader(
+        title = "Payment Queue",
+        onBackClick = onBackClick
     )
 }

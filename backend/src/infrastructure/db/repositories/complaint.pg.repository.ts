@@ -23,14 +23,13 @@ export class ComplaintPgRepository implements ComplaintRepository {
       .limit(limit)
       .offset(offset);
 
-    const [totalResult] = await this.db
-      .select({ value: count() })
-      .from(complaints)
-      .where(whereClause);
+    const [totalResult] = await this.db.select({ value: count() }).from(complaints).where(whereClause);
+
+    const total = totalResult?.value ? Number(totalResult.value) : 0;
 
     return {
       data: data.map(this.mapToEntity),
-      total: Number(totalResult.value),
+      total,
     };
   }
 
@@ -51,3 +50,4 @@ export class ComplaintPgRepository implements ComplaintRepository {
     };
   }
 }
+

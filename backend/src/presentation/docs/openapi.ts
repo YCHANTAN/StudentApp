@@ -112,7 +112,7 @@ export const openApiSpec = {
         responses: { "200": { description: "Success" } },
       },
     },
-    "/api/v1/grades": {
+    "/api/v1/grade-records": {
       get: {
         tags: ["Grades"],
         summary: "List grade records",
@@ -124,7 +124,7 @@ export const openApiSpec = {
         responses: { "200": { description: "Success" } },
       },
     },
-    "/api/v1/schedule": {
+    "/api/v1/schedule-entries": {
       get: {
         tags: ["Schedule"],
         summary: "List schedule entries",

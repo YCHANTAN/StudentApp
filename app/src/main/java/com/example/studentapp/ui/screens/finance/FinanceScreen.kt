@@ -19,10 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.studentapp.ui.components.StudentBottomNavBar
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
@@ -30,72 +27,92 @@ import com.example.studentapp.ui.screens.finance.components.BalanceCard
 import com.example.studentapp.ui.screens.finance.components.QuickActionsSection
 import com.example.studentapp.ui.screens.finance.components.TransactionHistoryHeader
 import com.example.studentapp.ui.screens.finance.components.TransactionItem
-import com.example.studentapp.ui.screens.finance.models.sampleTransactions
-import com.example.studentapp.ui.theme.DarkGreen
+import com.example.studentapp.ui.theme.Spacing
+
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.Alignment
+import androidx.lifecycle.viewmodel.compose.viewModel
+
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentNotificationButton
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FinanceScreen(
-        navigationItems: List<StudentBottomNavItem> = buildPrimaryBottomNavItems(),
-        selectedNavItemId: String = "finance",
-        onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
-        onPayNowClick: () -> Unit = {}
+    navigationItems: List<StudentBottomNavItem> = buildPrimaryBottomNavItems(),
+    selectedNavItemId: String = "finance",
+    onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
+    onBackClick: () -> Unit = {},
+    onNotificationClick: () -> Unit = {},
+    onPayNowClick: () -> Unit = {},
+    onAssessmentClick: () -> Unit = {},
+    onPaymentSlipClick: () -> Unit = {},
+    viewModel: FinanceViewModel = viewModel()
 ) {
+    val balance = viewModel.balance
+    val transactions = viewModel.transactions
+    val isLoading = viewModel.isLoading
     Scaffold(
-            topBar = {
-                CenterAlignedTopAppBar(
-                        title = { Text("Finance", fontSize = 18.sp, fontWeight = FontWeight.Bold) },
-                        actions = {
-                            IconButton(onClick = { /* Handle notifications */}) {
-                                Icon(
-                                        Icons.Default.Notifications,
-                                        contentDescription = "Notifications",
-                                        tint = DarkGreen
-                                )
-                            }
-                        },
-                        colors =
-                                TopAppBarDefaults.centerAlignedTopAppBarColors(
-                                        containerColor = MaterialTheme.colorScheme.surface
-                                )
-                )
-            },
-            bottomBar = {
-                StudentBottomNavBar(
-                        items = navigationItems,
-                        selectedItemId = selectedNavItemId,
-                        onItemSelected = onBottomNavSelected
-                )
-            }
+        topBar = {
+            StudentHeader(
+                title = "Finance",
+                onBackClick = onBackClick,
+                actions = {
+                    StudentNotificationButton(
+                        onClick = onNotificationClick
+                    )
+                }
+            )
+        },
+        bottomBar = {
+            StudentBottomNavBar(
+                items = navigationItems,
+                selectedItemId = selectedNavItemId,
+                onItemSelected = onBottomNavSelected
+            )
+        }
     ) { paddingValues ->
-        LazyColumn(
-                modifier =
-                        Modifier.fillMaxSize()
-                                .padding(paddingValues)
-                                .background(MaterialTheme.colorScheme.background)
-                                .padding(horizontal = 16.dp)
-        ) {
-            item {
-                Spacer(modifier = Modifier.height(8.dp))
-                BalanceCard(onPayNowClick = onPayNowClick)
+        if (isLoading && transactions.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(MaterialTheme.colorScheme.background)
+                    .padding(horizontal = Spacing.Medium)
+            ) {
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.Small))
+                    BalanceCard(
+                        balance = balance,
+                        onPayNowClick = onPayNowClick
+                    )
+                }
 
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-                QuickActionsSection()
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.Large))
+                    QuickActionsSection(
+                        onAssessmentClick = onAssessmentClick,
+                        onPaymentSlipClick = onPaymentSlipClick
+                    )
+                }
+
+                item {
+                    Spacer(modifier = Modifier.height(Spacing.Large))
+                    TransactionHistoryHeader()
+                }
+
+                items(transactions) { transaction ->
+                    TransactionItem(transaction)
+                    Spacer(modifier = Modifier.height(Spacing.Medium))
+                }
+
+                item { Spacer(modifier = Modifier.height(Spacing.Medium)) }
             }
-
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-                TransactionHistoryHeader()
-            }
-
-            items(sampleTransactions) { transaction ->
-                TransactionItem(transaction)
-                Spacer(modifier = Modifier.height(12.dp))
-            }
-
-            item { Spacer(modifier = Modifier.height(16.dp)) }
         }
     }
 }

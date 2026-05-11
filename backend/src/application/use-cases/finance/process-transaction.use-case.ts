@@ -14,13 +14,16 @@ export class ProcessTransactionUseCase {
     const transaction: Transaction = {
       id: uuidv4(),
       studentId: data.studentId,
+      title: data.title,
       type: data.type,
       amount: data.amount,
       method: data.method,
       // For this simulation, we will assume online payments complete instantly
       status: data.type === 'PAYMENT' ? 'COMPLETED' : 'PENDING', 
       referenceId,
-      description: data.description,
+      description: data.description ?? null,
+      date: data.date ? new Date(data.date) : new Date(),
+      isPaid: data.isPaid ?? true,
       createdAt: new Date(),
     };
 

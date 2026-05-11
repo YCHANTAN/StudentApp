@@ -23,14 +23,13 @@ export class ProgramPgRepository implements ProgramRepository {
       .limit(limit)
       .offset(offset);
 
-    const [totalResult] = await this.db
-      .select({ value: count() })
-      .from(programs)
-      .where(whereClause);
+    const [totalResult] = await this.db.select({ value: count() }).from(programs).where(whereClause);
+
+    const total = totalResult?.value ? Number(totalResult.value) : 0;
 
     return {
       data: data.map(this.mapToEntity),
-      total: Number(totalResult.value),
+      total,
     };
   }
 
@@ -48,7 +47,9 @@ export class ProgramPgRepository implements ProgramRepository {
       scheduleLine: row.scheduleLine,
       description: row.description,
       category: row.category,
+      prospectusUrl: row.prospectusUrl,
       createdAt: row.createdAt,
     };
   }
 }
+

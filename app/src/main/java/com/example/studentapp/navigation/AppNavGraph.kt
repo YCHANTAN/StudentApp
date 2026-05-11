@@ -7,13 +7,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import com.example.studentapp.domain.usecase.AuthenticateStudentUseCase
-import com.example.studentapp.domain.usecase.GetAcademicOverviewUseCase
-import com.example.studentapp.domain.usecase.GetProfileOverviewUseCase
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
 import com.example.studentapp.ui.screens.academic.AcademicScreen
-import com.example.studentapp.ui.screens.academic.models.toUiState
 import com.example.studentapp.ui.screens.adjustment.AdjustmentScreen
 import com.example.studentapp.ui.screens.changeschedule.ChangeScheduleScreen
 import com.example.studentapp.ui.screens.coe.COEScreen
@@ -22,15 +18,18 @@ import com.example.studentapp.ui.screens.dashboard.DashboardScreen
 import com.example.studentapp.ui.screens.enrollment.EnrollmentScreen
 import com.example.studentapp.ui.screens.evaluations.EvaluationScreen
 import com.example.studentapp.ui.screens.finance.FinanceScreen
+import com.example.studentapp.ui.screens.finance.AssessmentScreen
+import com.example.studentapp.ui.screens.finance.PaymentSlipScreen
 import com.example.studentapp.ui.screens.goodmoral.GoodMoralScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.ui.screens.grades.GradesScreen
 import com.example.studentapp.ui.screens.library.LibraryScreen
 import com.example.studentapp.ui.screens.library.models.LibraryTab
 import com.example.studentapp.ui.screens.login.LoginScreen
+import com.example.studentapp.ui.screens.notifications.NotificationScreen
 import com.example.studentapp.ui.screens.payment.PaymentQueueScreen
 import com.example.studentapp.ui.screens.profile.ProfileScreen
 import com.example.studentapp.ui.screens.programs.ProgramsScreen
-import com.example.studentapp.ui.screens.profile.models.toUiState as toProfileUiState
 import com.example.studentapp.ui.screens.schedule.ScheduleScreen
 import com.example.studentapp.ui.screens.services.ServicesScreen
 import com.example.studentapp.ui.screens.studyload.StudyLoadScreen
@@ -42,15 +41,15 @@ fun AppNavGraph() {
         mutableStateOf(AppDestination.Login.route)
     }
 
-    val authenticateStudent = remember { AuthenticateStudentUseCase() }
-    val academicOverview = remember { GetAcademicOverviewUseCase().invoke().toUiState() }
-    val profileOverview = remember { GetProfileOverviewUseCase().invoke().toProfileUiState() }
     val primaryBottomNavItems = remember { buildPrimaryBottomNavItems() }
+
+    val navigateToNotifications = {
+        currentRoute = AppDestination.Notifications.route
+    }
 
     when {
         currentRoute == AppDestination.Login.route -> {
             LoginScreen(
-                authenticate = authenticateStudent::invoke,
                 onLoginSuccess = {
                     currentRoute = AppDestination.Dashboard.route
                 }
@@ -69,7 +68,8 @@ fun AppNavGraph() {
                 },
                 onViewScheduleClick = {
                     currentRoute = AppDestination.Schedule.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -78,38 +78,22 @@ fun AppNavGraph() {
                 currentRoute = AppDestination.Dashboard.route
             }
 
-            val goToDashboard = {
-                currentRoute = AppDestination.Dashboard.route
-            }
-
             AcademicScreen(
-                state = academicOverview,
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "academic",
                 onBottomNavSelected = { item ->
                     currentRoute = resolvePrimaryRoute(item, currentRoute)
                 },
-                onBackClick = goToDashboard,
-                onViewAllClick = goToDashboard,
-                onContactSupportClick = goToDashboard,
-                onCoursesClick = {
-                    currentRoute = AppDestination.Courses.route
-                },
-                onEnrollmentClick = {
-                    currentRoute = AppDestination.Enrollment.route
-                },
-                onProgramsClick = {
-                    currentRoute = AppDestination.Programs.route
-                },
-                onGradesClick = {
-                    currentRoute = AppDestination.Grades.route
-                },
-                onEvaluationClick = {
-                    currentRoute = AppDestination.Evaluation.route
-                },
-                onStudyLoadClick = {
-                    currentRoute = AppDestination.StudyLoad.route
-                }
+                onBackClick = { currentRoute = AppDestination.Dashboard.route },
+                onViewAllClick = { currentRoute = AppDestination.Dashboard.route },
+                onContactSupportClick = { currentRoute = AppDestination.Dashboard.route },
+                onCoursesClick = { currentRoute = AppDestination.Courses.route },
+                onEnrollmentClick = { currentRoute = AppDestination.Enrollment.route },
+                onProgramsClick = { currentRoute = AppDestination.Programs.route },
+                onGradesClick = { currentRoute = AppDestination.Grades.route },
+                onEvaluationClick = { currentRoute = AppDestination.Evaluation.route },
+                onStudyLoadClick = { currentRoute = AppDestination.StudyLoad.route },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -222,7 +206,7 @@ fun AppNavGraph() {
 
         currentRoute == AppDestination.Adjustment.route -> {
             BackHandler {
-                currentRoute = AppDestination.Enrollment.route
+                currentRoute = AppDestination.Dashboard.route
             }
             AdjustmentScreen(
                 navigationItems = primaryBottomNavItems,
@@ -231,10 +215,7 @@ fun AppNavGraph() {
                     currentRoute = resolvePrimaryRoute(item, currentRoute)
                 },
                 onBackClick = {
-                    currentRoute = AppDestination.Enrollment.route
-                },
-                onChangeScheduleClick = {
-                    currentRoute = AppDestination.ChangeSchedule.route
+                    currentRoute = AppDestination.Dashboard.route
                 }
             )
         }
@@ -268,8 +249,44 @@ fun AppNavGraph() {
                 onBottomNavSelected = { item ->
                     currentRoute = resolvePrimaryRoute(item, currentRoute)
                 },
+                onBackClick = {
+                    currentRoute = AppDestination.Dashboard.route
+                },
                 onPayNowClick = {
                     currentRoute = AppDestination.PaymentQueue.route
+                },
+                onAssessmentClick = {
+                    currentRoute = AppDestination.Assessment.route
+                },
+                onPaymentSlipClick = {
+                    currentRoute = AppDestination.PaymentSlip.route
+                },
+                onNotificationClick = navigateToNotifications
+            )
+        }
+
+        currentRoute == AppDestination.Assessment.route -> {
+            BackHandler {
+                currentRoute = AppDestination.Finance.route
+            }
+            val financeViewModel: com.example.studentapp.ui.screens.finance.FinanceViewModel = viewModel()
+            AssessmentScreen(
+                assessment = financeViewModel.assessment,
+                onBackClick = {
+                    currentRoute = AppDestination.Finance.route
+                }
+            )
+        }
+
+        currentRoute == AppDestination.PaymentSlip.route -> {
+            BackHandler {
+                currentRoute = AppDestination.Finance.route
+            }
+            val financeViewModel: com.example.studentapp.ui.screens.finance.FinanceViewModel = viewModel()
+            PaymentSlipScreen(
+                paymentSlip = financeViewModel.paymentSlip,
+                onBackClick = {
+                    currentRoute = AppDestination.Finance.route
                 }
             )
         }
@@ -298,7 +315,8 @@ fun AppNavGraph() {
                 },
                 onGoodMoralClick = {
                     currentRoute = AppDestination.GoodMoral.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -318,7 +336,8 @@ fun AppNavGraph() {
                 },
                 onBackClick = {
                     currentRoute = AppDestination.Services.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -335,7 +354,8 @@ fun AppNavGraph() {
                 },
                 onBackClick = {
                     currentRoute = AppDestination.Services.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -352,7 +372,8 @@ fun AppNavGraph() {
                 },
                 onBackClick = {
                     currentRoute = AppDestination.Services.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -368,7 +389,8 @@ fun AppNavGraph() {
                 },
                 onBackClick = {
                     currentRoute = AppDestination.Services.route
-                }
+                },
+                onNotificationClick = navigateToNotifications
             )
         }
 
@@ -405,12 +427,22 @@ fun AppNavGraph() {
                 currentRoute = AppDestination.Dashboard.route
             }
             ProfileScreen(
-                state = profileOverview,
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "profile",
                 onBottomNavSelected = { item ->
                     currentRoute = resolvePrimaryRoute(item, currentRoute)
                 },
+                onBackClick = {
+                    currentRoute = AppDestination.Dashboard.route
+                }
+            )
+        }
+
+        currentRoute == AppDestination.Notifications.route -> {
+            BackHandler {
+                currentRoute = AppDestination.Dashboard.route 
+            }
+            NotificationScreen(
                 onBackClick = {
                     currentRoute = AppDestination.Dashboard.route
                 }

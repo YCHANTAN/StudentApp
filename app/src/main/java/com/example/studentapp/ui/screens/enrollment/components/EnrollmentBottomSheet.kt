@@ -84,7 +84,7 @@ fun EnrollmentBottomSheet(
                     )
                     Text(
                         text = formatPhilippinePeso(estimatedTuition),
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.secondary,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold
                     )
@@ -95,7 +95,7 @@ fun EnrollmentBottomSheet(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.secondary)
+                    .background(MaterialTheme.colorScheme.primary)
                     .clickable(onClick = onNextClick)
                     .padding(vertical = 16.dp),
                 contentAlignment = Alignment.Center
@@ -106,14 +106,14 @@ fun EnrollmentBottomSheet(
                 ) {
                     Text(
                         text = "Proceed to Next Step",
-                        color = MaterialTheme.colorScheme.onSecondary,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold
                     )
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.ArrowForward,
                         contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSecondary
+                        tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
             }
@@ -122,5 +122,5 @@ fun EnrollmentBottomSheet(
 }
 
 private fun formatPhilippinePeso(amount: Double): String {
-    return "\u20b1${"%,.2f".format(Locale.US, amount)}"
+    return "\u20b1${String.format(Locale.US, "%,.2f", amount)}"
 }

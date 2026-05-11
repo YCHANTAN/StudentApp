@@ -10,18 +10,20 @@ export const CreateProgramDto = z.object({
   scheduleLine: z.string(),
   description: z.string(),
   category: ProgramCategoryDto,
+  prospectusUrl: z.string().url().optional(),
 });
 
 export const UpdateProgramDto = CreateProgramDto.partial();
 
 export const ProgramResponseDto = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   title: z.string(),
   badgeText: z.string(),
   badgeVariant: BadgeVariantDto,
   scheduleLine: z.string(),
   description: z.string(),
   category: ProgramCategoryDto,
+  prospectusUrl: z.string().url().optional(),
   createdAt: z.string().datetime(),
 });
 

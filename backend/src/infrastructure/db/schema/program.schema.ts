@@ -11,6 +11,7 @@ export const programs = pgTable('programs', {
   scheduleLine: varchar('schedule_line', { length: 255 }).notNull(),
   description: text('description').notNull(),
   category: programCategoryEnum('category').notNull(),
+  prospectusUrl: text('prospectus_url'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

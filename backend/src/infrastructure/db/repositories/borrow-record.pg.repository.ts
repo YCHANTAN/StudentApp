@@ -26,7 +26,7 @@ export class BorrowRecordPgRepository implements BorrowRecordRepository {
     return row ?? null;
   }
 
-  async findAllByUserId(userId: string): Promise<BorrowRecord[]> {
+  async findHistoryByUserId(userId: string): Promise<BorrowRecord[]> {
     return this.db.select().from(borrowRecords).where(eq(borrowRecords.userId, userId));
   }
 
