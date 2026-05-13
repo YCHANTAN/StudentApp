@@ -34,6 +34,8 @@ fun DashboardScreen(
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
     onViewScheduleClick: () -> Unit = {},
     onFinanceClick: () -> Unit = {},
+    onGradesClick: () -> Unit = {},
+    onCoursesClick: () -> Unit = {},
     onNotificationClick: () -> Unit = {}
 ) {
     val state = viewModel.state
@@ -70,8 +72,10 @@ fun DashboardScreen(
                 StatsSection(
                     stats = state.stats,
                     onStatClick = { stat ->
-                        if (stat.label == "Current Balance") {
-                            onFinanceClick()
+                        when (stat.label) {
+                            "Current Balance" -> onFinanceClick()
+                            "GPA" -> onGradesClick()
+                            "Units Completed" -> onCoursesClick()
                         }
                     }
                 )

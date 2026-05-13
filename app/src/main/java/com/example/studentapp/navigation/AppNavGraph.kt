@@ -72,6 +72,9 @@ fun AppNavGraph() {
                 onFinanceClick = {
                     currentRoute = AppDestination.Finance.route
                 },
+                onGradesClick = {
+                    currentRoute = AppDestination.Grades.route
+                },
                 onNotificationClick = navigateToNotifications
             )
         }
