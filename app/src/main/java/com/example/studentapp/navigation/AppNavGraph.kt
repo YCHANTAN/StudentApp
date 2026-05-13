@@ -75,6 +75,9 @@ fun AppNavGraph() {
                 onGradesClick = {
                     currentRoute = AppDestination.Grades.route
                 },
+                onCoursesClick = {
+                    currentRoute = AppDestination.Courses.route
+                },
                 onNotificationClick = navigateToNotifications
             )
         }
