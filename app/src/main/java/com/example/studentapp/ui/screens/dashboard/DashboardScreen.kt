@@ -33,6 +33,7 @@ fun DashboardScreen(
     selectedNavItemId: String = "home",
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
     onViewScheduleClick: () -> Unit = {},
+    onFinanceClick: () -> Unit = {},
     onNotificationClick: () -> Unit = {}
 ) {
     val state = viewModel.state
@@ -66,7 +67,14 @@ fun DashboardScreen(
             verticalArrangement = Arrangement.spacedBy(Spacing.Large)
         ) {
             item {
-                StatsSection(stats = state.stats)
+                StatsSection(
+                    stats = state.stats,
+                    onStatClick = { stat ->
+                        if (stat.label == "Current Balance") {
+                            onFinanceClick()
+                        }
+                    }
+                )
             }
 
             item {
