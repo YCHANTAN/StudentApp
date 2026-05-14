@@ -63,7 +63,6 @@ export class CoursePgRepository implements CourseRepository {
     if (row.location) course.location = row.location;
     if (row.grade) course.grade = row.grade;
     if (row.waitlistStatus) course.waitlistStatus = row.waitlistStatus;
-    if (row.progress !== null && row.progress !== undefined) course.progress = Number(row.progress);
     if (row.status) course.status = row.status as CourseStatus;
     if (row.tuition !== null && row.tuition !== undefined) course.tuition = Number(row.tuition);
     if (row.remainingSlots !== null && row.remainingSlots !== undefined) course.remainingSlots = row.remainingSlots;

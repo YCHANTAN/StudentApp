@@ -11,7 +11,6 @@ export type Course = {
   location?: string;
   grade?: string;
   waitlistStatus?: string;
-  progress?: number;
   status?: CourseStatus;
   tuition?: number;
   remainingSlots?: number;

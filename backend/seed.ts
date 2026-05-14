@@ -107,7 +107,6 @@ async function seed() {
       units: 4,
       schedule: "Mon/Wed 10:00 AM — 11:30 AM",
       location: "Engineering Hall, Rm 402",
-      progress: "0.65",
       status: "Enrolled",
       remainingSlots: 15,
       tuition: "710.00"
@@ -121,7 +120,6 @@ async function seed() {
       units: 3,
       schedule: "Tue/Thu 01:00 PM — 02:30 PM",
       location: "Science Building, Rm 105",
-      progress: "0.40",
       status: "Enrolled",
       remainingSlots: 8,
       tuition: "530.00"
@@ -135,7 +133,6 @@ async function seed() {
       units: 4,
       schedule: "Friday 09:00 AM — 12:00 PM",
       location: "Online Sync",
-      progress: "0.85",
       status: "Enrolled",
       remainingSlots: 0,
       tuition: "720.00"
@@ -174,7 +171,6 @@ async function seed() {
       instructor: "Dr. Alan Turing",
       units: 3,
       grade: "1.25",
-      progress: "1.00",
       status: "Completed",
     },
     {
@@ -185,7 +181,6 @@ async function seed() {
       instructor: "Prof. Katherine Johnson",
       units: 3,
       grade: "1.50",
-      progress: "1.00",
       status: "Completed",
     },
     {
@@ -196,7 +191,6 @@ async function seed() {
       instructor: "Dr. Grace Hopper",
       units: 3,
       grade: "1.00",
-      progress: "1.00",
       status: "Completed",
     },
     {
@@ -208,7 +202,6 @@ async function seed() {
       units: 4,
       schedule: "Mon/Wed 2:00 PM — 3:30 PM",
       waitlistStatus: "Waitlisted #15",
-      progress: "0.30",
       status: "Waitlisted",
     },
     {
@@ -220,7 +213,6 @@ async function seed() {
       units: 3,
       schedule: "Tue/Thu 9:00 AM — 10:30 AM",
       waitlistStatus: "Waitlisted #3",
-      progress: "0.85",
       status: "Waitlisted",
     }
   ] as any[];
