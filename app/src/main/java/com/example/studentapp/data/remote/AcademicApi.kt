@@ -28,7 +28,6 @@ data class CourseResponse(
     @SerializedName("location") val location: String?,
     @SerializedName("grade") val grade: String?,
     @SerializedName("waitlistStatus") val waitlistStatus: String?,
-    @SerializedName("progress") val progress: Float?,
     @SerializedName("status") val status: String?,
     @SerializedName("tuition") val tuition: Double?,
     @SerializedName("remainingSlots") val remainingSlots: Int?
