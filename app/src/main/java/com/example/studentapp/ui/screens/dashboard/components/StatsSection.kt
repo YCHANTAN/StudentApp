@@ -1,6 +1,7 @@
 package com.example.studentapp.ui.screens.dashboard.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,14 +24,21 @@ import com.example.studentapp.ui.theme.DarkGreen
 import com.example.studentapp.ui.theme.Gold
 
 @Composable
-fun StatsSection(stats: List<DashboardStat>) {
+fun StatsSection(
+    stats: List<DashboardStat>,
+    onStatClick: (DashboardStat) -> Unit = {}
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         // Highlighted stats (like Balance) take full width
         stats.filter { it.isHighlighted }.forEach { stat ->
-            StatCard(stat = stat, modifier = Modifier.fillMaxWidth())
+            StatCard(
+                stat = stat,
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onStatClick(stat) }
+            )
         }
 
         // Regular stats stay in a row, filling the width to match the lining
@@ -43,7 +51,8 @@ fun StatsSection(stats: List<DashboardStat>) {
                 regularStats.forEach { stat ->
                     StatCard(
                         stat = stat,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        onClick = { onStatClick(stat) }
                     )
                 }
             }
@@ -54,7 +63,8 @@ fun StatsSection(stats: List<DashboardStat>) {
 @Composable
 private fun StatCard(
     stat: DashboardStat,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     val containerColor = if (stat.isHighlighted) DarkGreen else MaterialTheme.colorScheme.surface
     val borderColor = if (stat.isHighlighted) DarkGreen else MaterialTheme.colorScheme.outlineVariant
@@ -62,7 +72,7 @@ private fun StatCard(
     val labelColor = if (stat.isHighlighted) Color.White.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant
 
     Card(
-        modifier = modifier,
+        modifier = modifier.clickable { onClick() },
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = containerColor),
         border = BorderStroke(1.dp, borderColor),
