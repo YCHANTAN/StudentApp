@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CalendarToday
@@ -88,15 +87,6 @@ fun CourseCard(
             }
 
             CourseMetadataSection(course = course)
-
-            CourseProgressBar(
-                progress = course.progress,
-                color = if (course.status == CourseStatus.Completed) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.secondary
-                }
-            )
         }
     }
 }
@@ -228,29 +218,6 @@ fun CourseMetadataRow(
             color = textColor,
             fontSize = 14.sp,
             fontWeight = fontWeight
-        )
-    }
-}
-
-@Composable
-fun CourseProgressBar(
-    progress: Float,
-    color: androidx.compose.ui.graphics.Color = MaterialTheme.colorScheme.secondary,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .padding(vertical = 3.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth(progress)
-                .clip(CircleShape)
-                .background(color)
-                .padding(vertical = 3.dp)
         )
     }
 }
