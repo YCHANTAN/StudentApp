@@ -36,6 +36,7 @@ fun DashboardScreen(
     onFinanceClick: () -> Unit = {},
     onGradesClick: () -> Unit = {},
     onCoursesClick: () -> Unit = {},
+    onCourseClick: () -> Unit = {},
     onNotificationClick: () -> Unit = {}
 ) {
     val state = viewModel.state
@@ -92,7 +93,8 @@ fun DashboardScreen(
             item {
                 StudyLoadSection(
                     courses = state.courses,
-                    onViewScheduleClick = onViewScheduleClick
+                    onViewScheduleClick = onViewScheduleClick,
+                    onCourseClick = { onCourseClick() }
                 )
             }
 
