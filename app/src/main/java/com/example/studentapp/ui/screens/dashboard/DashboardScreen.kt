@@ -37,7 +37,8 @@ fun DashboardScreen(
     onGradesClick: () -> Unit = {},
     onCoursesClick: () -> Unit = {},
     onCourseClick: () -> Unit = {},
-    onNotificationClick: () -> Unit = {}
+    onNotificationClick: () -> Unit = {},
+    onRequestStatusClick: () -> Unit = {}
 ) {
     val state = viewModel.state
 
@@ -99,7 +100,10 @@ fun DashboardScreen(
             }
 
             item {
-                RequestStatusSection(requestStatus = state.requestStatus)
+                RequestStatusSection(
+                    requestStatus = state.requestStatus,
+                    onClick = onRequestStatusClick
+                )
             }
         }
     }
