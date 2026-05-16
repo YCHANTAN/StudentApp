@@ -1,5 +1,6 @@
 package com.example.studentapp.data.repository
 
+import com.example.studentapp.data.remote.CreateDocumentRequestRequest
 import com.example.studentapp.data.remote.DocumentRequestResponse
 import com.example.studentapp.data.remote.NetworkModule
 import com.example.studentapp.domain.repository.DocumentRequestRepository
@@ -22,6 +23,32 @@ class DocumentRequestRepositoryImpl : DocumentRequestRepository {
             }
         } catch (e: Exception) {
             emptyList()
+        }
+    }
+
+    override suspend fun createDocumentRequest(
+        studentId: String,
+        type: String,
+        purpose: String,
+        program: String?,
+        yearLevel: String?,
+        copies: Int?,
+        deliveryMethod: String?
+    ): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val request = CreateDocumentRequestRequest(
+                studentId = studentId,
+                type = type,
+                purpose = purpose,
+                program = program,
+                yearLevel = yearLevel,
+                copies = copies,
+                deliveryMethod = deliveryMethod
+            )
+            val response = NetworkModule.documentRequestApi.createDocumentRequest(request)
+            response.isSuccessful && response.body()?.success == true
+        } catch (e: Exception) {
+            false
         }
     }
 }

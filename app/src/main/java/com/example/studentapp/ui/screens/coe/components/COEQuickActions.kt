@@ -30,9 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studentapp.ui.theme.DarkGreen
 
+import androidx.compose.material3.CircularProgressIndicator
+
 @Composable
 fun COEQuickActions(
     onGenerateDigitalClick: () -> Unit = {},
+    isSubmitting: Boolean = false,
     onRequestPrintedClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
@@ -60,6 +63,7 @@ fun COEQuickActions(
             actionIcon = Icons.Default.Schedule,
             icon = Icons.Default.Print,
             isPrimary = false,
+            isLoading = isSubmitting,
             onClick = onRequestPrintedClick
         )
     }
@@ -74,6 +78,7 @@ private fun QuickActionCard(
     icon: ImageVector,
     badge: String? = null,
     isPrimary: Boolean,
+    isLoading: Boolean = false,
     onClick: () -> Unit
 ) {
     val backgroundColor = if (isPrimary) DarkGreen else MaterialTheme.colorScheme.surface
@@ -88,7 +93,7 @@ private fun QuickActionCard(
                 if (!isPrimary) Modifier.border(1.dp, borderColor, RoundedCornerShape(16.dp))
                 else Modifier
             )
-            .clickable(onClick = onClick)
+            .clickable(enabled = !isLoading, onClick = onClick)
             .padding(20.dp)
     ) {
         Row(
@@ -146,18 +151,26 @@ private fun QuickActionCard(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(
-                text = actionText,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Bold,
-                color = if (isPrimary) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary
-            )
-            Icon(
-                imageVector = actionIcon,
-                contentDescription = null,
-                tint = if (isPrimary) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(14.dp)
-            )
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(16.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(
+                    text = actionText,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isPrimary) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary
+                )
+                Icon(
+                    imageVector = actionIcon,
+                    contentDescription = null,
+                    tint = if (isPrimary) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(14.dp)
+                )
+            }
         }
     }
 }

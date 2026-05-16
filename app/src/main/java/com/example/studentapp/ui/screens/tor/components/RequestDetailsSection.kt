@@ -45,7 +45,10 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RequestDetailsSection() {
+fun RequestDetailsSection(
+    isSubmitting: Boolean = false,
+    onSubmitClick: (copies: Int, purpose: String) -> Unit = { _, _ -> }
+) {
     var purpose by remember { mutableStateOf("Employment") }
     var expanded by remember { mutableStateOf(false) }
     val purposes = listOf(
@@ -187,7 +190,11 @@ fun RequestDetailsSection() {
             }
         }
 
-        PaymentSummarySection(copies = copies)
+        PaymentSummarySection(
+            copies = copies,
+            isSubmitting = isSubmitting,
+            onSubmitClick = { onSubmitClick(copies, purpose) }
+        )
     }
 }
 

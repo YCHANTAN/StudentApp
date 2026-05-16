@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandMore
@@ -34,11 +35,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.studentapp.ui.theme.DarkGreen
 
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.ui.graphics.Color
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewRequestSection(
     studentId: String,
     fullName: String,
+    isSubmitting: Boolean = false,
+    onSubmitClick: (program: String, yearLevel: String, purpose: String) -> Unit = { _, _, _ -> },
     modifier: Modifier = Modifier
 ) {
     var selectedProgram by remember { mutableStateOf("") }
@@ -221,23 +227,32 @@ fun NewRequestSection(
         }
 
         Button(
-            onClick = { /* Handle request */ },
+            onClick = { onSubmitClick(selectedProgram, selectedYear, purpose) },
+            enabled = !isSubmitting && selectedProgram.isNotEmpty() && selectedYear.isNotEmpty() && purpose.isNotEmpty(),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(containerColor = DarkGreen)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Icon(Icons.Default.Send, contentDescription = null)
-                Text(
-                    text = "Request Certificate",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold
+            if (isSubmitting) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
                 )
+            } else {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(Icons.Default.Send, contentDescription = null)
+                    Text(
+                        text = "Request Certificate",
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }

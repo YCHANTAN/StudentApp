@@ -14,7 +14,6 @@ import com.example.studentapp.ui.screens.enrollment.EnrollmentScreen
 import com.example.studentapp.ui.screens.evaluations.EvaluationScreen
 import com.example.studentapp.ui.screens.finance.FinanceScreen
 import com.example.studentapp.ui.screens.finance.AssessmentScreen
-import com.example.studentapp.ui.screens.finance.PaymentSlipScreen
 import com.example.studentapp.ui.screens.goodmoral.GoodMoralScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -214,9 +213,6 @@ fun AppNavGraph() {
                 onAssessmentClick = {
                     navController.navigate(AppDestination.Assessment.route)
                 },
-                onPaymentSlipClick = {
-                    navController.navigate(AppDestination.PaymentSlip.route)
-                },
                 onNotificationClick = navigateToNotifications
             )
         }
@@ -225,14 +221,6 @@ fun AppNavGraph() {
             val financeViewModel: com.example.studentapp.ui.screens.finance.FinanceViewModel = viewModel()
             AssessmentScreen(
                 assessment = financeViewModel.assessment,
-                onBackClick = { navController.popBackStack() }
-            )
-        }
-
-        composable(AppDestination.PaymentSlip.route) {
-            val financeViewModel: com.example.studentapp.ui.screens.finance.FinanceViewModel = viewModel()
-            PaymentSlipScreen(
-                paymentSlip = financeViewModel.paymentSlip,
                 onBackClick = { navController.popBackStack() }
             )
         }
@@ -282,7 +270,12 @@ fun AppNavGraph() {
                 selectedNavItemId = "services",
                 onBottomNavSelected = onBottomNavSelected,
                 onBackClick = { navController.popBackStack() },
-                onNotificationClick = navigateToNotifications
+                onNotificationClick = navigateToNotifications,
+                onNavigateToFinance = {
+                    navController.navigate(AppDestination.Finance.route) {
+                        popUpTo(AppDestination.Dashboard.route)
+                    }
+                }
             )
         }
 
@@ -292,7 +285,12 @@ fun AppNavGraph() {
                 selectedNavItemId = "services",
                 onBottomNavSelected = onBottomNavSelected,
                 onBackClick = { navController.popBackStack() },
-                onNotificationClick = navigateToNotifications
+                onNotificationClick = navigateToNotifications,
+                onNavigateToFinance = {
+                    navController.navigate(AppDestination.Finance.route) {
+                        popUpTo(AppDestination.Dashboard.route)
+                    }
+                }
             )
         }
 
@@ -302,7 +300,12 @@ fun AppNavGraph() {
                 selectedNavItemId = "services",
                 onBottomNavSelected = onBottomNavSelected,
                 onBackClick = { navController.popBackStack() },
-                onNotificationClick = navigateToNotifications
+                onNotificationClick = navigateToNotifications,
+                onNavigateToFinance = {
+                    navController.navigate(AppDestination.Finance.route) {
+                        popUpTo(AppDestination.Dashboard.route)
+                    }
+                }
             )
         }
 
