@@ -3,6 +3,7 @@ import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { LibraryBookRepository } from '@/application/repositories/library-book.repository';
 import type { LibraryBook, LibraryBookTab } from '@/core/entities/library-book.entity';
 import { libraryBooks } from '../schema/library-book.schema';
+import { borrowRecords } from '../schema/borrow-record.schema';
 
 export class LibraryBookPgRepository implements LibraryBookRepository {
   constructor(private readonly db: NodePgDatabase) {}
@@ -20,6 +21,7 @@ export class LibraryBookPgRepository implements LibraryBookRepository {
       .select()
       .from(libraryBooks)
       .where(whereClause)
+      .orderBy(libraryBooks.title)
       .limit(limit)
       .offset(offset);
 
@@ -34,6 +36,25 @@ export class LibraryBookPgRepository implements LibraryBookRepository {
       data: data.map(this.mapToEntity),
       total,
     };
+  }
+
+  async findUserBorrowedBooks(userId: string): Promise<LibraryBook[]> {
+    const records = await this.db
+      .select({
+        book: libraryBooks,
+        returnedAt: borrowRecords.returnedAt,
+      })
+      .from(borrowRecords)
+      .innerJoin(libraryBooks, eq(borrowRecords.bookId, libraryBooks.id))
+      .where(eq(borrowRecords.userId, userId))
+      .orderBy(libraryBooks.title);
+
+    return records.map((r) => {
+      const entity = this.mapToEntity(r.book);
+      // Override tab based on borrow status
+      entity.tab = r.returnedAt ? 'History' : 'Return';
+      return entity;
+    });
   }
 
   async findById(id: string): Promise<LibraryBook | null> {
