@@ -46,11 +46,6 @@ data class NotificationSettingsResponse(
     @SerializedName("system") val system: Boolean
 )
 
-data class ApiResponse<T>(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: T
-)
-
 interface AuthApi {
     @POST("auth/login")
     suspend fun login(@Body request: LoginRequest): Response<ApiResponse<LoginResponse>>
