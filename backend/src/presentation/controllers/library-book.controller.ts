@@ -32,10 +32,12 @@ export class LibraryBookController {
         limit: req.query.limit,
       });
       const filter = GetLibraryBooksQueryDto.parse(req.query);
+      const userId = req.user?.sub;
 
       const { data, total } = await this.getLibraryBooksUseCase.execute({
         ...pagination,
         ...(filter.tab !== undefined && { tab: filter.tab }),
+        userId,
       });
 
       ok(res, data, {

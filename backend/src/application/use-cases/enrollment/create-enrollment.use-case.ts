@@ -91,8 +91,8 @@ export class CreateEnrollmentUseCase {
       referenceId: `ENR-${enrollmentId.substring(0, 8)}`,
       description: `Enrollment fee for ${totalUnits} units`,
       isPaid: false,
+      date: new Date(),
       createdAt: new Date(),
-      updatedAt: new Date(),
     };
 
     await this.transactionRepo.save(transaction);

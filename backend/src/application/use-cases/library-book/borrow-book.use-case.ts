@@ -3,6 +3,7 @@ import type { LibraryBookRepository } from '@/application/repositories/library-b
 import type { BorrowRecordRepository } from '@/application/repositories/borrow-record.repository';
 import type { BorrowBookInput } from '@/application/dtos/borrow-record.dto';
 import type { BorrowRecord } from '@/core/entities/borrow-record.entity';
+import { type LibraryBook, calculateStockInfo } from '@/core/entities/library-book.entity';
 import { NotFoundError, ConflictError, OutOfStockError } from '@/core/errors/domain.error';
 
 export class BorrowBookUseCase {
@@ -11,7 +12,7 @@ export class BorrowBookUseCase {
     private readonly borrowRecordRepo: BorrowRecordRepository,
   ) {}
 
-  async execute(bookId: string, input: BorrowBookInput): Promise<BorrowRecord> {
+  async execute(bookId: string, input: BorrowBookInput): Promise<LibraryBook> {
     // Find the book
     const book = await this.bookRepo.findById(bookId);
     if (!book) {
@@ -44,11 +45,20 @@ export class BorrowBookUseCase {
     };
 
     // Save the record AND update the book's availability
+    const newAvailableCopies = book.availableCopies - 1;
+    const { stockStatus, stockLabel } = calculateStockInfo(newAvailableCopies);
+
     await this.borrowRecordRepo.save(newRecord);
-    await this.bookRepo.update(book.id, { 
-      availableCopies: book.availableCopies - 1 
+    const updatedBook = await this.bookRepo.update(book.id, { 
+      availableCopies: newAvailableCopies,
+      stockStatus: stockStatus as any,
+      stockLabel
     });
 
-    return newRecord;
+    // Return the book marked with tab=Return so the UI knows it's borrowed
+    return {
+      ...updatedBook,
+      tab: 'Return'
+    };
   }
 }

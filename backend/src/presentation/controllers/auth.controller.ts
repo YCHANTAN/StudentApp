@@ -44,7 +44,7 @@ export class AuthController {
 
       // Extract Year Level from programSummary (e.g., "BS Computer Science • Year 2")
       const yearMatch = profile.programSummary.match(/Year\s+(\d+)/i);
-      const yearLevel = yearMatch ? parseInt(yearMatch[1], 10) : 1;
+      const yearLevel = (yearMatch && yearMatch[1]) ? parseInt(yearMatch[1], 10) : 1;
 
       // Extract Program from programSummary (e.g., "BS Computer Science • Year 2")
       const program = profile.programSummary.split("•")[0]?.trim() || "N/A";

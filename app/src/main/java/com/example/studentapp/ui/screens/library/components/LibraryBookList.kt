@@ -36,6 +36,7 @@ import com.example.studentapp.ui.screens.library.models.StockStatus
 fun LibraryBookList(
     books: List<LibraryBook>,
     selectedTab: LibraryTab,
+    onActionClick: (LibraryBook) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -55,7 +56,8 @@ fun LibraryBookList(
         books.forEach { book ->
             LibraryBookCard(
                 book = book,
-                showBorrowButton = selectedTab == LibraryTab.Available,
+                selectedTab = selectedTab,
+                onActionClick = { onActionClick(book) },
                 modifier = Modifier.padding(bottom = 16.dp)
             )
         }
@@ -65,7 +67,8 @@ fun LibraryBookList(
 @Composable
 private fun LibraryBookCard(
     book: LibraryBook,
-    showBorrowButton: Boolean,
+    selectedTab: LibraryTab,
+    onActionClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -161,8 +164,10 @@ private fun LibraryBookCard(
                 ) {
                     StockBadge(stockLabel = book.stockLabel, status = book.stockStatus)
 
-                    if (showBorrowButton && book.stockStatus != StockStatus.OutOfStock) {
-                        BorrowButton()
+                    if (selectedTab == LibraryTab.Available && book.stockStatus != StockStatus.OutOfStock) {
+                        LibraryActionButton(text = "Borrow", onClick = onActionClick)
+                    } else if (selectedTab == LibraryTab.Return) {
+                        LibraryActionButton(text = "Return", onClick = onActionClick)
                     }
                 }
 
@@ -178,15 +183,19 @@ private fun LibraryBookCard(
 }
 
 @Composable
-private fun BorrowButton() {
-    TextButton(
-        onClick = { },
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(6.dp))
-            .padding(horizontal = 2.dp)
+private fun LibraryActionButton(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    androidx.compose.material3.Button(
+        onClick = onClick,
+        modifier = modifier.height(34.dp),
+        shape = RoundedCornerShape(8.dp),
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp)
     ) {
         Text(
-            text = "Borrow",
+            text = text,
             color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 12.sp,
             fontWeight = FontWeight.Bold
@@ -219,7 +228,7 @@ private fun StockBadge(
         fontSize = 14.sp,
         fontWeight = FontWeight.SemiBold,
         modifier = Modifier
-            .background(backgroundColor, RoundedCornerShape(6.dp))
+            .background(backgroundColor, RoundedCornerShape(8.dp))
             .padding(horizontal = 10.dp, vertical = 6.dp)
     )
 }

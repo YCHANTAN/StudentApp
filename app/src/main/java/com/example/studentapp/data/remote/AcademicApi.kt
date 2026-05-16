@@ -44,19 +44,6 @@ data class ScheduleEntryResponse(
     @SerializedName("instructor") val instructor: String
 )
 
-data class PaginatedResponse<T>(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: List<T>,
-    @SerializedName("meta") val meta: PaginationMeta
-)
-
-data class PaginationMeta(
-    @SerializedName("total") val total: Int,
-    @SerializedName("page") val page: Int,
-    @SerializedName("limit") val limit: Int,
-    @SerializedName("totalPages") val totalPages: Int
-)
-
 data class ProgramResponse(
     @SerializedName("id") val id: String,
     @SerializedName("title") val title: String,
