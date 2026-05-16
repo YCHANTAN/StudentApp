@@ -100,7 +100,12 @@ const getBorrowHistoryUseCase = new GetBorrowHistoryUseCase(borrowRecordRepo);
 
 const getDocumentRequestsUseCase = new GetDocumentRequestsUseCase(documentRequestRepo, studentRepo);
 const getDocumentRequestUseCase = new GetDocumentRequestUseCase(documentRequestRepo);
-const createDocumentRequestUseCase = new CreateDocumentRequestUseCase(documentRequestRepo, transactionRepo);
+const createDocumentRequestUseCase = new CreateDocumentRequestUseCase(
+  documentRequestRepo,
+  transactionRepo,
+  studentRepo
+);
+
 
 const getComplaintsUseCase = new GetComplaintsUseCase(complaintRepo, studentRepo);
 const createComplaintUseCase = new CreateComplaintUseCase(complaintRepo);
@@ -132,8 +137,8 @@ const getStudyLoadUseCase = new GetStudyLoadUseCase(enrollmentRepo, courseRepo, 
 const getStudentSubjectsUseCase = new GetStudentSubjectsUseCase(registrationRepo);
 const createSubjectUseCase = new CreateSubjectUseCase(subjectRepo);
 
-const submitEvaluationUseCase = new SubmitEvaluationUseCase(evaluationRepo);
-const getStudentEvaluationsUseCase = new GetStudentEvaluationsUseCase(evaluationRepo);
+const submitEvaluationUseCase = new SubmitEvaluationUseCase(evaluationRepo, studentRepo);
+const getStudentEvaluationsUseCase = new GetStudentEvaluationsUseCase(evaluationRepo, studentRepo);
 
 // --- Controllers ---
 export const authController = new AuthController(loginUseCase, getStudentUseCase, getStudentProfileUseCase);

@@ -2,6 +2,7 @@
 
 package com.example.studentapp.ui.screens.evaluations
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +25,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,6 +34,7 @@ import com.example.studentapp.ui.components.StudentBottomNavBar
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.screens.evaluations.components.EvaluationCourseCard
 import com.example.studentapp.ui.screens.evaluations.components.EvaluationPendingSectionHeader
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 @Preview
@@ -45,6 +48,17 @@ fun EvaluationScreen(
 ) {
     val pendingCourses = viewModel.pendingCourses
     val isLoading = viewModel.isLoading
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = true) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is EvaluationViewModel.EvaluationEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,

@@ -158,6 +158,7 @@ fun EvaluationCourseCard(
 
                     EvaluationSubmitButton(
                         text = "Submit Evaluation",
+                        isLoading = item.isSubmitting,
                         onClick = onSubmitClick
                     )
                     

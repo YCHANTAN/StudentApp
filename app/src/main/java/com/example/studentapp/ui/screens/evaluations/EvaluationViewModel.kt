@@ -10,6 +10,8 @@ import com.example.studentapp.domain.repository.AuthRepository
 import com.example.studentapp.domain.repository.EnrollmentRepository
 import com.example.studentapp.ui.screens.evaluations.models.EvaluationCourseIconType
 import com.example.studentapp.ui.screens.evaluations.models.EvaluationCourseItem
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
 class EvaluationViewModel(
@@ -23,6 +25,13 @@ class EvaluationViewModel(
     var isLoading by mutableStateOf(false)
         private set
 
+    private val _eventFlow = MutableSharedFlow<EvaluationEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
+    sealed class EvaluationEvent {
+        data class ShowToast(val message: String) : EvaluationEvent()
+    }
+
     init {
         loadPendingEvaluations()
     }
@@ -32,7 +41,7 @@ class EvaluationViewModel(
             isLoading = true
             val profile = authRepository.getProfile()
             if (profile != null) {
-                val studentId = profile.accountId
+                val studentId = profile.id
                 try {
                     val studyLoad = enrollmentRepository.getStudyLoad(studentId)
                     val evaluations = academicRepository.getEvaluations(studentId)
@@ -65,16 +74,29 @@ class EvaluationViewModel(
             val profile = authRepository.getProfile()
             val item = pendingCourses.find { it.id == courseId }
             if (profile != null && item != null) {
+                // Update state to isSubmitting
+                pendingCourses = pendingCourses.map {
+                    if (it.id == courseId) it.copy(isSubmitting = true) else it
+                }
+
                 val success = academicRepository.submitEvaluation(
-                    profile.accountId,
+                    profile.id,
                     courseId,
                     item.teachingQuality,
                     item.courseMaterials,
                     item.punctuality,
                     item.comments
                 )
+
                 if (success) {
                     pendingCourses = pendingCourses.filter { it.id != courseId }
+                    _eventFlow.emit(EvaluationEvent.ShowToast("Evaluation submitted successfully!"))
+                } else {
+                    // Reset isSubmitting
+                    pendingCourses = pendingCourses.map {
+                        if (it.id == courseId) it.copy(isSubmitting = false) else it
+                    }
+                    _eventFlow.emit(EvaluationEvent.ShowToast("Failed to submit evaluation. Please try again."))
                 }
             }
         }

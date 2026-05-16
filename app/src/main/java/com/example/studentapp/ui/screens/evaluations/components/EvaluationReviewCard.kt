@@ -39,6 +39,7 @@ fun EvaluationReviewCard(
     onCourseMaterialsChanged: (Int) -> Unit = {},
     onPunctualityChanged: (Int) -> Unit = {},
     onCommentsChanged: (String) -> Unit = {},
+    isSubmitting: Boolean = false,
     onSubmitClick: () -> Unit = {}
 ) {
     Card(
@@ -149,6 +150,7 @@ fun EvaluationReviewCard(
 
                 EvaluationSubmitButton(
                     text = "Submit Evaluation",
+                    isLoading = isSubmitting,
                     onClick = onSubmitClick
                 )
             }
