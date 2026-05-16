@@ -6,23 +6,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.studentapp.ui.components.StudentBottomNavBar
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
@@ -30,11 +19,8 @@ import com.example.studentapp.ui.screens.library.models.LibraryTab
 import com.example.studentapp.ui.screens.services.components.DocumentRequestsSection
 import com.example.studentapp.ui.screens.services.components.DocumentTypeGrid
 import com.example.studentapp.ui.screens.services.components.LibraryServicesSection
-import com.example.studentapp.ui.screens.services.components.StudentAffairsSection
-import com.example.studentapp.ui.screens.services.models.sampleComplaints
 import com.example.studentapp.ui.screens.services.models.sampleDocumentTypes
 import com.example.studentapp.ui.screens.services.models.sampleLibraryLinks
-import com.example.studentapp.ui.theme.DarkGreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.CircularProgressIndicator
@@ -43,7 +29,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.studentapp.ui.components.StudentHeader
 import com.example.studentapp.ui.components.StudentNotificationButton
-import com.example.studentapp.ui.components.StudentSpinner
 import com.example.studentapp.ui.components.StudentToast
 import com.example.studentapp.ui.components.ToastType
 import androidx.compose.runtime.getValue
@@ -66,7 +51,6 @@ fun ServicesScreen(
     viewModel: ServicesViewModel = viewModel()
 ) {
     val documentRequests = viewModel.documentRequests
-    val complaints = viewModel.complaints
     val isLoading = viewModel.isLoading
 
     var showToast by remember { mutableStateOf(false) }
@@ -147,12 +131,6 @@ fun ServicesScreen(
                         )
                     }
 
-                    // Student Affairs
-                    item {
-                        Spacer(modifier = Modifier.height(24.dp))
-                        StudentAffairsSection(complaints = complaints)
-                    }
-
                     item { Spacer(modifier = Modifier.height(24.dp)) }
                 }
             }
@@ -163,8 +141,6 @@ fun ServicesScreen(
                 isVisible = showToast,
                 onDismiss = { showToast = false }
             )
-
-            // Example: StudentSpinner(message = "Processing request...", isVisible = someLoadingState)
         }
     }
 }
