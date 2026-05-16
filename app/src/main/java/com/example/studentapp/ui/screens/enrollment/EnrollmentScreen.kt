@@ -13,12 +13,18 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -26,13 +32,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.ui.components.StudentBottomNavBar
 import com.example.studentapp.ui.components.StudentBottomNavItem
+import com.example.studentapp.ui.components.StudentLoadingOverlay
 import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.ui.screens.enrollment.components.EnrollmentBottomSheet
 import com.example.studentapp.ui.screens.enrollment.components.EnrollmentConfirmationStepContent
 import com.example.studentapp.ui.screens.enrollment.components.EnrollmentCourseStepContent
@@ -43,15 +52,6 @@ import com.example.studentapp.ui.screens.enrollment.models.EnrollmentStep
 import com.example.studentapp.ui.screens.enrollment.models.buildEnrollmentConfirmationCourses
 import com.example.studentapp.ui.screens.enrollment.models.filterEnrollableCourses
 import com.example.studentapp.ui.theme.StudentAppTheme
-
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
-import androidx.compose.foundation.layout.Box
-
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 
 @Composable
 fun EnrollmentScreen(
@@ -68,8 +68,6 @@ fun EnrollmentScreen(
     val uiState = viewModel.uiState
     var currentStep by rememberSaveable { mutableStateOf(EnrollmentStep.Courses) }
     var searchQuery by rememberSaveable { mutableStateOf("") }
-    
-    // ... rest of logic ...
     
     val filteredCourses = remember(searchQuery, uiState.courses) {
         filterEnrollableCourses(
@@ -303,15 +301,7 @@ fun EnrollmentScreen(
             }
 
             if (uiState.isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f))
-                        .clickable(enabled = false) {},
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
-                }
+                StudentLoadingOverlay()
             }
         }
     }
