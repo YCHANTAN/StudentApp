@@ -43,6 +43,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.Alignment
 
+import com.example.studentapp.ui.components.StudentHeader
+
 @Composable
 @Preview
 fun GradesScreen(
@@ -68,25 +70,9 @@ fun GradesScreen(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "My Grades",
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                            contentDescription = "Back"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background
-                )
+            StudentHeader(
+                title = "My Grades",
+                onBackClick = onBackClick
             )
         },
         bottomBar = {
