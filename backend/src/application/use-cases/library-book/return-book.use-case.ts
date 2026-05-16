@@ -1,7 +1,7 @@
 import type { LibraryBookRepository } from '@/application/repositories/library-book.repository';
 import type { BorrowRecordRepository } from '@/application/repositories/borrow-record.repository';
 import type { ReturnBookInput } from '@/application/dtos/borrow-record.dto';
-import type { BorrowRecord } from '@/core/entities/borrow-record.entity';
+import { type LibraryBook, calculateStockInfo } from '@/core/entities/library-book.entity';
 import { NotFoundError, ConflictError } from '@/core/errors/domain.error';
 
 export class ReturnBookUseCase {
@@ -10,7 +10,7 @@ export class ReturnBookUseCase {
     private readonly borrowRecordRepo: BorrowRecordRepository,
   ) {}
 
-  async execute(bookId: string, input: ReturnBookInput): Promise<BorrowRecord> {
+  async execute(bookId: string, input: ReturnBookInput): Promise<LibraryBook> {
     // Find the active borrowing session
     const activeRecord = await this.borrowRecordRepo.findActiveRecord(bookId, input.userId);
     
@@ -25,21 +25,24 @@ export class ReturnBookUseCase {
     }
 
     // Mark as returned (stamp the current date/time)
-    const updatedRecord = await this.borrowRecordRepo.update(activeRecord.id, {
+    await this.borrowRecordRepo.update(activeRecord.id, {
       returnedAt: new Date(),
     });
 
     // Add the book back to the availability tracker
     const newAvailableCopies = book.availableCopies + 1;
-    const stockStatus = newAvailableCopies === 0 ? 'OutOfStock' : (newAvailableCopies <= 2 ? 'Limited' : 'Available');
-    const stockLabel = newAvailableCopies === 0 ? 'Out of Stock' : `${newAvailableCopies} Copies Available`;
+    const { stockStatus, stockLabel } = calculateStockInfo(newAvailableCopies);
 
-    await this.bookRepo.update(book.id, {
+    const updatedBook = await this.bookRepo.update(book.id, {
       availableCopies: newAvailableCopies,
       stockStatus: stockStatus as any,
       stockLabel
     });
 
-    return updatedRecord;
+    // Return the book marked with tab=History so the UI knows it's now in history
+    return {
+      ...updatedBook,
+      tab: 'History'
+    };
   }
 }
