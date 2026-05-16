@@ -44,9 +44,15 @@ export class BorrowBookUseCase {
     };
 
     // Save the record AND update the book's availability
+    const newAvailableCopies = book.availableCopies - 1;
+    const stockStatus = newAvailableCopies === 0 ? 'OutOfStock' : (newAvailableCopies <= 2 ? 'Limited' : 'Available');
+    const stockLabel = newAvailableCopies === 0 ? 'Out of Stock' : `${newAvailableCopies} Copies Available`;
+
     await this.borrowRecordRepo.save(newRecord);
     await this.bookRepo.update(book.id, { 
-      availableCopies: book.availableCopies - 1 
+      availableCopies: newAvailableCopies,
+      stockStatus: stockStatus as any,
+      stockLabel
     });
 
     return newRecord;
