@@ -168,6 +168,8 @@ private fun LibraryBookCard(
                         LibraryActionButton(text = "Borrow", onClick = onActionClick)
                     } else if (selectedTab == LibraryTab.Return) {
                         LibraryActionButton(text = "Return", onClick = onActionClick)
+                    } else if (selectedTab == LibraryTab.History && book.totalCopies > 1) {
+                        QuantityBadge(count = book.totalCopies)
                     }
                 }
 
@@ -229,6 +231,21 @@ private fun StockBadge(
         fontWeight = FontWeight.SemiBold,
         modifier = Modifier
             .background(backgroundColor, RoundedCornerShape(8.dp))
+            .padding(horizontal = 10.dp, vertical = 6.dp)
+    )
+}
+
+@Composable
+private fun QuantityBadge(
+    count: Int
+) {
+    Text(
+        text = "x$count",
+        color = MaterialTheme.colorScheme.primary,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f), RoundedCornerShape(8.dp))
             .padding(horizontal = 10.dp, vertical = 6.dp)
     )
 }
