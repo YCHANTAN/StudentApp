@@ -36,9 +36,7 @@ fun DashboardScreen(
     onFinanceClick: () -> Unit = {},
     onGradesClick: () -> Unit = {},
     onCoursesClick: () -> Unit = {},
-    onCourseClick: () -> Unit = {},
-    onNotificationClick: () -> Unit = {},
-    onRequestStatusClick: () -> Unit = {}
+    onNotificationClick: () -> Unit = {}
 ) {
     val state = viewModel.state
 
