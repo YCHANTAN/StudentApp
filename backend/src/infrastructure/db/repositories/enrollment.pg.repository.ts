@@ -1,4 +1,4 @@
-import { eq, count } from 'drizzle-orm';
+import { eq, count, inArray } from 'drizzle-orm';
 import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import type { EnrollmentRepository } from '@/application/repositories/enrollment.repository';
 import type { Enrollment, EnrollmentStatus } from '@/core/entities/enrollment.entity';
@@ -30,15 +30,24 @@ export class EnrollmentPgRepository implements EnrollmentRepository {
 
     const total = totalResult?.value ? Number(totalResult.value) : 0;
 
-    const data: Enrollment[] = [];
-    for (const row of rows) {
-      const coursesRows = await this.db
-        .select({ courseId: enrollmentCourses.courseId })
-        .from(enrollmentCourses)
-        .where(eq(enrollmentCourses.enrollmentId, row.id));
-      
-      data.push(this.mapToEntity(row, coursesRows.map(c => c.courseId)));
-    }
+    const enrollmentIds = rows.map(r => r.id);
+    const allCoursesRows = enrollmentIds.length > 0 
+      ? await this.db
+          .select({ 
+            enrollmentId: enrollmentCourses.enrollmentId, 
+            courseId: enrollmentCourses.courseId 
+          })
+          .from(enrollmentCourses)
+          .where(inArray(enrollmentCourses.enrollmentId, enrollmentIds))
+      : [];
+
+    const coursesByEnrollment = allCoursesRows.reduce((acc, curr) => {
+      if (!acc[curr.enrollmentId]) acc[curr.enrollmentId] = [];
+      acc[curr.enrollmentId]!.push(curr.courseId);
+      return acc;
+    }, {} as Record<string, string[]>);
+
+    const data = rows.map(row => this.mapToEntity(row, coursesByEnrollment[row.id] || []));
 
     return {
       data,

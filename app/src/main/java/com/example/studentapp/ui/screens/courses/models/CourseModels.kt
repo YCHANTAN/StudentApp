@@ -13,7 +13,6 @@ data class CourseEntry(
     val location: String? = null,
     val grade: String? = null,
     val waitlistStatus: String? = null,
-    val progress: Float,
     val status: CourseStatus
 )
 
@@ -33,7 +32,6 @@ fun buildCourseEntries(): List<CourseEntry> {
             units = "4 UNITS",
             schedule = "Mon/Wed 10:00 AM \u2014 11:30 AM",
             location = "Engineering Hall, Rm 402",
-            progress = 0.65f,
             status = CourseStatus.Enrolled
         ),
         CourseEntry(
@@ -44,7 +42,6 @@ fun buildCourseEntries(): List<CourseEntry> {
             units = "3 UNITS",
             schedule = "Tue/Thu 01:00 PM \u2014 02:30 PM",
             location = "Science Building, Rm 105",
-            progress = 0.40f,
             status = CourseStatus.Enrolled
         ),
         CourseEntry(
@@ -55,7 +52,6 @@ fun buildCourseEntries(): List<CourseEntry> {
             units = "4 UNITS",
             schedule = "Friday 09:00 AM \u2014 12:00 PM",
             location = "Online Sync",
-            progress = 0.85f,
             status = CourseStatus.Enrolled
         ),
         CourseEntry(
@@ -64,7 +60,6 @@ fun buildCourseEntries(): List<CourseEntry> {
             semesterTitle = "2nd Semester 3rd Year",
             instructor = "Dr. Alan Turing",
             grade = "Grade: 1.25",
-            progress = 1f,
             status = CourseStatus.Completed
         ),
         CourseEntry(
@@ -73,7 +68,6 @@ fun buildCourseEntries(): List<CourseEntry> {
             semesterTitle = "2nd Semester 3rd Year",
             instructor = "Prof. Katherine Johnson",
             grade = "Grade: 1.50",
-            progress = 1f,
             status = CourseStatus.Completed
         ),
         CourseEntry(
@@ -82,7 +76,6 @@ fun buildCourseEntries(): List<CourseEntry> {
             semesterTitle = "2nd Semester 3rd Year",
             instructor = "Dr. Grace Hopper",
             grade = "Grade: 1.00",
-            progress = 1f,
             status = CourseStatus.Completed
         ),
         CourseEntry(
@@ -93,7 +86,6 @@ fun buildCourseEntries(): List<CourseEntry> {
             units = "4 Units",
             schedule = "Mon/Wed 2:00 PM \u2014 3:30 PM",
             waitlistStatus = "Status: Waitlisted #15",
-            progress = 0.30f,
             status = CourseStatus.Waitlisted
         ),
         CourseEntry(
@@ -104,7 +96,6 @@ fun buildCourseEntries(): List<CourseEntry> {
             units = "3 Units",
             schedule = "Tue/Thu 9:00 AM \u2014 10:30 AM",
             waitlistStatus = "Status: Waitlisted #3",
-            progress = 0.85f,
             status = CourseStatus.Waitlisted
         )
     )

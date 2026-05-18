@@ -46,7 +46,6 @@ class CoursesViewModel(
                         units = response.units?.let { "$it UNITS" },
                         schedule = response.schedule,
                         location = response.location,
-                        progress = response.progress ?: 0f,
                         status = CourseStatus.Enrolled
                     )
                 } ?: emptyList()
@@ -65,7 +64,6 @@ class CoursesViewModel(
                             semesterTitle = response.semesterLabel ?: "TBA",
                             instructor = "TBA", // Not in grade record
                             grade = "Grade: ${response.gradePoint}",
-                            progress = 1.0f,
                             status = CourseStatus.Completed
                         )
                     }
@@ -88,7 +86,6 @@ class CoursesViewModel(
                             schedule = response.schedule,
                             location = response.location,
                             waitlistStatus = response.waitlistStatus?.let { "Status: $it" } ?: "Status: Waitlisted",
-                            progress = response.progress ?: 0f,
                             status = CourseStatus.Waitlisted
                         )
                     }

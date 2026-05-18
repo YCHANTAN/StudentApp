@@ -7,6 +7,9 @@ const statusMap: Record<string, number> = {
   CONFLICT: 409,
   FORBIDDEN: 403,
   UNAUTHORIZED: 401,
+  UNAUTHORIZED_ACTION: 403,
+  COURSE_FULL: 409,
+  OUT_OF_STOCK: 409,
 };
 
 export const errorMiddleware = (

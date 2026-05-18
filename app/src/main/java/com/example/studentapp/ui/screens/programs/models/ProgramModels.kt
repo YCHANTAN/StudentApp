@@ -32,6 +32,7 @@ enum class ProgramsTab(val label: String) {
 }
 
 fun buildProgramEntries(): List<ProgramEntry> {
+    val sampleUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
     return listOf(
         ProgramEntry(
             id = "1",
@@ -40,7 +41,8 @@ fun buildProgramEntries(): List<ProgramEntry> {
             badgeVariant = ProgramBadgeVariant.Success,
             scheduleLine = "4 Years \u2022 Full Time",
             description = "Master software engineering, AI, and cybersecurity with our industry-leading curriculum and hands-on laboratory modules.",
-            category = ProgramCategory.Undergraduate
+            category = ProgramCategory.Undergraduate,
+            prospectusUrl = sampleUrl
         ),
         ProgramEntry(
             id = "2",
@@ -49,7 +51,8 @@ fun buildProgramEntries(): List<ProgramEntry> {
             badgeVariant = ProgramBadgeVariant.Info,
             scheduleLine = "4 Years \u2022 Global Track",
             description = "Equip yourself with strategic leadership skills, financial acumen, and entrepreneurial mindset for the modern corporate world.",
-            category = ProgramCategory.Undergraduate
+            category = ProgramCategory.Undergraduate,
+            prospectusUrl = sampleUrl
         ),
         ProgramEntry(
             id = "3",
@@ -58,7 +61,8 @@ fun buildProgramEntries(): List<ProgramEntry> {
             badgeVariant = ProgramBadgeVariant.Success,
             scheduleLine = "2 Years \u2022 Postgraduate",
             description = "Advanced statistical modeling and machine learning applications for driving data-informed business decisions.",
-            category = ProgramCategory.Postgraduate
+            category = ProgramCategory.Postgraduate,
+            prospectusUrl = sampleUrl
         ),
         ProgramEntry(
             id = "4",
@@ -67,7 +71,8 @@ fun buildProgramEntries(): List<ProgramEntry> {
             badgeVariant = ProgramBadgeVariant.Neutral,
             scheduleLine = "5 Years \u2022 Studio Based",
             description = "Explore sustainable design, urban planning, and historic conservation through creative architectural practice.",
-            category = ProgramCategory.Undergraduate
+            category = ProgramCategory.Undergraduate,
+            prospectusUrl = sampleUrl
         )
     )
 }

@@ -23,7 +23,6 @@ sealed class AppDestination(val route: String) {
     data object COE : AppDestination("coe")
     data object GoodMoral : AppDestination("good-moral")
     data object Assessment : AppDestination("assessment")
-    data object PaymentSlip : AppDestination("payment-slip")
     data object PaymentQueue : AppDestination("payment-queue")
     data object Notifications : AppDestination("notifications")
 }

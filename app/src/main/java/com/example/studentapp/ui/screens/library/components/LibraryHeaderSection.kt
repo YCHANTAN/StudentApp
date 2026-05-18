@@ -1,19 +1,13 @@
 package com.example.studentapp.ui.screens.library.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -48,8 +42,7 @@ fun LibraryHeaderSection(
             LibraryTabSwitcher(
                 tabs = LibraryTab.entries,
                 selectedTab = selectedTab,
-                onTabSelected = onTabSelected,
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
+                onTabSelected = onTabSelected
             )
         }
     )
@@ -65,31 +58,47 @@ private fun LibraryTabSwitcher(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp)
-            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(14.dp))
-            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(14.dp))
-            .padding(4.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp)
+            .padding(horizontal = 16.dp)
     ) {
         tabs.forEach { tab ->
-            val isSelected = tab == selectedTab
-            androidx.compose.material3.Surface(
-                modifier = Modifier
-                    .weight(1f)
-                    .height(40.dp),
-                color = if (isSelected) MaterialTheme.colorScheme.primary else Color.Transparent,
-                shape = RoundedCornerShape(10.dp),
-                onClick = { onTabSelected(tab) }
-            ) {
-                androidx.compose.foundation.layout.Box(contentAlignment = Alignment.Center) {
-                    Text(
-                        text = tab.label,
-                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 16.sp
-                    )
-                }
-            }
+            LibraryTabItem(
+                tab = tab,
+                isSelected = tab == selectedTab,
+                onClick = { onTabSelected(tab) },
+                modifier = Modifier.weight(1f)
+            )
         }
+    }
+}
+
+@Composable
+private fun LibraryTabItem(
+    tab: LibraryTab,
+    isSelected: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val activeColor = MaterialTheme.colorScheme.primary
+
+        Text(
+            text = tab.label,
+            modifier = Modifier.padding(top = 16.dp, bottom = 13.dp),
+            color = if (isSelected) activeColor else MaterialTheme.colorScheme.onSurfaceVariant,
+            fontSize = 14.sp,
+            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+            letterSpacing = 0.21.sp
+        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(
+                    color = if (isSelected) activeColor else Color.Transparent
+                )
+                .padding(vertical = 1.5.dp)
+        )
     }
 }

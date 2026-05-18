@@ -3,6 +3,7 @@ package com.example.studentapp.ui.screens.dashboard.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +31,8 @@ import com.example.studentapp.ui.theme.Spacing
 @Composable
 fun StudyLoadSection(
     courses: List<CourseSnapshot>,
-    onViewScheduleClick: () -> Unit
+    onViewScheduleClick: () -> Unit,
+    onCourseClick: (CourseSnapshot) -> Unit = {}
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(Spacing.Medium)) {
         Row(
@@ -49,15 +51,22 @@ fun StudyLoadSection(
 
         Column(verticalArrangement = Arrangement.spacedBy(Spacing.Small)) {
             courses.forEach { course ->
-                CourseCard(course = course)
+                CourseCard(
+                    course = course,
+                    onClick = { onCourseClick(course) }
+                )
             }
         }
     }
 }
 
 @Composable
-private fun CourseCard(course: CourseSnapshot) {
+private fun CourseCard(
+    course: CourseSnapshot,
+    onClick: () -> Unit
+) {
     Card(
+        onClick = onClick,
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),

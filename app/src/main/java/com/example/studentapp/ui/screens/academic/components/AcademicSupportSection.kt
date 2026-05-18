@@ -18,6 +18,8 @@ import androidx.compose.ui.unit.dp
 import com.example.studentapp.ui.theme.Radius
 import com.example.studentapp.ui.theme.Spacing
 
+import com.example.studentapp.ui.components.StudentPrimaryButton
+
 @Composable
 fun AcademicSupportSection(
     onContactSupportClick: () -> Unit,
@@ -50,7 +52,7 @@ fun AcademicSupportSection(
                 )
             }
 
-            AcademicPrimaryActionButton(
+            StudentPrimaryButton(
                 text = "Contact Support",
                 onClick = onContactSupportClick
             )

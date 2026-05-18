@@ -8,6 +8,7 @@ class GetProfileOverviewUseCase(
 ) {
     suspend operator fun invoke(): ProfileOverview {
         return repository.getProfile() ?: ProfileOverview(
+            id = "N/A",
             accountId = "N/A",
             fullName = "Error Loading Profile",
             emailAddress = "N/A",

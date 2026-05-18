@@ -19,6 +19,7 @@ data class NotificationPreferences(
 )
 
 data class ProfileOverview(
+    val id: String,
     val accountId: String,
     val fullName: String,
     val emailAddress: String,

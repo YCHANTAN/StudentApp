@@ -47,6 +47,11 @@ import com.example.studentapp.ui.screens.studyload.models.StudyLoadItem
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+import android.widget.Toast
+import android.content.Intent
+import androidx.core.content.FileProvider
+import java.io.File
+
 @Composable
 @Preview
 fun StudyLoadScreen(
@@ -99,9 +104,14 @@ fun StudyLoadScreen(
                     Column {
                         Button(
                             onClick = {
+                                Toast.makeText(context, "Downloading study load...", Toast.LENGTH_SHORT).show()
                                 viewModel.downloadPdf(context) { file ->
                                     if (file != null) {
-                                        onDownloadClick() // This could show a "Download started" toast
+                                        Toast.makeText(context, "Download complete", Toast.LENGTH_SHORT).show()
+                                        openPdf(context, file)
+                                        onDownloadClick()
+                                    } else {
+                                        Toast.makeText(context, "Failed to download study load", Toast.LENGTH_SHORT).show()
                                     }
                                 }
                             },
@@ -197,5 +207,22 @@ fun StudyLoadScreen(
                 }
             }
         }
+    }
+}
+
+private fun openPdf(context: android.content.Context, file: File) {
+    try {
+        val uri = FileProvider.getUriForFile(
+            context,
+            "${context.packageName}.fileprovider",
+            file
+        )
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(uri, "application/pdf")
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        Toast.makeText(context, "No PDF viewer found", Toast.LENGTH_SHORT).show()
     }
 }

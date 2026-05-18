@@ -130,4 +130,17 @@ class AcademicRepositoryImpl : AcademicRepository {
             false
         }
     }
+
+    override suspend fun downloadProspectus(url: String): okhttp3.ResponseBody? = withContext(Dispatchers.IO) {
+        try {
+            val response = NetworkModule.academicApi.downloadFile(url)
+            if (response.isSuccessful) {
+                response.body()
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            null
+        }
+    }
 }

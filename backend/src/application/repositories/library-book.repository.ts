@@ -4,4 +4,5 @@ export interface LibraryBookRepository {
   findAll(pagination: { page: number; limit: number }, filter?: { tab?: LibraryBookTab }): Promise<{ data: LibraryBook[]; total: number }>;
   findById(id: string): Promise<LibraryBook | null>;
   update(id: string, patch: Partial<LibraryBook>): Promise<LibraryBook>;
+  findUserBorrowedBooks(userId: string): Promise<LibraryBook[]>;
 }

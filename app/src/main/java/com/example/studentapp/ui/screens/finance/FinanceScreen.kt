@@ -18,6 +18,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import com.example.studentapp.ui.components.StudentBottomNavBar
@@ -47,12 +48,16 @@ fun FinanceScreen(
     onNotificationClick: () -> Unit = {},
     onPayNowClick: () -> Unit = {},
     onAssessmentClick: () -> Unit = {},
-    onPaymentSlipClick: () -> Unit = {},
     viewModel: FinanceViewModel = viewModel()
 ) {
     val balance = viewModel.balance
     val transactions = viewModel.transactions
     val isLoading = viewModel.isLoading
+
+    LaunchedEffect(Unit) {
+        viewModel.loadFinanceData()
+    }
+
     Scaffold(
         topBar = {
             StudentHeader(
@@ -96,8 +101,7 @@ fun FinanceScreen(
                 item {
                     Spacer(modifier = Modifier.height(Spacing.Large))
                     QuickActionsSection(
-                        onAssessmentClick = onAssessmentClick,
-                        onPaymentSlipClick = onPaymentSlipClick
+                        onAssessmentClick = onAssessmentClick
                     )
                 }
 

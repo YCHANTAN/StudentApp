@@ -12,7 +12,6 @@ export const courses = pgTable('courses', {
   location: varchar('location', { length: 255 }),
   grade: varchar('grade', { length: 10 }),
   waitlistStatus: varchar('waitlist_status', { length: 100 }),
-  progress: decimal('progress', { precision: 3, scale: 2 }), // 0.00 to 1.00
   status: varchar('status', { length: 50 }), // Enrolled, Completed, Waitlisted
   tuition: decimal('tuition', { precision: 10, scale: 2 }),
   remainingSlots: integer('remaining_slots').default(0),

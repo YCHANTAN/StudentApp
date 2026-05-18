@@ -40,6 +40,7 @@ class AuthRepositoryImpl : AuthRepository {
                 if (apiResponse?.success == true) {
                     val user = apiResponse.data
                     ProfileOverview(
+                        id = user.id,
                         accountId = user.studentId,
                         fullName = "${user.firstName} ${user.lastName}",
                         emailAddress = user.email,

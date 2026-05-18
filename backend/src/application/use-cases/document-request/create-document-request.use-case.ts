@@ -1,20 +1,32 @@
 import type { DocumentRequestRepository } from '@/application/repositories/document-request.repository';
 import type { TransactionRepository } from '@/application/repositories/transaction.repository';
+import type { StudentRepository } from '@/application/repositories/student.repository';
 import type { CreateDocumentRequestInput } from '@/application/dtos/document-request.dto';
 import type { DocumentRequest } from '@/core/entities/document-request.entity';
 
 export class CreateDocumentRequestUseCase {
   constructor(
     private readonly documentRequestRepo: DocumentRequestRepository,
-    private readonly transactionRepo: TransactionRepository
+    private readonly transactionRepo: TransactionRepository,
+    private readonly studentRepo: StudentRepository
   ) {}
 
   async execute(input: CreateDocumentRequestInput): Promise<DocumentRequest> {
+    let targetId = input.studentId;
+
+    // Resolve STU-ID to database UUID if necessary
+    if (!this.isUuid(input.studentId)) {
+      const student = await this.studentRepo.findByStudentId(input.studentId);
+      if (student) {
+        targetId = student.id;
+      }
+    }
+
     const reference = `REF-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
     
     const request: DocumentRequest = {
       id: crypto.randomUUID(),
-      studentId: input.studentId,
+      studentId: targetId,
       type: input.type,
       purpose: input.purpose,
       reference,
@@ -40,7 +52,7 @@ export class CreateDocumentRequestUseCase {
     // Create Finance Transaction (FEE)
     await this.transactionRepo.save({
         id: crypto.randomUUID(),
-        studentId: input.studentId,
+        studentId: targetId,
         title: `Fee for ${input.type} Request`,
         type: 'FEE',
         amount: feeAmount,
@@ -54,5 +66,10 @@ export class CreateDocumentRequestUseCase {
     });
 
     return this.documentRequestRepo.save(request);
+  }
+
+  private isUuid(id: string): boolean {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(id);
   }
 }

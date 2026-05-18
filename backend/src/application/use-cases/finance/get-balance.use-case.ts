@@ -39,11 +39,8 @@ export class GetStudentBalanceUseCase {
     }
 
     const balance = totalFees - totalPayments;
-    
-    console.log(`Calculated Balance for ${targetId}: Fees(${totalFees}) - Payments(${totalPayments}) = ${balance}`);
 
-    return { 
-      balance: Math.max(0, balance), 
+    return {      balance: Math.max(0, balance), 
       lastUpdated 
     };
   }

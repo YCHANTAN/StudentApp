@@ -36,13 +36,3 @@ data class LibraryLink(
     val subtitle: String,
     val icon: ImageVector
 )
-
-data class Complaint(
-    val title: String,
-    val status: ComplaintStatus
-)
-
-enum class ComplaintStatus(val label: String, val color: Color) {
-    IN_REVIEW("IN REVIEW", Color(0xFF1F5C23).copy(alpha = 0.6f)),
-    RESOLVED("RESOLVED", Color(0xFF16A34A))
-}

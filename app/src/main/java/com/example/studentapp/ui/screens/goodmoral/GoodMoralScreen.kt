@@ -1,5 +1,6 @@
 package com.example.studentapp.ui.screens.goodmoral
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,8 +19,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,6 +33,7 @@ import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
 import com.example.studentapp.ui.screens.goodmoral.components.GoodMoralHeader
 import com.example.studentapp.ui.screens.goodmoral.components.NewRequestSection
 import com.example.studentapp.ui.screens.goodmoral.components.RequestHistorySection
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun GoodMoralScreen(
@@ -38,9 +42,25 @@ fun GoodMoralScreen(
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
     onBackClick: () -> Unit = {},
     onNotificationClick: () -> Unit = {},
+    onNavigateToFinance: () -> Unit = {},
     viewModel: GoodMoralViewModel = viewModel()
 ) {
     val profile = viewModel.profile
+    val isSubmitting = viewModel.isSubmitting
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is GoodMoralViewModel.GoodMoralEvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+                GoodMoralViewModel.GoodMoralEvent.NavigateToFinance -> {
+                    onNavigateToFinance()
+                }
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier.statusBarsPadding(), 
@@ -70,7 +90,11 @@ fun GoodMoralScreen(
             // New Request Section
             NewRequestSection(
                 studentId = profile?.accountId ?: "---",
-                fullName = profile?.fullName ?: "Loading..."
+                fullName = profile?.fullName ?: "Loading...",
+                isSubmitting = isSubmitting,
+                onSubmitClick = { program, yearLevel, purpose ->
+                    viewModel.submitRequest(program, yearLevel, purpose)
+                }
             )
 
             // Request History Section

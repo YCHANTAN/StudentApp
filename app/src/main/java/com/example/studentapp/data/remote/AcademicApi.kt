@@ -28,7 +28,6 @@ data class CourseResponse(
     @SerializedName("location") val location: String?,
     @SerializedName("grade") val grade: String?,
     @SerializedName("waitlistStatus") val waitlistStatus: String?,
-    @SerializedName("progress") val progress: Float?,
     @SerializedName("status") val status: String?,
     @SerializedName("tuition") val tuition: Double?,
     @SerializedName("remainingSlots") val remainingSlots: Int?
@@ -43,19 +42,6 @@ data class ScheduleEntryResponse(
     @SerializedName("timeRange") val timeRange: String,
     @SerializedName("room") val room: String,
     @SerializedName("instructor") val instructor: String
-)
-
-data class PaginatedResponse<T>(
-    @SerializedName("success") val success: Boolean,
-    @SerializedName("data") val data: List<T>,
-    @SerializedName("meta") val meta: PaginationMeta
-)
-
-data class PaginationMeta(
-    @SerializedName("total") val total: Int,
-    @SerializedName("page") val page: Int,
-    @SerializedName("limit") val limit: Int,
-    @SerializedName("totalPages") val totalPages: Int
 )
 
 data class ProgramResponse(
@@ -124,4 +110,8 @@ interface AcademicApi {
     suspend fun submitEvaluation(
         @retrofit2.http.Body request: CreateEvaluationRequest
     ): Response<ApiResponse<EvaluationResponse>>
+
+    @retrofit2.http.Streaming
+    @GET
+    suspend fun downloadFile(@retrofit2.http.Url url: String): Response<okhttp3.ResponseBody>
 }

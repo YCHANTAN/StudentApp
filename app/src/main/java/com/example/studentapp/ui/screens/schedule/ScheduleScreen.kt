@@ -3,6 +3,7 @@ package com.example.studentapp.ui.screens.schedule
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,17 +13,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,17 +37,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentLoadingPlaceholder
 import com.example.studentapp.ui.screens.schedule.models.ScheduleDaySection
 import com.example.studentapp.ui.screens.schedule.models.ScheduleEntry
-import com.example.studentapp.ui.screens.schedule.models.ScheduleUiState
-import com.example.studentapp.ui.screens.schedule.models.buildScheduleUiState
 import com.example.studentapp.ui.theme.Radius
 import com.example.studentapp.ui.theme.Spacing
 import com.example.studentapp.ui.theme.StudentAppTheme
-
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.CircularProgressIndicator
 
 @Composable
 fun ScheduleScreen(
@@ -62,15 +59,14 @@ fun ScheduleScreen(
         modifier = modifier.fillMaxSize(),
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
-            ScheduleHeader(
+            StudentHeader(
+                title = "Class Schedule",
                 onBackClick = onBackClick
             )
         }
     ) { innerPadding ->
         if (isLoading && state.sections.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            StudentLoadingPlaceholder()
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -93,43 +89,6 @@ fun ScheduleScreen(
                     ScheduleDaySectionCard(section = section)
                 }
             }
-        }
-    }
-}
-
-@Composable
-private fun ScheduleHeader(
-    onBackClick: () -> Unit
-) {
-    Surface(
-        color = MaterialTheme.colorScheme.surface,
-        shadowElevation = 2.dp
-    ) {
-        Column(modifier = Modifier.statusBarsPadding()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = Spacing.Medium, vertical = 16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(Spacing.Small))
-
-                Text(
-                    text = "Class Schedule",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.studentapp.ui.screens.tor
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +12,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.ui.components.StudentBottomNavBar
@@ -20,6 +23,7 @@ import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
 import com.example.studentapp.ui.screens.tor.components.RequestDetailsSection
 import com.example.studentapp.ui.screens.tor.components.StudentProfileHeader
 import com.example.studentapp.ui.screens.tor.components.TORHeader
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun TORScreen(
@@ -28,9 +32,25 @@ fun TORScreen(
     onBottomNavSelected: (StudentBottomNavItem) -> Unit = {},
     onBackClick: () -> Unit = {},
     onNotificationClick: () -> Unit = {},
+    onNavigateToFinance: () -> Unit = {},
     viewModel: TORViewModel = viewModel()
 ) {
     val profile = viewModel.profile
+    val isSubmitting = viewModel.isSubmitting
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is TORViewModel.TOREvent.ShowToast -> {
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                }
+                TORViewModel.TOREvent.NavigateToFinance -> {
+                    onNavigateToFinance()
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -62,7 +82,12 @@ fun TORScreen(
                 imageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuBhyatqy3NA5y0usr0T-RBR7iZOzY-kOaNvtGrCIc_bu1CNa2dp4KqfXHZMwl1R_YHFz9nNPwWie304Z_ZcSvRuFWCsLPt1OnQxsBEpyWflteLmsTUd6-oZE4mc6bF7riUG_3Ko1FYzUt7vRL3zK1vWzWbFmoBz9FwRT9kx1rekJVoKFsXlUsTh5wyRiWtgDS3hk2AmPIvuPwncJHenOu73pq97E2O3vIO3ph9cLM5BBmjDxza6SwLbyAlwUpxaFwWaeVUHkbQjZh0"
             )
 
-            RequestDetailsSection()
+            RequestDetailsSection(
+                isSubmitting = isSubmitting,
+                onSubmitClick = { copies, purpose ->
+                    viewModel.submitRequest(copies, purpose)
+                }
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
         }

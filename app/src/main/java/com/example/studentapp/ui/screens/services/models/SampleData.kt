@@ -38,8 +38,3 @@ val sampleLibraryLinks = listOf(
         icon = Icons.Default.History
     )
 )
-
-val sampleComplaints = listOf(
-    Complaint("ID Replacement Request", ComplaintStatus.IN_REVIEW),
-    Complaint("Uniform Waiver", ComplaintStatus.RESOLVED)
-)

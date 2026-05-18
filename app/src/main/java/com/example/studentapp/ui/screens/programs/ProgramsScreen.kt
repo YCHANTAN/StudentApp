@@ -41,20 +41,26 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.ui.screens.programs.components.ProspectusViewer
 
+import android.widget.Toast
+import android.content.Intent
+import androidx.core.content.FileProvider
+import java.io.File
+
 @Composable
 fun ProgramsScreen(
     navigationItems: List<StudentBottomNavItem>,
     selectedNavItemId: String,
     onBottomNavSelected: (StudentBottomNavItem) -> Unit,
     onBackClick: () -> Unit,
-    onDownloadProspectusClick: (ProgramEntry) -> Unit,
-    onViewProgramClick: (ProgramEntry) -> Unit,
+    onDownloadProspectusClick: (ProgramEntry) -> Unit = {},
+    onViewProgramClick: (ProgramEntry) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val viewModel: ProgramsViewModel = viewModel()
     var searchQuery by rememberSaveable { mutableStateOf("") }
     var selectedTab by rememberSaveable { mutableStateOf(ProgramsTab.AllPrograms) }
     var selectedProspectusUrl by remember { mutableStateOf<String?>(null) }
+    val context = androidx.compose.ui.platform.LocalContext.current
 
     val programs = viewModel.allPrograms
     val isLoading = viewModel.isLoading
@@ -135,11 +141,27 @@ fun ProgramsScreen(
                         ),
                         onDownloadProspectusClick = { entry ->
                             if (entry.prospectusUrl != null) {
-                                selectedProspectusUrl = entry.prospectusUrl
+                                Toast.makeText(context, "Downloading prospectus...", Toast.LENGTH_SHORT).show()
+                                viewModel.downloadProspectus(context, entry) { file ->
+                                    if (file != null) {
+                                        Toast.makeText(context, "Download complete", Toast.LENGTH_SHORT).show()
+                                        onDownloadProspectusClick(entry)
+                                    } else {
+                                        Toast.makeText(context, "Failed to download prospectus", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            } else {
+                                Toast.makeText(context, "Prospectus not available", Toast.LENGTH_SHORT).show()
                             }
-                            onDownloadProspectusClick(entry)
                         },
-                        onViewProgramClick = onViewProgramClick
+                        onViewProgramClick = { entry ->
+                            if (entry.prospectusUrl != null) {
+                                selectedProspectusUrl = entry.prospectusUrl
+                            } else {
+                                Toast.makeText(context, "Prospectus not available", Toast.LENGTH_SHORT).show()
+                            }
+                            onViewProgramClick(entry)
+                        }
                     )
                 }
             }

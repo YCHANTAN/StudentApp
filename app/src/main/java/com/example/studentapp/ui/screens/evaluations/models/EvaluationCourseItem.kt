@@ -9,7 +9,8 @@ data class EvaluationCourseItem(
     val teachingQuality: Int = 0,
     val courseMaterials: Int = 0,
     val punctuality: Int = 0,
-    val comments: String = ""
+    val comments: String = "",
+    val isSubmitting: Boolean = false
 )
 
 enum class EvaluationCourseIconType {

@@ -20,4 +20,5 @@ interface AcademicRepository {
         punctuality: Int,
         comments: String?
     ): Boolean
+    suspend fun downloadProspectus(url: String): okhttp3.ResponseBody?
 }

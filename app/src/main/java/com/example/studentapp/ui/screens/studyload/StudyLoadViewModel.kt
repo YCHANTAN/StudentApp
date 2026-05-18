@@ -87,7 +87,7 @@ class StudyLoadViewModel(
         viewModelScope.launch {
             val profile = authRepository.getProfile()
             if (profile != null) {
-                val responseBody = enrollmentRepository.getStudyLoadPdf(profile.accountId)
+                val responseBody = enrollmentRepository.getStudyLoadPdf(profile.id)
                 if (responseBody != null) {
                     val file = savePdfToFile(context, responseBody, "study_load_${profile.accountId}.pdf")
                     onComplete(file)

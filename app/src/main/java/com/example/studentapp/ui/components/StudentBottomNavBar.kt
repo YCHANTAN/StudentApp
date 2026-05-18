@@ -119,7 +119,10 @@ private fun BottomNavItemButton(
 
     Column(
         modifier = Modifier
-            .clickable(onClick = onClick)
+            .clickable(
+                enabled = !isSelected,
+                onClick = onClick
+            )
             .padding(vertical = Spacing.ExtraSmall),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(Spacing.ExtraSmall)

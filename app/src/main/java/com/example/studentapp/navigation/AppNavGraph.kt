@@ -1,12 +1,7 @@
 package com.example.studentapp.navigation
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
 import com.example.studentapp.ui.screens.academic.AcademicScreen
@@ -19,9 +14,14 @@ import com.example.studentapp.ui.screens.enrollment.EnrollmentScreen
 import com.example.studentapp.ui.screens.evaluations.EvaluationScreen
 import com.example.studentapp.ui.screens.finance.FinanceScreen
 import com.example.studentapp.ui.screens.finance.AssessmentScreen
-import com.example.studentapp.ui.screens.finance.PaymentSlipScreen
 import com.example.studentapp.ui.screens.goodmoral.GoodMoralScreen
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.studentapp.ui.screens.grades.GradesScreen
 import com.example.studentapp.ui.screens.library.LibraryScreen
 import com.example.studentapp.ui.screens.library.models.LibraryTab
@@ -37,37 +37,45 @@ import com.example.studentapp.ui.screens.tor.TORScreen
 
 @Composable
 fun AppNavGraph() {
-    var currentRoute by rememberSaveable {
-        mutableStateOf(AppDestination.Login.route)
-    }
-
+    val navController = rememberNavController()
     val primaryBottomNavItems = remember { buildPrimaryBottomNavItems() }
 
     val navigateToNotifications = {
-        currentRoute = AppDestination.Notifications.route
+        navController.navigate(AppDestination.Notifications.route)
     }
 
-    when {
-        currentRoute == AppDestination.Login.route -> {
+    val onBottomNavSelected: (StudentBottomNavItem) -> Unit = { item ->
+        val route = resolvePrimaryRoute(item)
+        navController.navigate(route) {
+            popUpTo(navController.graph.findStartDestination().id) {
+                saveState = true
+            }
+            launchSingleTop = true
+            restoreState = true
+        }
+    }
+
+    NavHost(
+        navController = navController,
+        startDestination = AppDestination.Login.route
+    ) {
+        composable(AppDestination.Login.route) {
             LoginScreen(
                 onLoginSuccess = {
-                    currentRoute = AppDestination.Dashboard.route
+                    navController.navigate(AppDestination.Dashboard.route) {
+                        popUpTo(AppDestination.Login.route) { inclusive = true }
+                    }
                 }
             )
         }
 
-        currentRoute == AppDestination.Dashboard.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Login.route
-            }
+        composable(AppDestination.Dashboard.route) {
             DashboardScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "home",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
+                onBottomNavSelected = onBottomNavSelected,
                 onViewScheduleClick = {
-                    currentRoute = AppDestination.Schedule.route
+                    navController.navigate(AppDestination.Schedule.route)
                 },
                 onFinanceClick = {
                     currentRoute = AppDestination.Finance.route
@@ -82,387 +90,253 @@ fun AppNavGraph() {
             )
         }
 
-        currentRoute == AppDestination.Academic.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Dashboard.route
-            }
-
+        composable(AppDestination.Academic.route) {
             AcademicScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "academic",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = { currentRoute = AppDestination.Dashboard.route },
-                onViewAllClick = { currentRoute = AppDestination.Dashboard.route },
-                onContactSupportClick = { currentRoute = AppDestination.Dashboard.route },
-                onCoursesClick = { currentRoute = AppDestination.Courses.route },
-                onEnrollmentClick = { currentRoute = AppDestination.Enrollment.route },
-                onProgramsClick = { currentRoute = AppDestination.Programs.route },
-                onGradesClick = { currentRoute = AppDestination.Grades.route },
-                onEvaluationClick = { currentRoute = AppDestination.Evaluation.route },
-                onStudyLoadClick = { currentRoute = AppDestination.StudyLoad.route },
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() },
+                onViewAllClick = { navController.popBackStack() },
+                onContactSupportClick = { /* Handle or pop */ },
+                onCoursesClick = { navController.navigate(AppDestination.Courses.route) },
+                onEnrollmentClick = { navController.navigate(AppDestination.Enrollment.route) },
+                onProgramsClick = { navController.navigate(AppDestination.Programs.route) },
+                onGradesClick = { navController.navigate(AppDestination.Grades.route) },
+                onEvaluationClick = { navController.navigate(AppDestination.Evaluation.route) },
+                onStudyLoadClick = { navController.navigate(AppDestination.StudyLoad.route) },
                 onNotificationClick = navigateToNotifications
             )
         }
 
-        currentRoute == AppDestination.Programs.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Academic.route
-            }
-
+        composable(AppDestination.Programs.route) {
             ProgramsScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "academic",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Academic.route
-                },
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() },
                 onDownloadProspectusClick = {},
                 onViewProgramClick = {}
             )
         }
 
-        currentRoute == AppDestination.Courses.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Academic.route
-            }
-
+        composable(AppDestination.Courses.route) {
             CoursesScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "academic",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Academic.route
-                }
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() }
             )
         }
 
-        currentRoute == AppDestination.Enrollment.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Academic.route
-            }
-
+        composable(AppDestination.Enrollment.route) {
             EnrollmentScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "academic",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Academic.route
-                },
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() },
                 onHomeClick = {
-                    currentRoute = AppDestination.Dashboard.route
+                    navController.navigate(AppDestination.Dashboard.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 },
                 onAdjustmentClick = {
-                    currentRoute = AppDestination.Adjustment.route
+                    navController.navigate(AppDestination.Adjustment.route)
                 }
             )
         }
 
-        currentRoute == AppDestination.Grades.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Academic.route
-            }
+        composable(AppDestination.Grades.route) {
             GradesScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "academic",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Academic.route
-                }
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() }
             )
         }
 
-        currentRoute == AppDestination.Evaluation.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Academic.route
-            }
+        composable(AppDestination.Evaluation.route) {
             EvaluationScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "academic",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Academic.route
-                }
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() }
             )
         }
 
-        currentRoute == AppDestination.StudyLoad.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Academic.route
-            }
+        composable(AppDestination.StudyLoad.route) {
             StudyLoadScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "academic",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Academic.route
-                }
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() }
             )
         }
 
-        currentRoute == AppDestination.Adjustment.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Dashboard.route
-            }
+        composable(AppDestination.Adjustment.route) {
             AdjustmentScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "academic",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Dashboard.route
-                }
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() }
             )
         }
 
-        currentRoute == AppDestination.ChangeSchedule.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Adjustment.route
-            }
+        composable(AppDestination.ChangeSchedule.route) {
             ChangeScheduleScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "academic",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Adjustment.route
-                },
-                onConfirmClick = {
-                    currentRoute = AppDestination.Adjustment.route
-                }
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() },
+                onConfirmClick = { navController.popBackStack() }
             )
         }
 
-        currentRoute == AppDestination.Finance.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Dashboard.route
-            }
+        composable(AppDestination.Finance.route) {
             FinanceScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "finance",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Dashboard.route
-                },
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() },
                 onPayNowClick = {
-                    currentRoute = AppDestination.PaymentQueue.route
+                    navController.navigate(AppDestination.PaymentQueue.route)
                 },
                 onAssessmentClick = {
-                    currentRoute = AppDestination.Assessment.route
-                },
-                onPaymentSlipClick = {
-                    currentRoute = AppDestination.PaymentSlip.route
+                    navController.navigate(AppDestination.Assessment.route)
                 },
                 onNotificationClick = navigateToNotifications
             )
         }
 
-        currentRoute == AppDestination.Assessment.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Finance.route
-            }
+        composable(AppDestination.Assessment.route) {
             val financeViewModel: com.example.studentapp.ui.screens.finance.FinanceViewModel = viewModel()
             AssessmentScreen(
                 assessment = financeViewModel.assessment,
-                onBackClick = {
-                    currentRoute = AppDestination.Finance.route
-                }
+                onBackClick = { navController.popBackStack() }
             )
         }
 
-        currentRoute == AppDestination.PaymentSlip.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Finance.route
-            }
-            val financeViewModel: com.example.studentapp.ui.screens.finance.FinanceViewModel = viewModel()
-            PaymentSlipScreen(
-                paymentSlip = financeViewModel.paymentSlip,
-                onBackClick = {
-                    currentRoute = AppDestination.Finance.route
-                }
-            )
-        }
-
-        currentRoute == AppDestination.Services.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Dashboard.route
-            }
+        composable(AppDestination.Services.route) {
             ServicesScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "services",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Dashboard.route
-                },
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() },
                 onLibraryClick = { tab ->
-                    currentRoute = AppDestination.Library.createRoute(tab.name)
+                    navController.navigate(AppDestination.Library.createRoute(tab.name))
                 },
                 onTORClick = {
-                    currentRoute = AppDestination.TOR.route
+                    navController.navigate(AppDestination.TOR.route)
                 },
                 onCOEClick = {
-                    currentRoute = AppDestination.COE.route
+                    navController.navigate(AppDestination.COE.route)
                 },
                 onGoodMoralClick = {
-                    currentRoute = AppDestination.GoodMoral.route
+                    navController.navigate(AppDestination.GoodMoral.route)
                 },
                 onNotificationClick = navigateToNotifications
             )
         }
 
-        currentRoute.startsWith("library/") -> {
-            val tabName = currentRoute.substringAfter("library/")
+        composable(
+            route = AppDestination.Library.route,
+            arguments = listOf(navArgument("tab") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val tabName = backStackEntry.arguments?.getString("tab")
             val initialTab = LibraryTab.entries.find { it.name == tabName } ?: LibraryTab.Available
             
-            BackHandler {
-                currentRoute = AppDestination.Services.route
-            }
             LibraryScreen(
                 initialTab = initialTab,
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "services",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Services.route
-                },
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() },
                 onNotificationClick = navigateToNotifications
             )
         }
 
-        currentRoute == AppDestination.COE.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Services.route
-            }
-
+        composable(AppDestination.COE.route) {
             COEScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "services",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Services.route
-                },
-                onNotificationClick = navigateToNotifications
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() },
+                onNotificationClick = navigateToNotifications,
+                onNavigateToFinance = {
+                    navController.navigate(AppDestination.Finance.route) {
+                        popUpTo(AppDestination.Dashboard.route)
+                    }
+                }
             )
         }
 
-        currentRoute == AppDestination.GoodMoral.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Services.route
-            }
-
+        composable(AppDestination.GoodMoral.route) {
             GoodMoralScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "services",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Services.route
-                },
-                onNotificationClick = navigateToNotifications
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() },
+                onNotificationClick = navigateToNotifications,
+                onNavigateToFinance = {
+                    navController.navigate(AppDestination.Finance.route) {
+                        popUpTo(AppDestination.Dashboard.route)
+                    }
+                }
             )
         }
 
-        currentRoute == AppDestination.TOR.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Services.route
-            }
+        composable(AppDestination.TOR.route) {
             TORScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "services",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Services.route
-                },
-                onNotificationClick = navigateToNotifications
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() },
+                onNotificationClick = navigateToNotifications,
+                onNavigateToFinance = {
+                    navController.navigate(AppDestination.Finance.route) {
+                        popUpTo(AppDestination.Dashboard.route)
+                    }
+                }
             )
         }
 
-        currentRoute == AppDestination.PaymentQueue.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Finance.route
-            }
-
+        composable(AppDestination.PaymentQueue.route) {
             PaymentQueueScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "finance",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Finance.route
-                }
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() }
             )
         }
 
-        currentRoute == AppDestination.Schedule.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Dashboard.route
-            }
+        composable(AppDestination.Schedule.route) {
             ScheduleScreen(
-                onBackClick = {
-                    currentRoute = AppDestination.Dashboard.route
-                }
+                onBackClick = { navController.popBackStack() }
             )
         }
 
-        currentRoute == AppDestination.Profile.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Dashboard.route
-            }
+        composable(AppDestination.Profile.route) {
             ProfileScreen(
                 navigationItems = primaryBottomNavItems,
                 selectedNavItemId = "profile",
-                onBottomNavSelected = { item ->
-                    currentRoute = resolvePrimaryRoute(item, currentRoute)
-                },
-                onBackClick = {
-                    currentRoute = AppDestination.Dashboard.route
-                }
+                onBottomNavSelected = onBottomNavSelected,
+                onBackClick = { navController.popBackStack() }
             )
         }
 
-        currentRoute == AppDestination.Notifications.route -> {
-            BackHandler {
-                currentRoute = AppDestination.Dashboard.route 
-            }
+        composable(AppDestination.Notifications.route) {
             NotificationScreen(
-                onBackClick = {
-                    currentRoute = AppDestination.Dashboard.route
-                }
+                onBackClick = { navController.popBackStack() }
             )
         }
     }
 }
 
 private fun resolvePrimaryRoute(
-    item: StudentBottomNavItem,
-    currentRoute: String
+    item: StudentBottomNavItem
 ): String {
     return when (item.id) {
         "home" -> AppDestination.Dashboard.route
@@ -470,6 +344,6 @@ private fun resolvePrimaryRoute(
         "finance" -> AppDestination.Finance.route
         "services" -> AppDestination.Services.route
         "profile" -> AppDestination.Profile.route
-        else -> currentRoute
+        else -> AppDestination.Dashboard.route
     }
 }

@@ -39,7 +39,10 @@ import com.example.studentapp.ui.theme.WarningYellow
 import com.example.studentapp.ui.theme.WarningYellowSoft
 
 @Composable
-fun RequestStatusSection(requestStatus: ServiceRequestStatus) {
+fun RequestStatusSection(
+    requestStatus: ServiceRequestStatus,
+    onClick: () -> Unit = {}
+) {
     val (statusColor, statusBg) = when (requestStatus.statusLabel.lowercase()) {
         "active", "finished", "completed", "done" -> SuccessGreen to SuccessGreenSoft
         "processing", "under maintenance", "pending", "ongoing" -> WarningYellow to WarningYellowSoft
@@ -55,6 +58,7 @@ fun RequestStatusSection(requestStatus: ServiceRequestStatus) {
         )
 
         Card(
+            onClick = onClick,
             shape = RoundedCornerShape(16.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
             border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),

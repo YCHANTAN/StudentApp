@@ -17,7 +17,9 @@ val sampleLibraryBooks = listOf(
         stockLabel = "2 Copies Available",
         stockStatus = StockStatus.Limited,
         isNew = true,
-        tab = LibraryTab.Available
+        tab = LibraryTab.Available,
+        availableCopies = 2,
+        totalCopies = 2
     ),
     LibraryBook(
         id = "book-2",
@@ -27,7 +29,9 @@ val sampleLibraryBooks = listOf(
         genre = "Computer Science",
         stockLabel = "5 Copies Available",
         stockStatus = StockStatus.Available,
-        tab = LibraryTab.Available
+        tab = LibraryTab.Available,
+        availableCopies = 5,
+        totalCopies = 5
     ),
     LibraryBook(
         id = "book-3",
@@ -37,7 +41,9 @@ val sampleLibraryBooks = listOf(
         genre = "Finance",
         stockLabel = "Out of Stock",
         stockStatus = StockStatus.OutOfStock,
-        tab = LibraryTab.Return
+        tab = LibraryTab.Available,
+        availableCopies = 0,
+        totalCopies = 1
     ),
     LibraryBook(
         id = "book-4",
@@ -47,6 +53,8 @@ val sampleLibraryBooks = listOf(
         genre = "Science",
         stockLabel = "Available",
         stockStatus = StockStatus.Available,
-        tab = LibraryTab.History
+        tab = LibraryTab.Available,
+        availableCopies = 10,
+        totalCopies = 10
     )
 )

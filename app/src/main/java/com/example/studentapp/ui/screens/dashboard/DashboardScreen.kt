@@ -92,12 +92,16 @@ fun DashboardScreen(
             item {
                 StudyLoadSection(
                     courses = state.courses,
-                    onViewScheduleClick = onViewScheduleClick
+                    onViewScheduleClick = onViewScheduleClick,
+                    onCourseClick = { onCourseClick() }
                 )
             }
 
             item {
-                RequestStatusSection(requestStatus = state.requestStatus)
+                RequestStatusSection(
+                    requestStatus = state.requestStatus,
+                    onClick = onRequestStatusClick
+                )
             }
         }
     }
