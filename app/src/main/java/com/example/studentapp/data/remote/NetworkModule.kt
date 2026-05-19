@@ -1,5 +1,6 @@
 package com.example.studentapp.data.remote
 
+import com.example.studentapp.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -7,8 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object NetworkModule {
-    // Replace with your local machine IP if testing on a real device
-    private const val BASE_URL = "http://10.0.2.2:3000/api/v1/"
+    private val BASE_URL = BuildConfig.API_BASE_URL
 
     private var authToken: String? = null
 

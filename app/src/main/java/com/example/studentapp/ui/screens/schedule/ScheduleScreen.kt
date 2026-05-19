@@ -39,7 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.ui.components.StudentHeader
-import com.example.studentapp.ui.components.StudentLoadingPlaceholder
+import com.example.studentapp.ui.components.StudentSkeletonScaffold
 import com.example.studentapp.ui.screens.schedule.models.ScheduleDaySection
 import com.example.studentapp.ui.screens.schedule.models.ScheduleEntry
 import com.example.studentapp.ui.theme.Radius
@@ -66,7 +66,7 @@ fun ScheduleScreen(
         }
     ) { innerPadding ->
         if (isLoading && state.sections.isEmpty()) {
-            StudentLoadingPlaceholder()
+            StudentSkeletonScaffold(contentPadding = innerPadding)
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),

@@ -30,12 +30,10 @@ import com.example.studentapp.ui.screens.finance.components.TransactionHistoryHe
 import com.example.studentapp.ui.screens.finance.components.TransactionItem
 import com.example.studentapp.ui.theme.Spacing
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.ui.Alignment
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentSkeletonScaffold
 import com.example.studentapp.ui.components.StudentNotificationButton
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,9 +77,7 @@ fun FinanceScreen(
         }
     ) { paddingValues ->
         if (isLoading && transactions.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            StudentSkeletonScaffold(contentPadding = paddingValues)
         } else {
             LazyColumn(
                 modifier = Modifier

@@ -1,7 +1,6 @@
 package com.example.studentapp.ui.screens.programs
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -35,10 +34,10 @@ import com.example.studentapp.ui.screens.programs.models.buildProgramEntries
 import com.example.studentapp.ui.screens.programs.models.filterProgramEntries
 import com.example.studentapp.ui.theme.StudentAppTheme
 
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.studentapp.ui.components.StudentSkeletonScaffold
 import com.example.studentapp.ui.screens.programs.components.ProspectusViewer
 
 import android.widget.Toast
@@ -127,9 +126,7 @@ fun ProgramsScreen(
                 }
             ) { innerPadding ->
                 if (isLoading && programs.isEmpty()) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-                    }
+                    StudentSkeletonScaffold(contentPadding = innerPadding)
                 } else {
                     ProgramsContent(
                         programs = filteredPrograms,

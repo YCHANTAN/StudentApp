@@ -40,7 +40,7 @@ import com.example.studentapp.ui.screens.profile.state.rememberProfileScreenStat
 import com.example.studentapp.ui.theme.StudentAppTheme
 
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.material3.CircularProgressIndicator
+import com.example.studentapp.ui.components.StudentSkeletonList
 
 @Composable
 fun ProfileScreen(
@@ -54,9 +54,7 @@ fun ProfileScreen(
     val state = viewModel.state
 
     if (state == null) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
-        }
+        StudentSkeletonList()
         return
     }
 

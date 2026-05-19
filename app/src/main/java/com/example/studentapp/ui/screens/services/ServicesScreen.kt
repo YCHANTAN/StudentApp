@@ -23,12 +23,11 @@ import com.example.studentapp.ui.screens.services.models.sampleDocumentTypes
 import com.example.studentapp.ui.screens.services.models.sampleLibraryLinks
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.ui.Alignment
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.example.studentapp.ui.components.StudentHeader
 import com.example.studentapp.ui.components.StudentNotificationButton
+import com.example.studentapp.ui.components.StudentSkeletonScaffold
 import com.example.studentapp.ui.components.StudentToast
 import com.example.studentapp.ui.components.ToastType
 import androidx.compose.runtime.getValue
@@ -79,9 +78,7 @@ fun ServicesScreen(
     ) { paddingValues ->
         Box(modifier = Modifier.fillMaxSize()) {
             if (isLoading && documentRequests.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
+                StudentSkeletonScaffold(contentPadding = paddingValues)
             } else {
                 LazyColumn(
                     modifier = Modifier

@@ -44,8 +44,8 @@ import com.example.studentapp.ui.screens.studyload.components.StudyLoadSubjectCa
 import com.example.studentapp.ui.screens.studyload.components.StudyLoadSummaryCard
 import com.example.studentapp.ui.screens.studyload.models.StudyLoadItem
 
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.studentapp.ui.components.StudentSkeletonScaffold
 
 import android.widget.Toast
 import android.content.Intent
@@ -168,9 +168,7 @@ fun StudyLoadScreen(
         }
     ) { innerPadding ->
         if (isLoading && subjects.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            StudentSkeletonScaffold(contentPadding = innerPadding)
         } else {
             LazyColumn(
                 modifier = Modifier

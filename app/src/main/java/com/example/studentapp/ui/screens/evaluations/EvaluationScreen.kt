@@ -5,7 +5,6 @@ package com.example.studentapp.ui.screens.evaluations
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,7 +21,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -32,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.ui.components.StudentBottomNavBar
 import com.example.studentapp.ui.components.StudentBottomNavItem
+import com.example.studentapp.ui.components.StudentSkeletonScaffold
 import com.example.studentapp.ui.screens.evaluations.components.EvaluationCourseCard
 import com.example.studentapp.ui.screens.evaluations.components.EvaluationPendingSectionHeader
 import kotlinx.coroutines.flow.collectLatest
@@ -94,9 +92,7 @@ fun EvaluationScreen(
         }
     ) { innerPadding ->
         if (isLoading && pendingCourses.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            StudentSkeletonScaffold(contentPadding = innerPadding)
         } else {
             LazyColumn(
                 modifier = Modifier

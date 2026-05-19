@@ -4,7 +4,6 @@ package com.example.studentapp.ui.screens.grades
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -40,10 +39,9 @@ import com.example.studentapp.ui.screens.grades.models.SubjectIconType
 import com.example.studentapp.ui.screens.grades.models.SubjectStatus
 
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.ui.Alignment
 
 import com.example.studentapp.ui.components.StudentHeader
+import com.example.studentapp.ui.components.StudentSkeletonScaffold
 
 @Composable
 @Preview
@@ -97,9 +95,7 @@ fun GradesScreen(
         }
     ) { innerPadding ->
         if (isLoading && subjects.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            StudentSkeletonScaffold(contentPadding = innerPadding)
         } else {
             LazyColumn(
                 modifier = Modifier

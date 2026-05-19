@@ -9,4 +9,5 @@ docsRouter.get("/docs.json", (_req, res) => {
   res.status(200).json(openApiSpec);
 });
 
-docsRouter.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiSpec));
+docsRouter.use("/docs", swaggerUi.serve);
+docsRouter.get("/docs", swaggerUi.setup(openApiSpec));

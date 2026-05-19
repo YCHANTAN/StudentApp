@@ -1,5 +1,26 @@
 //import androidx.glance.appwidget.compose
 
+fun loadEnvFile(file: File): Map<String, String> {
+    if (!file.exists()) return emptyMap()
+
+    return file.readLines()
+        .map { it.trim() }
+        .filter { it.isNotEmpty() && !it.startsWith("#") && it.contains("=") }
+        .associate { line ->
+            val key = line.substringBefore("=").trim()
+            val value = line.substringAfter("=").trim().trim('"', '\'')
+            key to value
+        }
+}
+
+fun String.asBuildConfigString(): String =
+    "\"${replace("\\", "\\\\").replace("\"", "\\\"")}\""
+
+val appEnv = loadEnvFile(rootProject.file("app/.env"))
+val apiBaseUrl = providers.environmentVariable("API_BASE_URL").orNull
+    ?: appEnv["API_BASE_URL"]
+    ?: "https://student-app-phi-lac.vercel.app/api/v1/"
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,6 +39,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        buildConfigField("String", "API_BASE_URL", apiBaseUrl.asBuildConfigString())
     }
 
     buildTypes {
@@ -38,6 +60,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

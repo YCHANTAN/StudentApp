@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -15,10 +16,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.studentapp.domain.usecase.GetAcademicOverviewUseCase
 import com.example.studentapp.ui.components.StudentBottomNavItem
 import com.example.studentapp.ui.components.StudentBottomNavBar
+import com.example.studentapp.ui.components.StudentSkeletonBlock
 import com.example.studentapp.ui.components.buildPrimaryBottomNavItems
 import com.example.studentapp.ui.screens.academic.components.AcademicDashboardMenuCard
 import com.example.studentapp.ui.screens.academic.components.AcademicDashboardSectionHeader
@@ -54,6 +57,7 @@ fun AcademicScreen(
     
     AcademicServicesScreen(
         state = viewModel.uiState,
+        isLoading = viewModel.isLoading,
         navigationItems = navigationItems,
         selectedNavItemId = selectedNavItemId,
         onBottomNavSelected = onBottomNavSelected,
@@ -74,6 +78,7 @@ fun AcademicScreen(
 @Composable
 fun AcademicServicesScreen(
     state: AcademicUiState,
+    isLoading: Boolean = false,
     navigationItems: List<StudentBottomNavItem>,
     selectedNavItemId: String,
     onBottomNavSelected: (StudentBottomNavItem) -> Unit,
@@ -111,6 +116,7 @@ fun AcademicServicesScreen(
     ) { innerPadding ->
         AcademicServicesContent(
             state = state,
+            isLoading = isLoading,
             dashboardItems = dashboardItems,
             contentPadding = PaddingValues(
                 start = Spacing.Medium,
@@ -137,6 +143,7 @@ fun AcademicServicesScreen(
 @Composable
 fun AcademicServicesContent(
     state: AcademicUiState,
+    isLoading: Boolean = false,
     dashboardItems: List<AcademicDashboardMenuItem>,
     contentPadding: PaddingValues,
     onViewAllClick: () -> Unit,
@@ -152,13 +159,22 @@ fun AcademicServicesContent(
         verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
     ) {
         item(span = { GridItemSpan(maxLineSpan) }) {
-            AcademicHeroCard(
-                studentName = state.studentName,
-                studentId = state.studentId,
-                program = state.programSummary,
-                yearLevel = state.yearLevel,
-                currentTerm = state.currentTerm
-            )
+            if (isLoading) {
+                StudentSkeletonBlock(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .height(190.dp),
+                    radius = com.example.studentapp.ui.theme.Radius.Large
+                )
+            } else {
+                AcademicHeroCard(
+                    studentName = state.studentName,
+                    studentId = state.studentId,
+                    program = state.programSummary,
+                    yearLevel = state.yearLevel,
+                    currentTerm = state.currentTerm
+                )
+            }
         }
 
         item(span = { GridItemSpan(maxLineSpan) }) {
@@ -184,6 +200,7 @@ fun AcademicScreenPreview() {
     StudentAppTheme(dynamicColor = false) {
         AcademicServicesScreen(
             state = GetAcademicOverviewUseCase().invoke().toUiState(),
+            isLoading = false,
             navigationItems = buildPrimaryBottomNavItems(),
             selectedNavItemId = "academic",
             onBottomNavSelected = {},
