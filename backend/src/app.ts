@@ -1,7 +1,7 @@
 import express from "express";
 
 import { authRouter } from "@/presentation/routes/auth.routes";
-import { studentProfileRouter } from "@/presentation/routes/student-profile.routes";
+import { studentRouter } from "@/presentation/routes/student.routes";
 import { docsRouter } from "@/presentation/routes/docs.routes";
 import { errorMiddleware } from "@/presentation/middleware/error.middleware";
 import { libraryBookRouter } from "@/presentation/routes/library-book.routes";
@@ -25,7 +25,7 @@ app.use(globalRateLimiter);
 
 app.use("/api", docsRouter);
 app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/students", studentProfileRouter);
+app.use("/api/v1/students", studentRouter);
 app.use('/api/v1/library-books', libraryBookRouter);
 app.use('/api/v1/document-requests', documentRequestRouter);
 app.use('/api/v1/complaints', complaintRouter);
