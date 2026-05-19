@@ -16,7 +16,7 @@ fun loadEnvFile(file: File): Map<String, String> {
 fun String.asBuildConfigString(): String =
     "\"${replace("\\", "\\\\").replace("\"", "\\\"")}\""
 
-val appEnv = loadEnvFile(rootProject.file("app/.env"))
+val appEnv = loadEnvFile(rootProject.file(".env")).ifEmpty { loadEnvFile(rootProject.file("app/.env")) }
 val apiBaseUrl = providers.environmentVariable("API_BASE_URL").orNull
     ?: appEnv["API_BASE_URL"]
     ?: "https://student-app-phi-lac.vercel.app/api/v1/"

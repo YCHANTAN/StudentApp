@@ -16,3 +16,4 @@ local.properties
 /.gradle-user/
 /.idea/
 /AGENTS.md
+.env
