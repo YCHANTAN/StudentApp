@@ -46,10 +46,31 @@ data class NotificationSettingsResponse(
     @SerializedName("system") val system: Boolean
 )
 
+data class UpdateProfileRequest(
+    @SerializedName("fullName") val fullName: String? = null,
+    @SerializedName("emailAddress") val emailAddress: String? = null,
+    @SerializedName("phoneNumber") val phoneNumber: String? = null,
+    @SerializedName("accountLabel") val accountLabel: String? = null,
+    @SerializedName("programSummary") val programSummary: String? = null,
+    @SerializedName("twoFactorStatus") val twoFactorStatus: String? = null,
+    @SerializedName("emergencyContactName") val emergencyContactName: String? = null,
+    @SerializedName("emergencyContactRelationship") val emergencyContactRelationship: String? = null,
+    @SerializedName("emergencyContactPhoneNumber") val emergencyContactPhoneNumber: String? = null,
+    @SerializedName("emailNotifications") val emailNotifications: Boolean? = null,
+    @SerializedName("smsNotifications") val smsNotifications: Boolean? = null,
+    @SerializedName("systemAlerts") val systemAlerts: Boolean? = null
+)
+
 interface AuthApi {
     @POST("auth/login")
     suspend fun login(@Body request: LoginRequest): Response<ApiResponse<LoginResponse>>
 
     @GET("auth/me")
     suspend fun getMe(): Response<ApiResponse<UserProfileResponse>>
+
+    @retrofit2.http.PUT("students/{id}")
+    suspend fun updateProfile(
+        @retrofit2.http.Path("id") id: String,
+        @Body request: UpdateProfileRequest
+    ): Response<ApiResponse<UserProfileResponse>>
 }
