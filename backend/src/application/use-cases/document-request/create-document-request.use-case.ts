@@ -3,6 +3,7 @@ import type { TransactionRepository } from '@/application/repositories/transacti
 import type { StudentRepository } from '@/application/repositories/student.repository';
 import type { CreateDocumentRequestInput } from '@/application/dtos/document-request.dto';
 import type { DocumentRequest } from '@/core/entities/document-request.entity';
+import { isUuid } from '@/presentation/lib/uuid.helper';
 
 export class CreateDocumentRequestUseCase {
   constructor(
@@ -15,7 +16,7 @@ export class CreateDocumentRequestUseCase {
     let targetId = input.studentId;
 
     // Resolve STU-ID to database UUID if necessary
-    if (!this.isUuid(input.studentId)) {
+    if (!isUuid(input.studentId)) {
       const student = await this.studentRepo.findByStudentId(input.studentId);
       if (student) {
         targetId = student.id;
@@ -66,10 +67,5 @@ export class CreateDocumentRequestUseCase {
     });
 
     return this.documentRequestRepo.save(request);
-  }
-
-  private isUuid(id: string): boolean {
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    return uuidRegex.test(id);
   }
 }

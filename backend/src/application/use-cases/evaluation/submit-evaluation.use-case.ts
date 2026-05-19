@@ -2,6 +2,7 @@ import type { IEvaluationRepository } from '@/application/repositories/evaluatio
 import type { StudentRepository } from '@/application/repositories/student.repository';
 import type { CreateEvaluationDto } from '@/application/dtos/evaluation.dto';
 import type { EvaluationRow } from '@/infrastructure/db/schema/evaluation.schema';
+import { isUuid } from '@/presentation/lib/uuid.helper';
 
 export class SubmitEvaluationUseCase {
   constructor(
@@ -13,7 +14,7 @@ export class SubmitEvaluationUseCase {
     let targetId = data.studentId;
 
     // Resolve STU-ID to database UUID if necessary
-    if (!this.isUuid(data.studentId)) {
+    if (!isUuid(data.studentId)) {
       const student = await this.studentRepository.findByStudentId(data.studentId);
       if (student) {
         targetId = student.id;

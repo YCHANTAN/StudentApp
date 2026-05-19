@@ -6,6 +6,7 @@ import type { CreateEnrollmentInput } from '@/application/dtos/enrollment.dto';
 import type { Enrollment } from '@/core/entities/enrollment.entity';
 import type { Transaction } from '@/core/entities/transaction.entity';
 import { CourseFullError, ConflictError } from '@/core/errors/domain.error';
+import { isUuid } from '@/presentation/lib/uuid.helper';
 
 export class CreateEnrollmentUseCase {
   constructor(
@@ -19,7 +20,7 @@ export class CreateEnrollmentUseCase {
     let targetStudentId = input.studentId;
 
     // Resolve STU-ID to database UUID if necessary
-    if (!this.isUuid(targetStudentId)) {
+    if (!isUuid(targetStudentId)) {
       const student = await this.studentRepo.findByStudentId(targetStudentId);
       if (student) {
         targetStudentId = student.id;
@@ -98,10 +99,5 @@ export class CreateEnrollmentUseCase {
     await this.transactionRepo.save(transaction);
 
     return savedEnrollment;
-  }
-
-  private isUuid(id: string): boolean {
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    return uuidRegex.test(id);
   }
 }

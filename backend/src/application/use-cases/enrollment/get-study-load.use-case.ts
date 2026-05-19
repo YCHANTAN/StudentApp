@@ -2,6 +2,7 @@ import type { EnrollmentRepository } from '@/application/repositories/enrollment
 import type { CourseRepository } from '@/application/repositories/course.repository';
 import type { StudentRepository } from '@/application/repositories/student.repository';
 import type { Course } from '@/core/entities/course.entity';
+import { isUuid } from '@/presentation/lib/uuid.helper';
 
 export type StudyLoadResponse = {
   courses: Course[];
@@ -20,7 +21,7 @@ export class GetStudyLoadUseCase {
     let targetId = studentId;
 
     // Resolve STU-ID to database UUID if necessary
-    if (!this.isUuid(studentId)) {
+    if (!isUuid(studentId)) {
       const student = await this.studentRepository.findByStudentId(studentId);
       if (student) {
         targetId = student.id;
@@ -68,10 +69,5 @@ export class GetStudyLoadUseCase {
       totalUnits,
       semesterLabel,
     };
-  }
-
-  private isUuid(id: string): boolean {
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    return uuidRegex.test(id);
   }
 }
