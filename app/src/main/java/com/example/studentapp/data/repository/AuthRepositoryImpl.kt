@@ -70,6 +70,29 @@ class AuthRepositoryImpl : AuthRepository {
         }
     }
 
+    override suspend fun updateProfile(id: String, profile: ProfileOverview): Boolean = withContext(Dispatchers.IO) {
+        try {
+            val request = com.example.studentapp.data.remote.UpdateProfileRequest(
+                fullName = profile.fullName,
+                emailAddress = profile.emailAddress,
+                phoneNumber = profile.phoneNumber,
+                accountLabel = profile.accountLabel,
+                programSummary = profile.programSummary,
+                twoFactorStatus = profile.twoFactorStatus.name,
+                emergencyContactName = profile.emergencyContact.name,
+                emergencyContactRelationship = profile.emergencyContact.relationship,
+                emergencyContactPhoneNumber = profile.emergencyContact.phoneNumber,
+                emailNotifications = profile.notificationPreferences.emailNotifications,
+                smsNotifications = profile.notificationPreferences.smsNotifications,
+                systemAlerts = profile.notificationPreferences.systemAlerts
+            )
+            val response = NetworkModule.authApi.updateProfile(id, request)
+            response.isSuccessful && response.body()?.success == true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     override suspend fun logout() {
         NetworkModule.setAuthToken(null)
     }
